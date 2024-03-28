@@ -1,0 +1,12 @@
+.foot{
+    height: 3rem;
+    width: 100%;
+    background-color: black;
+    position: fixed;
+    color: white;
+    bottom: 0;
+}
+.foot p{
+    text-align: center;
+    padding: 10px;
+}
