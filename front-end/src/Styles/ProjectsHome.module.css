@@ -1,0 +1,62 @@
+.wrapper{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(189, 189, 189, 0.7);
+}
+
+.modalcontainer{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: white;
+}
+.cancel{
+    position: fixed;
+    top: -4px;
+    right: -2.4px;
+    border: none;
+    font-size: 35px;
+    cursor: pointer;
+}
+.cancel:hover{
+    color: red;
+}
+.btn button{
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.details{
+    border: 1px solid black;
+    padding: 1rem;
+}
+.details h1{
+    padding-top: 2rem;
+    text-align: center;
+}
+.info{
+    padding-top: 18px;
+}
+.info label{
+    margin-bottom: 10px;
+}
+.info input{
+    margin: 5px 0;
+    width: 100%;
+    padding: 10px;
+}
+.submit{
+    text-align: center;
+    padding: 10px;
+    
+}
+.submit button{
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}

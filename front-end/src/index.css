@@ -10,6 +10,3 @@
   body{
     &::-webkit-scrollbar{display: none;}
   }
-  h3{
-    color: #5356FF;
-  }
