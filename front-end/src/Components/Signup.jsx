@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../Styles/Signup.module.css";
+import Image from "../assets/register.png";
 import { useGoogleLogin } from "@react-oauth/google";
 function Signup() {
   const [user, setuser] = useState({
@@ -13,7 +14,7 @@ function Signup() {
     setuser({ ...user, [name]: val });
   };
 
-  const { localToken } = AuthConsumer();
+  // const { localToken } = AuthConsumer();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -44,50 +45,76 @@ function Signup() {
   return (
     <>
       <div className={styles.container}>
-        <form className={styles.details} onSubmit={handleSubmit}>
-          <div className={styles.item}>
-            <label htmlFor="name">Enter Your Name : </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              value={user.name}
-              onChange={handleInput}
-              placeholder="Enter your name"
-              required
-            />
+        <div className={styles.imagecontainer}>
+          <div></div>
+          <div className={styles.picture}>
+            <img src={Image} />
           </div>
-          <div className={styles.item}>
-            <label htmlFor="email">Enter Your Email : </label>
-            <input
-              type="text"
-              name="email"
-              id="email"
-              value={user.email}
-              onChange={handleInput}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div className={styles.item}>
-            <label htmlFor="role">Enter Your Role : </label>
-            <select className={styles.roles} id="role" name="role">
-              <option value="">Select your role</option>
-              <option value={user.role} onChange={handleInput}>
-                Teacher
-              </option>
-              <option value={user.role} onChange={handleInput}>
-                Student
-              </option>
-            </select>
-          </div>
-          <div className={styles.btn}>
-            <button>Submit</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.details}>
+            <div>
+              <h2></h2>
+            </div>
+            <div className={styles.media}>
+              <button onClick={() => login()}>Sign in with Google</button>
+            </div>
+            <div className={styles.linecontainer}>
+              <div className={styles.line}>
+                <hr />
+              </div>
+              <div className={styles.text}>
+                <p>or</p>
+              </div>
+            </div>
+            <div className={styles.item}>
+              <label htmlFor="name">Enter Your Name </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                value={user.name}
+                onChange={handleInput}
+                required
+              />
+            </div>
+            <div className={styles.item}>
+              <label htmlFor="email">Enter Your Email </label>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                value={user.email}
+                onChange={handleInput}
+                required
+              />
+            </div>
+            <div className={styles.item}>
+              <label htmlFor="password">Password </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+              ></input>
+            </div>
+            <div className={styles.item}>
+              <label htmlFor="role">Enter Your Role </label>
+              <select className={styles.roles} id="role" name="role">
+                <option value="">Select your role</option>
+                <option value={user.role} onChange={handleInput}>
+                  Teacher
+                </option>
+                <option value={user.role} onChange={handleInput}>
+                  Student
+                </option>
+              </select>
+            </div>
+            <div className={styles.btn}>
+              <button>Get Started</button>
+            </div>
           </div>
         </form>
-      </div>
-      <div className={styles.media}>
-        <button onClick={() => login()}>Sign in with Google</button>
       </div>
     </>
   );

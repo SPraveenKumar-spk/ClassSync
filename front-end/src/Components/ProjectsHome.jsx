@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import { MdCancelPresentation } from "react-icons/md";
 import { useState } from "react";
 import styles from "../Styles/ProjectsHome.module.css";
@@ -13,32 +12,35 @@ const ProjectsHome = () => {
 
   const handleInput = (e) => {
     let name = e.target.name;
+    console.log(name);
     let val = e.target.value;
-    setProjects((projects) => ({ ...projects, [name]: val }));
+    console.log(val);
+    setProjects({ ...projects, val });
   };
+  console.log(projects);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify(projects),
-      });
-      if (response.ok) {
-        setProjects({
-          projectname: "",
-          classroom: "",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await fetch(`http://localhost:5000/projects`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: token,
+  //       },
+  //       body: JSON.stringify(projects),
+  //     });
+  //     if (response.ok) {
+  //       setProjects({
+  //         projectname: "",
+  //         classroom: "",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const MyModal = () => {
     return (
       <>
@@ -49,7 +51,7 @@ const ProjectsHome = () => {
             <div className={styles.cancel} onClick={closeModal}>
               <MdCancelPresentation />
             </div>
-            <form className={styles.info} onSubmit={handleSubmit}>
+            <form className={styles.info}>
               <div>
                 <label htmlFor="projectname">Project Name</label>
                 <input
@@ -83,11 +85,13 @@ const ProjectsHome = () => {
   };
   return (
     <>
-      <div className={styles.btn}>
-        <button onClick={() => setModal(true)}>Create Projects</button>
-        {useModal && <MyModal />}
+      <div className={styles.header}>
+        <div className={styles.btn}>
+          <button onClick={() => setModal(true)}>Create Projects</button>
+          {useModal && <MyModal />}
+        </div>
+        <div className={styles.container}></div>
       </div>
-      <div className={styles.container}></div>
     </>
   );
 };

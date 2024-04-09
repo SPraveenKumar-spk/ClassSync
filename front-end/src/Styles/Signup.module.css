@@ -1,46 +1,87 @@
+body{
+    background-color: rgba(189, 189, 189, 0.9);
+}
 .container{
+    position: absolute;
+    border: 3px solid blue;
+    border-radius: 1.5rem;
+    padding: 2rem 5rem;
+    background-color: #ffffff92;
+    height: 40rem;
+    width: 75rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20vh; 
+    justify-content: space-between;
+
 }
 .details{
-    border: 1px solid black;
-    border-radius: 10px;
-    height: 30vh;
-    width: 35rem;
+    width: 25rem;
 }
-.item{
-    padding: 10px;
-    padding-left: 60px;
+.picture img{
+    width: 600px;
+    height:600px;
+}
+
+.item {
+    padding: 10px 0;
 }
 .item input{
-    width: 50%;
+    width: 100%;
+    padding: 5px;
+    margin-top: 8px;
     font-size: 20px;
+    background-color: white;
+    border: none;
 }
 .roles{
-    width: 50%;
+    width: 100%;
+    background-color: #fff;
+    margin-top: 8px;
+    padding: 5px;
     font-size: 20px;
 }
 .btn{
-    padding-top: 10px;
+    padding-top: 3rem;
     text-align: center;
 }
 .btn button{
     padding: 10px;
-    border-radius: 10px;
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0.641);
+    border: none;
+    color: #fff;
     font-size: 20px;
     cursor: pointer;
 }
 .media{
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   padding-top: 2rem;
+    text-align: center;
 }
 .media button{
     padding: 10px;
-    width: 22rem;
+    background-color: #fff;
+    border-radius: 3px;
+    border:none;
+    border-width: 0.5px;
     font-size: 20px;
+    width: 100%;
     cursor: pointer;
+}
+
+.linecontainer{
+    position: relative;
+   
+}
+.line{
+    border: none;
+    margin-top: 30px;
+    height: 1px;
+    width: 100%;
+}
+
+.text{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
