@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState} from "react";
+import { MdCancel } from "react-icons/md";
+import {NavLink,useNavigate} from "react-router-dom";
 import styles from "../Styles/Signup.module.css";
-import Image from "../assets/register.png";
+import Image from "../assets/register-removebg-preview.png";
 import { useGoogleLogin } from "@react-oauth/google";
 function Signup() {
+  
   const [user, setuser] = useState({
     name: "",
     email: "",
     role: "",
   });
+  const navigate = useNavigate()
   const handleInput = (e) => {
     const name = e.target.name;
     let val = e.target.value;
@@ -42,20 +46,24 @@ function Signup() {
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => console.log(tokenResponse),
   });
+ 
+  const handlevent = () => {
+    return navigate("/");
+  };
   return (
     <>
       <div className={styles.container}>
         <div className={styles.imagecontainer}>
-          <div></div>
+          <div className={styles.heading}> <h1>Welcome to ClassSync</h1></div>
+          <div className={styles.cancel} onClick={handlevent}>
+          <MdCancel />
+          </div>
           <div className={styles.picture}>
             <img src={Image} />
           </div>
         </div>
         <form onSubmit={handleSubmit}>
           <div className={styles.details}>
-            <div>
-              <h2></h2>
-            </div>
             <div className={styles.media}>
               <button onClick={() => login()}>Sign in with Google</button>
             </div>
@@ -114,7 +122,11 @@ function Signup() {
               <button>Get Started</button>
             </div>
           </div>
+          <div className={styles.direct}>
+          <p>Already registered ? <span><NavLink to = "/login"> Login </NavLink></span></p>
+        </div>
         </form>
+        
       </div>
     </>
   );

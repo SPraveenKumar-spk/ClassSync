@@ -1,5 +1,6 @@
 const User = require("../models/user")
 const Project = require("../models/projects")
+const bcrypt = require("bcryptjs")
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");
@@ -7,23 +8,45 @@ const home = (req,res)=>{
         consolr.log(error);
     }
 }
+
+const register = async(req,res)=>{
+    try{
+        const{name,email,password,role} = req.body;
+        const userExist = User.findOne({email});
+        if(userExist){
+            console.log("user already exist");
+        }
+        const userCreated = await User.create({name,email,password,role});
+        res.status(200).json({
+            msg : "user created",
+            token : await userCreated.generateToken(),
+            userId : userCreated._id.toString(),
+    });
+    }catch(error){
+        res.status(500).send("Internal server error");
+    }
+}
 const login = async (req,res)=>{
     try{
-        const data = req.body;
-        const {name,email} = data;
-        const userCreated = await User.create({
-            name,
-            email,
-            role
-        }) ;
-        res.status(200).json({
-            data : userCreated,
-            msg : "Registration Successfully",
-            token : await userCreated.generateToken(),
-            userId : userCreated._id.toString(), 
-        });
+        const{name,email} = req.body;
+        const userExisted = User.findOne({email})
+        if(!UserExisted){
+            return res.status(500).json({message :"Invalid Credendials"})
+        }
+
+        const valid = await bcrypt.compare(password,userExisted.password);
+        if(valid)
+        {
+            req.status(200).json({
+            msg : "Login Success",
+            token : await userExisted.generateToken(),
+            userId : userExisted._id.toStrig(),
+        })
+        }else{
+            res.send("Invalid email or password")
+        }
     }catch(error){
-        console.log(error);
+        res.status(500).send("Internal server error");
     }
 }
 
@@ -40,6 +63,9 @@ const projects = async(req,res) =>{
         const projectCreated = await Project.create({
             projectname,
             classroom,
+            students,
+            teamleaders,
+            projectcode,
             user : UserId
         });
         res.json({
@@ -53,4 +79,4 @@ const projects = async(req,res) =>{
     }
 }
 
-module.exports = {home,login,projects};
+module.exports = {home,register,login,projects};

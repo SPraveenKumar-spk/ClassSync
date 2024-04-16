@@ -1,15 +1,13 @@
-import styles from "../Styles/ProjectsHome.module.css";
+import styles from "../Styles/StudentHome.module.css";
 import React, { useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
-const ProjectsHome = () => {
+const StudentHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName,setprojectName]  = useState("");
-  const [classroom,setclassroom] = useState("");
+  const [projectcode,setprojectcode] = useState("");
   const [projects, setProjects] = useState([]);
-  const [randomCode, setRandomCode] = useState();
-  const [codegenerated,setcode] = useState(false);
   const handleProject = (e) => {
     const { name, value } = e.target;
     setprojectName(value)
@@ -17,7 +15,7 @@ const ProjectsHome = () => {
 
 const handleclass = (e) => {
   const { name, value } = e.target;
-  setclassroom(value);
+  setprojectcode(value);
 }
   const openModal = () => {
     setModalIsOpen(true);
@@ -25,19 +23,15 @@ const handleclass = (e) => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setcode(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newProject = { projectName, classroom,projectCode: randomCode };
+    const newProject = { projectName, projectcode };
     setProjects([...projects, newProject]);
     closeModal();
     setprojectName ("");
     setclassroom ("");
-    setRandomCode(""); 
-  setcode(false);
-   
     
   };
 
@@ -52,21 +46,6 @@ const handleclass = (e) => {
     } 
 }
 
-const generateCode = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let code = '';
-
-  for (let i = 0; i < 6; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    code += characters[randomIndex];
-  }
-  setRandomCode(code);
-  setcode(true);
-};
-
-    
   return (
     <>
      <div className={styles.navbar}>
@@ -79,7 +58,7 @@ const generateCode = (e) => {
           <input type="text" id="search" name="search" placeholder="Search your projects" ></input>
         </div>
         <div className={styles.projects}>
-          <button onClick={openModal}>Create Projects</button>
+          <button onClick={openModal}>Join Project</button>
         </div>
         <div className={styles.profile}>
           <img src = {Image} ></img>
@@ -90,21 +69,16 @@ const generateCode = (e) => {
             projects.map((project, index) => (
               <div key={index} className={styles.templates}>
                 <h3>Project Name: {project.projectName}</h3>
-                <h3>Classroom: {project.classroom}</h3>
-                <h3>No of Students: {project.classroom}</h3>
-                <h3>No.of Team Leaders: {project.classroom}</h3>
-                {project.projectCode ? (
-                <h3>Project ID: {project.projectCode}</h3>
-                ):<h3>Project ID: Not generated</h3>}
+                <h3>Project Code: {project.projectcode}</h3>
                 <div className={styles.temp}>
                 <div className={styles.check}><button>Check In</button></div>
-                <div className={styles.del} onClick = { ()=> handledel(index)}> <button >Delete</button></div>
+                <div className={styles.del} onClick = { ()=> handledel(index)}> <button >Delete Project</button></div>
               </div>
               </div>
             ))
           ) : (
             <div className={styles.text}>
-            <h2>you dont have any projects create one</h2>
+            <h2>you dont have any projects Join Now</h2>
             </div>
           )}
           </div>
@@ -115,7 +89,7 @@ const generateCode = (e) => {
         className={styles.modalcustom}
       >
         <div className={styles.container}>
-       <div className={styles.header}><h1>Create Project</h1></div>
+       <div className={styles.header}><h1>Join Project</h1></div>
         <div className={styles.cancel} onClick={closeModal}><MdCancel /></div>
         
         <form onSubmit={handleSubmit}>
@@ -132,41 +106,18 @@ const generateCode = (e) => {
             />
           </div>
           <div className={styles.info}>
-            <label htmlFor="classroom">Class Room</label>
+            <label htmlFor="projectcode">Project projectcode</label>
             <input
               type="text"
-              name="classroom"
-              id="classroom"
-              value={classroom}
+              name="projectcode"
+              id="projectcode"
+              value={projectcode}
               onChange={handleclass}
-              placeholder="Enter classroom number"
-            />
-          </div>
-          <div className={styles.info}>
-            <label htmlFor="students">No of Students</label>
-            <input
-              type="text"
-              name="students"
-              id="students"
-              value={classroom}
-              onChange={handleclass}
-              placeholder="Enter classroom number"
-            />
-          </div>
-          <div className={styles.info}>
-            <label htmlFor="leaders">Team Leaders</label>
-            <input
-              type="text"
-              name="leaders"
-              id="leaders"
-              value={classroom}
-              onChange={handleclass}
-              placeholder="Enter classroom number"
+              placeholder="Enter project code"
             />
           </div>
           <div className={styles.btn}>
-          <button onClick={(e) => { e.stopPropagation(); generateCode(e); }}>Generate ID</button>
-            <button type="submit">Submit</button>
+            <button type="submit">Join</button>
           </div>
           </div>
         </form>
@@ -177,4 +128,4 @@ const generateCode = (e) => {
   );
 };
 
-export default ProjectsHome;
+export default StudentHome;

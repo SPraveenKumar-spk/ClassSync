@@ -1,45 +1,89 @@
+body{
+    background-color: rgba(189, 189, 189, 0.9);
+}
+
+
+@media only screen and (min-width: 1200px) {
+   .container{
+    height: 35rem;
+    width: 65rem;
+   }
+   .picture img{
+    margin-top: 2.5rem;
+    width: 400px;
+    height:400px;
+}
+  }
 .container{
     position: absolute;
+    border: 3px solid blue;
+    border-radius: 1.5rem;
+    padding: 2rem 5rem;
+    background-color: #ffffff92;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
-    border: 1px solid black;
-    border-radius: 10px;
-    height: 40vh;
-    width: 25rem;
+    display: flex;
+    justify-content: space-between;
+
 }
 .details{
-    padding: 1rem;
+    margin-top: 5rem;
+    width: 25rem;
 }
-.cancel{
-    position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 30px;
-    margin-top: -4.5px;
-    margin-right: -2px;
-    cursor: pointer;
+.heading{
+    color: blue;
 }
-.cancel:hover{
-    color: red;
+.picture img{
+    margin-top: 2.5rem;
+    /* width: 500px; */
+    /* height:500px; */
 }
 
-.details h1{
-    text-align: center;
-    padding: 1rem;
+.item {
+    padding: 10px 0;
 }
-.details input{
+.item input{
     width: 100%;
-    height: 2rem;
-    margin: 10px 0;
+    padding: 5px;
+    margin-top: 8px;
+    font-size: 20px;
+    background-color: white;
+    border: none;
+}
+.roles{
+    width: 100%;
+    background-color: #fff;
+    margin-top: 8px;
+    padding: 5px;
+    font-size: 20px;
 }
 .btn{
-    padding-top: 10px;
+    padding-top: 1.5rem;
     text-align: center;
 }
 .btn button{
     padding: 10px;
-    border-radius: 10px;
+    width: 100%;
+    background-color: rgba(0, 0, 255, 0.641);
+    border: none;
+    color: #fff;
     font-size: 20px;
     cursor: pointer;
+}
+
+
+.cancel{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -4.5px;
+    margin-right: -2px;
+    cursor: pointer;
+    background: none;
+   color: #ffffff92;
+    font-size: 3rem;
+}
+.cancel:hover{
+    color: red;
 }

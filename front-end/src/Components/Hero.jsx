@@ -25,7 +25,7 @@ function Hero() {
           </ul>
         </div>
         <div className={styles.login}>
-          <NavLink to="/login">
+          <NavLink to="/register">
             <button>Login</button>
           </NavLink>
         </div>
@@ -37,7 +37,7 @@ function Hero() {
             </p>
           </div>
           <div className={styles.btn}>
-            <NavLink to="/register">
+            <NavLink to="/studenthome">
               {" "}
               <button>Transform Learning</button>
             </NavLink>

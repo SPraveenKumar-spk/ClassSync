@@ -1,14 +1,30 @@
 body{
     background-color: rgba(189, 189, 189, 0.9);
 }
+
+@media only screen and (min-width: 1200px) {
+    .container{
+     height: 35rem;
+     width: 65rem;
+     padding: 1rem 5rem;
+    }
+    .picture img{
+     margin-top: 2.5rem;
+     width: 400px;
+     height:400px;
+ }
+ .media{
+    text-align: center;
+    margin-top: 2rem;
+}
+}
 .container{
     position: absolute;
     border: 3px solid blue;
     border-radius: 1.5rem;
-    padding: 2rem 5rem;
     background-color: #ffffff92;
-    height: 40rem;
-    width: 75rem;
+    /* height: 40rem;
+    width: 75rem; */
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
@@ -19,9 +35,13 @@ body{
 .details{
     width: 25rem;
 }
+.heading{
+    color: blue;
+}
 .picture img{
-    width: 600px;
-    height:600px;
+    margin-top: 2.5rem;
+    /* width: 500px;
+    height:500px; */
 }
 
 .item {
@@ -43,7 +63,7 @@ body{
     font-size: 20px;
 }
 .btn{
-    padding-top: 3rem;
+    padding-top: 1.5rem;
     text-align: center;
 }
 .btn button{
@@ -57,6 +77,7 @@ body{
 }
 .media{
     text-align: center;
+    /* margin-top: 2.5rem; */
 }
 .media button{
     padding: 10px;
@@ -84,4 +105,26 @@ body{
     position: absolute;
     left: 50%;
     transform: translate(-50%,-50%);
+}
+
+.direct {
+    padding-top: 1rem;
+    
+}
+.direct span{
+    font-size: 20px;
+}
+.cancel{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -4.5px;
+    margin-right: -2px;
+    cursor: pointer;
+    background: none;
+   color: #ffffff92;
+    font-size: 3rem;
+}
+.cancel:hover{
+    color: red;
 }
