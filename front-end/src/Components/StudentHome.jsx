@@ -3,20 +3,24 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
+
 const StudentHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [projectName,setprojectName]  = useState("");
-  const [projectcode,setprojectcode] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectCode, setProjectCode] = useState("");
   const [projects, setProjects] = useState([]);
-  const handleProject = (e) => {
-    const { name, value } = e.target;
-    setprojectName(value)
-};
+  const [searchItem, setSearchItem] = useState("");
 
-const handleclass = (e) => {
-  const { name, value } = e.target;
-  setprojectcode(value);
-}
+  const handleProject = (e) => {
+    const { value } = e.target;
+    setProjectName(value);
+  };
+
+  const handleProjectCode = (e) => {
+    const { value } = e.target;
+    setProjectCode(value);
+  };
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -27,103 +31,115 @@ const handleclass = (e) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newProject = { projectName, projectcode };
+    const newProject = { projectName, projectCode };
     setProjects([...projects, newProject]);
     closeModal();
-    setprojectName ("");
-    setclassroom ("");
-    
+    setProjectName("");
+    setProjectCode("");
   };
 
-  const handledel = (index) => {
-    const confirmation = window.confirm("Are you sure  to delete the Project?");
-   
+  const handleDelete = (index) => {
+    const confirmation = window.confirm("Are you sure to delete the project?");
     if (confirmation) {
       const updatedProjects = [...projects];
-        updatedProjects.splice(index, 1); 
-        setProjects(updatedProjects);
-      alert("Your Project has been deleted successfully.")
-    } 
-}
+      updatedProjects.splice(index, 1);
+      setProjects(updatedProjects);
+      alert("Your project has been deleted successfully.");
+    }
+  };
+
+  const handleSearch = (e) => {
+    setSearchItem(e.target.value);
+  };
+
+  const filteredProjects = searchItem
+    ? projects.filter((project) =>
+        project.projectName.toLowerCase().includes(searchItem.toLowerCase())
+      )
+    : projects;
 
   return (
     <>
-     <div className={styles.navbar}>
+      <div className={styles.navbar}>
         <div className={styles.logo}>
-          {" "}
           <h1>ClassSync</h1>
         </div>
-
         <div className={styles.search}>
-          <input type="text" id="search" name="search" placeholder="Search your projects" ></input>
+          <input type="text" id="search" name="search" placeholder="Search your projects" value={searchItem} onChange={handleSearch} />
         </div>
         <div className={styles.projects}>
           <button onClick={openModal}>Join Project</button>
         </div>
         <div className={styles.profile}>
-          <img src = {Image} ></img>
+          <img src={Image} alt="profile" />
         </div>
       </div>
       <div className={styles.store}>
-      {projects.length ? (
-            projects.map((project, index) => (
-              <div key={index} className={styles.templates}>
-                <h3>Project Name: {project.projectName}</h3>
-                <h3>Project Code: {project.projectcode}</h3>
-                <div className={styles.temp}>
-                <div className={styles.check}><button>Check In</button></div>
-                <div className={styles.del} onClick = { ()=> handledel(index)}> <button >Delete Project</button></div>
+        {filteredProjects.length ? (
+          filteredProjects.map((project, index) => (
+            <div key={index} className={styles.templates}>
+              <h3>Project Name: {project.projectName}</h3>
+              <h3>Project Code: {project.projectCode}</h3>
+              <div className={styles.temp}>
+                <div className={styles.check}>
+                  <button>Check In</button>
+                </div>
+                <div className={styles.del} onClick={() => handleDelete(index)}>
+                  <button>Delete Project</button>
+                </div>
               </div>
-              </div>
-            ))
-          ) : (
-            <div className={styles.text}>
-            <h2>you dont have any projects Join Now</h2>
             </div>
-          )}
+          ))
+        ) : (
+          <div className={styles.text}>
+            <h2>You don't have any projects. Join Now</h2>
           </div>
+        )}
+      </div>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Create Project Modal"
+        contentLabel="Join Project Modal"
         className={styles.modalcustom}
       >
         <div className={styles.container}>
-       <div className={styles.header}><h1>Join Project</h1></div>
-        <div className={styles.cancel} onClick={closeModal}><MdCancel /></div>
-        
-        <form onSubmit={handleSubmit}>
-          <div className={styles.details}>
-          <div className={styles.info}>
-            <label htmlFor="projectname">Project Name</label>
-            <input
-              type="text"
-              name="projectname"
-              id="projectname"
-              value={projectName}
-              onChange={handleProject}
-              placeholder="Enter the project name"
-            />
+          <div className={styles.header}>
+            <h1>Join Project</h1>
           </div>
-          <div className={styles.info}>
-            <label htmlFor="projectcode">Project projectcode</label>
-            <input
-              type="text"
-              name="projectcode"
-              id="projectcode"
-              value={projectcode}
-              onChange={handleclass}
-              placeholder="Enter project code"
-            />
+          <div className={styles.cancel} onClick={closeModal}>
+            <MdCancel />
           </div>
-          <div className={styles.btn}>
-            <button type="submit">Join</button>
-          </div>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit}>
+            <div className={styles.details}>
+              <div className={styles.info}>
+                <label htmlFor="projectname">Project Name</label>
+                <input
+                  type="text"
+                  name="projectname"
+                  id="projectname"
+                  value={projectName}
+                  onChange={handleProject}
+                  placeholder="Enter the project name"
+                />
+              </div>
+              <div className={styles.info}>
+                <label htmlFor="projectcode">Project Code</label>
+                <input
+                  type="text"
+                  name="projectcode"
+                  id="projectcode"
+                  value={projectCode}
+                  onChange={handleProjectCode}
+                  placeholder="Enter project code"
+                />
+              </div>
+              <div className={styles.btn}>
+                <button type="submit">Join</button>
+              </div>
+            </div>
+          </form>
         </div>
       </Modal>
-      
     </>
   );
 };

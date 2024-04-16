@@ -150,6 +150,8 @@
 .store{
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 .templates{
     border: 1px solid black;
