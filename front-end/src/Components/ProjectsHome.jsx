@@ -12,7 +12,7 @@ const ProjectsHome = () => {
   const [randomCode, setRandomCode] = useState();
   const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
-
+  const[options,setOptions] = useState(false)
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
   };
@@ -75,8 +75,13 @@ const ProjectsHome = () => {
     setCodeGenerated(true);
   };
 
-  
+  const handleProfile = () =>{
+    setOptions(true);
+  }
 
+  const handleClick = () =>{
+    setOptions(false);
+  }
 
   return (
     <>
@@ -90,8 +95,14 @@ const ProjectsHome = () => {
         <div className={styles.projects}>
           <button onClick={openModal}>Create Project</button>
         </div>
-        <div className={styles.profile}>
-          <img src={Image} alt="profile" />
+        <div className={styles.profile} >
+          <img src={Image} alt="profile" onClick={handleProfile} onDoubleClick={handleClick}/>
+          {options &&
+          <div className={styles.profileOptions}>
+           <button >Profile </button>
+           <button>Logout</button> 
+          </div>
+          }
         </div>
       </div>
       <div className={styles.store}>

@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {useState} from "react";
 import { MdCancel } from "react-icons/md";
 import Image from "../assets/case-studies-illustration-digital-services-a.png"
+import { useAuth } from "../store/auth";
 function SignIn() {
+
+  const {storetoken} = useAuth();
   const [user, setuser] = useState({
     email: "",
     password :"",
@@ -23,8 +26,11 @@ function SignIn() {
       });
 
       if(response.ok){
+        alert("Login Successfull");
         const data = await response.json();
         const token = data.token;
+        console.log(token);
+        storetoken(token);
         setuser({
           email :" ",
           password :" ",

@@ -10,6 +10,7 @@ const StudentHome = () => {
   const [projectCode, setProjectCode] = useState("");
   const [projects, setProjects] = useState([]);
   const [searchItem, setSearchItem] = useState("");
+  const[options,setOptions] = useState(false)
 
   const handleProject = (e) => {
     const { value } = e.target;
@@ -58,6 +59,15 @@ const StudentHome = () => {
       )
     : projects;
 
+    const handleProfile = () =>{
+      setOptions(true);
+    }
+  
+    const handleClick = () =>{
+      setOptions(false);
+    }
+  
+
   return (
     <>
       <div className={styles.navbar}>
@@ -71,7 +81,13 @@ const StudentHome = () => {
           <button onClick={openModal}>Join Project</button>
         </div>
         <div className={styles.profile}>
-          <img src={Image} alt="profile" />
+          <img src={Image} alt="profile"  onClick={handleProfile} onDoubleClick={handleClick} />
+          {options &&
+          <div className={styles.profileOptions}>
+           <button >Profile </button>
+           <button>Logout</button> 
+          </div>
+          }
         </div>
       </div>
       <div className={styles.store}>

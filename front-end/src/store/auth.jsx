@@ -1,35 +1,21 @@
-import { createContext, useContext, useState } from "react";
-
+import { createContext, useContext } from "react";
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [token, setOut] = useState("");
-
-  const localToken = (serverToken) => {
-    setOut(serverToken);
-    return localStorage.setItem("token", serverToken);
-  };
-
-  let isloggedin = !!token;
-
-  const logoutUser = () => {
-    setOut("");
-    return localStorage.removeItem("token");
-  };
-
+export const AuthProvider = ({children})=>{
+const storetoken = ({serverToken})=>{
+  localStorage.setItem("token",serverToken);
+};
   return (
-    <AuthContext.Provider value={{ isloggedin, localToken, logoutUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  <AuthContext.Provider value={{storetoken}}>
+    {children}
+  </AuthContext.Provider>
+  )
 };
 
-export const AuthConsumer = () => {
-  const authValue = useContext(AuthContext);
-
-  if (!authValue) {
-    throw new Error("AuthProvider is not available");
+export const useAuth = ()=>{
+  const contextValue = useContext(AuthContext);
+  if(!contextValue){
+    throw new console.error("Not found");
   }
-
-  return authValue;
-};
+  return contextValue;
+}
