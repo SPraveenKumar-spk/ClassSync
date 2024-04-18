@@ -15,20 +15,15 @@ const connectDB = async()=>{
         process.exit(0);
     }
 }
-var corsoptions = {
-    origin : "https://localhost:5173",
-    methods : "PUT,GET,POST,UPDATE",
-    credentials: true
-}
-
-app.use(cors(corsoptions))
+app.use(cors())
+app.use(express.json())
 const router = require("./auth/auth-router");
 
-app.use("/", router);
+app.use("/api/auth/", router);
 const port = 5000;
 
 connectDB().then(()=>{
 app.listen(port,()=>{
-    console.log("app listening");
+    console.log(`app listening on port : ${port}`);
 })
 })

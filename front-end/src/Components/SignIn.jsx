@@ -4,23 +4,53 @@ import {useState} from "react";
 import { MdCancel } from "react-icons/md";
 import Image from "../assets/case-studies-illustration-digital-services-a.png"
 function SignIn() {
-  const navigate = useNavigate();
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
   const [user, setuser] = useState({
-    name: "",
     email: "",
+    password :"",
     role: "",
   });
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try{
+      const response = await fetch(`http://localhost:5000/api/auth/login`,{
+        method:"POST",
+        headers : {
+          "Content-Type":"application/json",
+        },
+        body : JSON.stringify(user)
+      });
+
+      if(response.ok){
+        const data = await response.json();
+        const token = data.token;
+        setuser({
+          email :" ",
+          password :" ",
+          role :" ",
+        })
+        if(user.role == "Teacher"){
+          navigate("/projectshome");
+        }else{
+          navigate("/studentshome");
+        }
+
+      }
+    }catch(error){
+      console.log(error);
+    }
+
+  };
+  
   const handleInput = (e) => {
-    const name = e.target.name;
-    let val = e.target.value;
-    setuser({ ...user, [name]: val });
+    const {name,value} =  e.target;
+    setuser({ ...user,[name]:value });
   };
   const handlevent = () => {
     return navigate("/");
   };
+
   return (
     <>
      <div className={styles.container}>
@@ -39,9 +69,11 @@ function SignIn() {
             <label htmlFor="email">Email : </label>
             <input
               type="text"
-              id="text"
-              name="text"
+              id="email"
+              name="email"
               placeholder="Enter your email"
+              value={user.email}
+              onChange={handleInput}
               required
             />
           </div>
@@ -52,17 +84,19 @@ function SignIn() {
               id="password"
               name="password"
               placeholder="*******"
+              value={user.password}
+              onChange={handleInput}
               required
             />
           </div>
           <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
-              <select className={styles.roles} id="role" name="role" required>
+              <select className={styles.roles} id="role" name="role" value = {user.role} onChange={handleInput} required>
                 <option value="">Select your role</option>
-                <option value={user.role} onChange={handleInput}>
+                <option value= "Teacher">
                   Teacher
                 </option>
-                <option value={user.role} onChange={handleInput}>
+                <option value="Student">
                   Student
                 </option>
               </select>

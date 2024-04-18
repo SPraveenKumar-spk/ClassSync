@@ -9,6 +9,7 @@ function Signup() {
   const [user, setuser] = useState({
     name: "",
     email: "",
+    password :"",
     role: "",
   });
   const navigate = useNavigate()
@@ -17,27 +18,27 @@ function Signup() {
     let val = e.target.value;
     setuser({ ...user, [name]: val });
   };
-
-  // const { localToken } = AuthConsumer();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`'https://localhost:5000/login`, {
-        method: "PoST",
+      const response = await fetch(`http://localhost:5000/api/auth/register`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.Stringfy(user),
+        body: JSON.stringify(user),
       });
+      console.log(response);
       if (response.ok) {
         let res_token = response.data;
         setuser({
           name: " ",
           email: " ",
+          password:" ",
           role: " ",
         });
-        localStorage.setItem(response.data);
-        localToken(res_token.token);
+        console.log(await response.json());
+        navigate("/login")
       }
     } catch (error) {
       console.log(error);
@@ -103,17 +104,19 @@ function Signup() {
                 type="password"
                 id="password"
                 name="password"
+                value={user.password}
+                onChange={handleInput}
                 required
               ></input>
             </div>
             <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
-              <select className={styles.roles} id="role" name="role">
+              <select className={styles.roles} id="role" name="role" value={user.role} onChange={handleInput}>
                 <option value="">Select your role</option>
-                <option value={user.role} onChange={handleInput}>
+                <option value="Teacher">
                   Teacher
                 </option>
-                <option value={user.role} onChange={handleInput}>
+                <option value="Student">
                   Student
                 </option>
               </select>

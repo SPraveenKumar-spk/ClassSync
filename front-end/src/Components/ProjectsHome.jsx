@@ -75,6 +75,9 @@ const ProjectsHome = () => {
     setCodeGenerated(true);
   };
 
+  
+
+
   return (
     <>
       <div className={styles.navbar}>

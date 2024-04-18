@@ -37,7 +37,7 @@ function Hero() {
             </p>
           </div>
           <div className={styles.btn}>
-            <NavLink to="/studenthome">
+            <NavLink to="/projectshome">
               {" "}
               <button>Transform Learning</button>
             </NavLink>

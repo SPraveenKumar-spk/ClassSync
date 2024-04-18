@@ -1,6 +1,7 @@
 const User = require("../models/user")
 const Project = require("../models/projects")
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");
@@ -12,7 +13,8 @@ const home = (req,res)=>{
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
-        const userExist = User.findOne({email});
+        console.log(req.body);
+        const userExist = await User.findOne({email});
         if(userExist){
             console.log("user already exist");
         }
@@ -28,25 +30,24 @@ const register = async(req,res)=>{
 }
 const login = async (req,res)=>{
     try{
-        const{name,email} = req.body;
-        const userExisted = User.findOne({email})
-        if(!UserExisted){
-            return res.status(500).json({message :"Invalid Credendials"})
+        const{email,password,role} = req.body;
+        const userExisted = await User.findOne({email});
+        if(!userExisted){
+            return res.status(401).json({message :"Invalid Credendials"})
         }
-
         const valid = await bcrypt.compare(password,userExisted.password);
         if(valid)
         {
-            req.status(200).json({
-            msg : "Login Success",
+            res.status(200).json({
+            msg : "Login Successful",
             token : await userExisted.generateToken(),
-            userId : userExisted._id.toStrig(),
-        })
+            userId : userExisted._id.toString(),
+        });
         }else{
             res.send("Invalid email or password")
         }
     }catch(error){
-        res.status(500).send("Internal server error");
+        res.status(401).send("Internal server error");
     }
 }
 
