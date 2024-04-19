@@ -4,8 +4,7 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 const app = express();
 
-const URI = "mongodb+srv://praveenspk:spkmongoapp@cluster0.4siowje.mongodb.net/mern_admin?retryWrites=true&w=majority";
-
+const URI = process.env.MongoDBURI;
 const connectDB = async()=>{
     try{
         await mongoose.connect(URI);
