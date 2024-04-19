@@ -6,7 +6,7 @@ import Image from "../assets/case-studies-illustration-digital-services-a.png"
 import { useAuth } from "../store/auth";
 function SignIn() {
 
-  const {storetoken} = useAuth();
+  const {storeToken} = useAuth();
   const [user, setuser] = useState({
     email: "",
     password :"",
@@ -29,8 +29,7 @@ function SignIn() {
         alert("Login Successfull");
         const data = await response.json();
         const token = data.token;
-        console.log(token);
-        storetoken(token);
+        storeToken(token);
         setuser({
           email :" ",
           password :" ",

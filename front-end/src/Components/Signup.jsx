@@ -6,7 +6,7 @@ import Image from "../assets/register-removebg-preview.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
 function Signup() {
-  const {storetoken} = useAuth();
+  const {storeToken} = useAuth();
   const [user, setuser] = useState({
     name: "",
     email: "",
@@ -29,20 +29,21 @@ function Signup() {
         },
         body: JSON.stringify(user),
       });
-      console.log(response);
+      // console.log(response);
       if (response.ok) {
-        alert("Reistration is successfull");
-        const data = response.json();
-        const token = data.token;
-        storetoken(token);
+        const res_data = await  response.json();
+        const serverToken = res_data.token;
+        console.log(res_data.token);
+        storeToken(res_data.token);    
         setuser({
-          name: " ",
-          email: " ",
-          password:" ",
-          role: " ",
+          name: "",
+          email: "",
+          password:"",
+          role: "",
         });
-        console.log(await response.json());
-        navigate("/login")
+        // console.log(await response.json());
+        navigate("/login");
+        alert("Reistration is successfull");
       }
     } catch (error) {
       console.log(error);

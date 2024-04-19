@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
-
+import { useNavigate } from "react-router-dom";
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -13,6 +13,8 @@ const ProjectsHome = () => {
   const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const[options,setOptions] = useState(false)
+
+  const naviagte = useNavigate();
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
   };
@@ -82,6 +84,9 @@ const ProjectsHome = () => {
   const handleClick = () =>{
     setOptions(false);
   }
+  const handlelogout =()=>{
+    naviagte("/logout")
+  }
 
   return (
     <>
@@ -100,7 +105,7 @@ const ProjectsHome = () => {
           {options &&
           <div className={styles.profileOptions}>
            <button >Profile </button>
-           <button>Logout</button> 
+           <button onClick={handlelogout}>Logout</button> 
           </div>
           }
         </div>
