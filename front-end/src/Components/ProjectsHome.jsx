@@ -1,5 +1,5 @@
 import styles from "../Styles/ProjectsHome.module.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
-  const [classroom, setClassroom] = useState("");
   const [projects, setProjects] = useState([]);
+  const [classroom, setClassroom] = useState("");
+  const [students, setStudents] = useState("");
   const [randomCode, setRandomCode] = useState();
   const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
@@ -35,6 +36,11 @@ const ProjectsHome = () => {
     setClassroom(value);
   };
 
+  const handleStudents = (e)=>{
+    const{value} = e.target;
+    setStudents(value);
+  }
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -44,16 +50,56 @@ const ProjectsHome = () => {
     setCodeGenerated(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    const newProject = { projectName, classroom, projectCode: randomCode };
-    setProjects([...projects, newProject]);
-    closeModal();
-    setProjectName("");
-    setClassroom("");
-    setRandomCode("");
-    setCodeGenerated(false);
+    const newProject = { projectName, classroom,students, projectCode: randomCode };
+
+    try{
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/auth/projects`,{
+        method : "POST",
+        headers :{
+          "Content-Type" : "application/json",
+          "Authorization" : `Bearer ${token}`
+        },
+        body : JSON.stringify(newProject)
+
+      })
+      if(response.ok){
+        setProjects([...projects, newProject]);
+        closeModal();
+        setProjectName("");
+        setClassroom("");
+        setStudents("");
+        setRandomCode("");
+        setCodeGenerated(false);
+      }
+    }catch(error){
+      console.log(error);
+    }
   };
+
+  useEffect(()=>{
+    const fetchProjects = async()=>{  
+    try{
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/auth/userProjects`,{
+    method : "GET",
+    headers:{
+      Authorization:`Bearer${token}`,
+    }
+    });
+    if(response.ok){
+      const data = await response.json();
+      setProjects(data);
+    }
+    }catch(error){
+      console.log(error);
+    }
+  }
+  fetchProjects();
+
+  },[])
 
   const handleDelete = (index) => {
     const confirmation = window.confirm("Are you sure to delete the project?");
@@ -116,8 +162,8 @@ const ProjectsHome = () => {
             <div key={index} className={styles.templates}>
               <h3>Project Name: {project.projectName}</h3>
               <h3>Classroom: {project.classroom}</h3>
-              <h3>No of Students: {project.classroom}</h3>
-              <h3>No.of Team Leaders: {project.classroom}</h3>
+              <h3>No of Students: {project.students}</h3>
+              {/* <h3>No.of Team Leaders: {project.classroom}</h3> */}
               {project.projectCode ? (
                 <h3>Project ID: {project.projectCode}</h3>
               ) : (
@@ -182,12 +228,12 @@ const ProjectsHome = () => {
               type="text"
               name="students"
               id="students"
-              value={classroom}
-              onChange={handleClassroom}
+              value={students}
+              onChange={handleStudents}
               placeholder="Enter classroom number"
             />
           </div>
-          <div className={styles.info}>
+          {/* <div className={styles.info}>
             <label htmlFor="leaders">Team Leaders</label>
             <input
               type="text"
@@ -197,7 +243,7 @@ const ProjectsHome = () => {
               onChange={handleClassroom}
               placeholder="Enter classroom number"
             />
-          </div>
+          </div> */}
               <div className={styles.btn}>
                 <button onClick={(e) => { e.stopPropagation(); generateCode(e); }}>Generate ID</button>
                 <button type="submit">Submit</button>

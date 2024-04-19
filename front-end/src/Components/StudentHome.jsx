@@ -1,5 +1,5 @@
 import styles from "../Styles/StudentHome.module.css";
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
@@ -31,14 +31,52 @@ const StudentHome = () => {
     setModalIsOpen(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const newProject = { projectName, projectCode };
-    setProjects([...projects, newProject]);
-    closeModal();
-    setProjectName("");
-    setProjectCode("");
+    try{
+      const token =  localStorage.getItem("token")
+      const response = await fetch(`http://localhost:5000/api/auth/studentprojects`,{
+        method : "POST",
+        headers :{
+          "Content-Type" : "application/json",
+          "Authorization" : `Bearer ${token}`
+        },
+        body : JSON.stringify(newProject)
+
+      });
+      if(response.ok){
+        setProjects([...projects, newProject]);
+        closeModal();
+        setProjectName("");
+        setProjectCode("");
+      }
+    }catch(error){  
+      console.log(error);
+    }
+    
   };
+  useEffect(()=>{
+    const fetchProjects = async()=>{  
+    try{
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/auth/studentsrepo`,{
+    method : "GET",
+    headers:{
+      Authorization:`Bearer${token}`,
+    }
+    });
+    if(response.ok){
+      const data = await response.json();
+      setProjects(data);
+    }
+    }catch(error){
+      console.log(error);
+    }
+  }
+  fetchProjects();
+
+  },[])
 
   const handleDelete = (index) => {
     const confirmation = window.confirm("Are you sure to delete the project?");

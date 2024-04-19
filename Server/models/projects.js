@@ -1,8 +1,6 @@
 const mongoose = require("mongoose")
-const jwt = ("jsonwebtoen")
-
 const projectScheme = new mongoose.Schema({
-    projectname  :{
+    projectName  :{
         type : String,
         required : true,
     },
@@ -14,11 +12,7 @@ const projectScheme = new mongoose.Schema({
         type : String,
         required : true,
     },
-    teamleaders :{
-        type: String,
-        required :true
-    },
-    projectcode :{
+    projectCode :{
         type :String,
         required :true,
     },
