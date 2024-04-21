@@ -17,7 +17,7 @@ const register = async(req,res)=>{
         console.log(req.body);
         const userExist = await User.findOne({email});
         if(userExist){
-            console.log("user already exist");
+            return res.status(401).json({msg:"Email already exists"})
         }
         const userCreated = await User.create({name,email,password,role});
         res.status(200).json({
@@ -120,6 +120,7 @@ const userProjects = async(req,res)=>{
 
 const studentprojects = async(req,res)=>{
     try{
+        const {projectname,projectcode} = req.body;
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -130,6 +131,10 @@ const studentprojects = async(req,res)=>{
         const StudentExist = await User.findById(UserId);
         if(!StudentExist){
             return res.status(401).json({msg : "User not found"});
+        }
+        validCode = await Project.find({projectCode : projectcode})
+        if(validCode.length===0){
+            return res.status(401).json({msg:"Invalid ProjectCode"})
         }
         const{projectName,projectCode} = req.body;
         const StudentProject = await student.create({

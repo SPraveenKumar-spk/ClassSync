@@ -29,11 +29,8 @@ function Signup() {
         },
         body: JSON.stringify(user),
       });
-      // console.log(response);
       if (response.ok) {
         const res_data = await  response.json();
-        const serverToken = res_data.token;
-        console.log(res_data.token);
         storeToken(res_data.token);    
         setuser({
           name: "",
@@ -41,9 +38,11 @@ function Signup() {
           password:"",
           role: "",
         });
-        // console.log(await response.json());
+  
         navigate("/login");
         alert("Reistration is successfull");
+      }else if(response.status == 401){
+        alert("Email already exists try another")
       }
     } catch (error) {
       console.log(error);

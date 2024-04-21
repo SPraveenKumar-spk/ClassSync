@@ -41,6 +41,8 @@ function SignIn() {
           navigate("/studentshome");
         }
 
+      }else{
+        alert("Invalid password or username");
       }
     }catch(error){
       console.log(error);

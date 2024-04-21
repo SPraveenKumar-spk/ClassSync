@@ -50,6 +50,8 @@ const StudentHome = () => {
         closeModal();
         setProjectName("");
         setProjectCode("");
+      }else if(response.status==401){
+        alert("Invalid ProjectCode")
       }
     }catch(error){  
       console.log(error);
