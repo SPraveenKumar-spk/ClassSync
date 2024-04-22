@@ -101,16 +101,14 @@ const StudentHome = () => {
     : projects;
 
     const handleProfile = () =>{
-      setOptions(true);
+      setOptions(prevState => !prevState);
     }
-  
-    const handleClick = () =>{
-      setOptions(false);
-    }
-
-
     const handlelogout =()=>{
       navigate("/logout")
+    }
+
+    const handleSubmissions = ()=>{
+      navigate("/submissions")
     }
 
   return (
@@ -126,7 +124,7 @@ const StudentHome = () => {
           <button onClick={openModal}>Join Project</button>
         </div>
         <div className={styles.profile}>
-          <img src={Image} alt="profile"  onClick={handleProfile} onDoubleClick={handleClick} />
+          <img src={Image} alt="profile"  onClick={handleProfile}  />
           {options &&
           <div className={styles.profileOptions}>
            <button >Profile </button>
@@ -143,7 +141,7 @@ const StudentHome = () => {
               <h3>Project Code: {project.projectCode}</h3>
               <div className={styles.temp}>
                 <div className={styles.check}>
-                  <button>Check In</button>
+                  <button onClick={handleSubmissions}>Check In</button>
                 </div>
                 <div className={styles.del} onClick={() => handleDelete(index)}>
                   <button>Delete Project</button>

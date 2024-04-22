@@ -15,7 +15,7 @@ const ProjectsHome = () => {
   const [searchItem, setSearchItem] = useState("");
   const[options,setOptions] = useState(false)
 
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
   };
@@ -124,14 +124,13 @@ const ProjectsHome = () => {
   };
 
   const handleProfile = () =>{
-    setOptions(true);
-  }
-
-  const handleClick = () =>{
-    setOptions(false);
+    setOptions(prevState => !prevState);
   }
   const handlelogout =()=>{
-    naviagte("/logout")
+    navigate("/logout")
+  }
+  const handleCheck=()=>{
+    navigate("/createtasks")
   }
 
   return (
@@ -147,7 +146,7 @@ const ProjectsHome = () => {
           <button onClick={openModal}>Create Project</button>
         </div>
         <div className={styles.profile} >
-          <img src={Image} alt="profile" onClick={handleProfile} onDoubleClick={handleClick}/>
+          <img src={Image} alt="profile" onClick={handleProfile} />
           {options &&
           <div className={styles.profileOptions}>
            <button >Profile </button>
@@ -171,7 +170,7 @@ const ProjectsHome = () => {
               )}
               <div className={styles.temp}>
                 <div className={styles.check}>
-                  <button>Check In</button>
+                  <button onClick={handleCheck}>Check In</button>
                 </div>
                 <div className={styles.del} onClick={() => handleDelete(index)}>
                   <button>Delete</button>

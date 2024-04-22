@@ -4,9 +4,11 @@ import SignIn from "./Components/SignIn";
 import Logout from "./Components/Logout";
 import ProjectsHome from "./Components/ProjectsHome";
 import StudentHome from "./Components/StudentHome";
+import StudentSubmissions from "./Components/StudentSubmissions";
+import CreateTasks from "./Components/CreateTasks";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import ProtectedRoute from "./Components/ProtectedRoute"
+// import { useEffect, useState } from "react";
+// import ProtectedRoute from "./Components/ProtectedRoute"
 function App() {
   return (
     <>
@@ -18,12 +20,12 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route
             path="/projectshome"
-            element={<ProtectedRoute component={<ProjectsHome />} />}
-          />
+            element={<ProjectsHome />} />
           <Route
             path="/studentshome"
-            element={<ProtectedRoute component={<StudentHome />} />}
-          />
+            element={<StudentHome />} />
+            <Route path="/submissions" element={<StudentSubmissions />}  />
+            <Route path="/createtasks" element={<CreateTasks />} />
         </Routes>
       </BrowserRouter>
     </>
