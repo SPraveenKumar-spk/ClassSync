@@ -8,23 +8,25 @@ function CreateTasks() {
   const handleStatus = () => {
     setStatus(prevState => !prevState);
   };
-  const handleTasks = async()=>{
-      try{
-          const response = await fetch(``,{
-              method: "POST",
-              headers:{
-                  "Content-Type":"application/json"
-              },
-              body:JSON.stringify(),
+  const handleSubmit = async() =>{
+    try{
+        const response = await fetch(``,{
+            method: "POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(),
 
-          });
-          // if(response.ok){
-          //     const data = response.json();
-          //     print(data);
-          // }
-      }catch(error){
-          console.log(error);
-      }
+        });
+        // if(response.ok){
+        //     const data = response.json();
+        //     print(data);
+        // }
+    }catch(error){
+        console.log(error);
+    }
+  }
+  const handleTasks = async()=>{
       setTasks(prevState => !prevState)
   }
 
@@ -41,16 +43,28 @@ function CreateTasks() {
                   </ul>
                   </ div>
               </div>
+              {tasks &&
               <div className={styles.taskcontainer}>
+                <form onSubmit={handleSubmit}>
                 <div>
-                <label htmlFor="task">Task Name</label>
+                <label htmlFor="task">Task Name : </label>
                 <input type="text" id = "task" name="task" />
                 </div>
                 <div>
-                <label htmlFor="task">Task Name</label>
+                <label htmlFor="task">Theme : </label>
                 <input type="text" id = "task" name="task" />
                 </div>
+                <div>
+                    <label htmlFor="description">Description : </label>
+                    <textarea rows="10" cols="65" placeholder="Describe about the task" />
+                </div>
+                <div className={styles.btn}>
+                    <button>Submit</button>
+                </div>
+                </form>
               </div>
+              }
+
       </>
   );
 }

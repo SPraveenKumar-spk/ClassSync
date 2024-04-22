@@ -25,22 +25,43 @@
     margin-left: 0;
     padding-top: 10px;
 }
-.submitbtn{
+.taskcontainer{
     position: absolute;
-    left: 60%;
-    top: 70%;
-    transform: translate(-50%,-50%);    
-    border-radius: 10px ;
-    height: 30vh;
-    width: 50rem;
-    background: white;
-}
-.submitbtn input{
-    position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    color: #0964b0;
-    font-size: 20px;
+    border-radius: 10px;
+    width: 30rem;
+    height: 28rem;
+    padding: 10px;
+    background: linear-gradient(to right,#3cd3ad,#4cb8c4) ;
+}
+.taskcontainer label{
+    font-size: 25px;
+    font-weight: 600px;
+    padding-top: 10px;
+}
+.taskcontainer input{
+    width: 100%;
+    height: 1.5rem;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.taskcontainer textarea{
+    padding-bottom: 10px;
+    border-radius: 5px;
+}
+.btn{
+    text-align: center;
+    padding-top: 20px;
+}
+.btn button{
+    padding: 6px;
+    border-radius: 15px;
+    font-size: 25px;
+    font-weight: 600px;
+    cursor: pointer;
 }
 

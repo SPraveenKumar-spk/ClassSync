@@ -1,6 +1,7 @@
 const User = require("../models/user")
 const Project = require("../models/projects")
 const student = require("../models/studentProjects")
+const tasks = require("../models/tasks");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const home = (req,res)=>{
@@ -174,5 +175,36 @@ const studentsrepo = async(req,res)=>{
         console.log(error);
     }
 }
+
+const assigntasks = async(req,res)=>{
+    try{
+        const{taskName,theme,description} = req.body;
+        const token = req.header("Authorization");
+        const jwtToken = token.replace("Bearer","").trim();
+        if(!token){
+            return res.status(401).json({msg: "Unuthorized login"});
+        }
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
+        const UserId = isVerified.userId;
+        const createTask = await tasks.create({
+            taskName,
+            theme,
+            description,
+            user:UserId,
+        });
+
+        res.status(200).json({
+            msg : "Successfully created the task"
+        });
+
+    }catch(error){
+        console.log(error)
+    }
+}
+
+
+
+
+
 
 module.exports = {home,register,login,userinfo,projects,userProjects,studentprojects,studentsrepo};
