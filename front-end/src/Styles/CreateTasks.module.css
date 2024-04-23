@@ -65,3 +65,27 @@
     cursor: pointer;
 }
 
+.assignedContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-left: 15%;
+}
+.templates{
+    border: 1px solid black;
+    width: 30rem;
+    color: white;
+    height: auto;
+    padding : 15px;
+    border-radius: 5px;
+    background: linear-gradient(to right,#3cd3ad,#4cb8c4);
+    margin: 2rem 1rem;
+}
+
+.templates span{
+    color: blueviolet;
+    font-size: 25px;
+}
+.templates p{
+    font-size: 20px;
+}

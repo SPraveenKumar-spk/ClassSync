@@ -46,7 +46,7 @@ const login = async (req,res)=>{
             userId : userExisted._id.toString(),
         });
         }else{
-            res.send("Invalid email or password")
+            res.status(401).json({msg:"Invalid email or password"});
         }
     }catch(error){
         res.status(401).send("Internal server error");
@@ -198,7 +198,29 @@ const assigntasks = async(req,res)=>{
         });
 
     }catch(error){
-        console.log(error)
+        console.log(error);
+    }
+}
+
+const assignedDetails = async(req,res)=>{
+    try{
+        const token = req.header("Authorization");
+        const jwtToken = token.replace("Bearer","").trim();
+        console.log(jwtToken);
+        if(!token){
+            return res.status(401).json({msg: "Unuthorized login"});
+        }
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
+        const UserId = isVerified.userId;
+        const StudentExist = await User.findById(UserId);
+        if(!StudentExist){
+            return res.status(401).json({msg : "User not found"});
+        }
+       const tasksrepo = await tasks.find({user:UserId});
+       res.status(200).json(tasksrepo)
+       
+    }catch(error){
+        console.log(error);
     }
 }
 
@@ -206,5 +228,4 @@ const assigntasks = async(req,res)=>{
 
 
 
-
-module.exports = {home,register,login,userinfo,projects,userProjects,studentprojects,studentsrepo};
+module.exports = {home,register,login,userinfo,projects,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails};
