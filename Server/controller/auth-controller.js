@@ -15,7 +15,6 @@ const home = (req,res)=>{
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
-        console.log(req.body);
         const userExist = await User.findOne({email});
         if(userExist){
             return res.status(401).json({msg:"Email already exists"})
@@ -151,7 +150,6 @@ const studentprojects = async(req,res)=>{
        
 
     }catch(error){
-        console.log(error);
     }
 }
 const studentsrepo = async(req,res)=>{
@@ -172,13 +170,13 @@ const studentsrepo = async(req,res)=>{
        
 
     }catch(error){
-        console.log(error);
+
     }
 }
 
 const assigntasks = async(req,res)=>{
     try{
-        const{taskName,theme,description} = req.body;
+        const{taskName,theme,description,files,projectCode} = req.body;
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -190,7 +188,9 @@ const assigntasks = async(req,res)=>{
             taskName,
             theme,
             description,
+            files: { data: files },
             user:UserId,
+            projectCode: projectCode,
         });
 
         res.status(200).json({
@@ -198,15 +198,14 @@ const assigntasks = async(req,res)=>{
         });
 
     }catch(error){
-        console.log(error);
     }
 }
 
 const assignedDetails = async(req,res)=>{
     try{
         const token = req.header("Authorization");
+        const { projectCode } = req.query;
         const jwtToken = token.replace("Bearer","").trim();
-        console.log(jwtToken);
         if(!token){
             return res.status(401).json({msg: "Unuthorized login"});
         }
@@ -216,11 +215,10 @@ const assignedDetails = async(req,res)=>{
         if(!StudentExist){
             return res.status(401).json({msg : "User not found"});
         }
-       const tasksrepo = await tasks.find({user:UserId});
+       const tasksrepo = await tasks.find({user:UserId,projectCode: projectCode });
        res.status(200).json(tasksrepo)
        
     }catch(error){
-        console.log(error);
     }
 }
 

@@ -24,10 +24,18 @@ function Hero() {
             </li>
           </ul>
         </div>
-        <div className={styles.login}>
-          <NavLink to="/register">
-            <button>Login</button>
-          </NavLink>
+        <div className={styles.container}>
+          <div className={styles.item}>
+            <NavLink to="/register">
+              <button>SIGN UP</button>
+            </NavLink>
+          </div>
+
+          <div className={styles.item}>
+            <NavLink to="/login">
+              <button>SIGN IN</button>
+            </NavLink>
+          </div>
         </div>
         <div className={styles.content}>
           <div className={styles.text}>

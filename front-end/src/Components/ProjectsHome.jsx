@@ -13,7 +13,7 @@ const ProjectsHome = () => {
   const [randomCode, setRandomCode] = useState();
   const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
-  const[options,setOptions] = useState(false)
+  const [options, setOptions] = useState(false);
 
   const navigate = useNavigate();
   const handleSearch = (e) => {
@@ -36,10 +36,10 @@ const ProjectsHome = () => {
     setClassroom(value);
   };
 
-  const handleStudents = (e)=>{
-    const{value} = e.target;
+  const handleStudents = (e) => {
+    const { value } = e.target;
     setStudents(value);
-  }
+  };
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -50,22 +50,26 @@ const ProjectsHome = () => {
     setCodeGenerated(false);
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newProject = { projectName, classroom,students, projectCode: randomCode };
+    const newProject = {
+      projectName,
+      classroom,
+      students,
+      projectCode: randomCode,
+    };
 
-    try{
+    try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/auth/projects`,{
-        method : "POST",
-        headers :{
-          "Content-Type" : "application/json",
-          "Authorization" : `Bearer ${token}`
+      const response = await fetch(`http://localhost:5000/api/auth/projects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body : JSON.stringify(newProject)
-
-      })
-      if(response.ok){
+        body: JSON.stringify(newProject),
+      });
+      if (response.ok) {
         setProjects([...projects, newProject]);
         closeModal();
         setProjectName("");
@@ -74,32 +78,34 @@ const ProjectsHome = () => {
         setRandomCode("");
         setCodeGenerated(false);
       }
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(()=>{
-    const fetchProjects = async()=>{  
-    try{
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/auth/userProjects`,{
-    method : "GET",
-    headers:{
-      Authorization:`Bearer${token}`,
-    }
-    });
-    if(response.ok){
-      const data = await response.json();
-      setProjects(data);
-    }
-    }catch(error){
-      console.log(error);
-    }
-  }
-  fetchProjects();
-
-  },[])
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:5000/api/auth/userProjects`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setProjects(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const handleDelete = (index) => {
     const confirmation = window.confirm("Are you sure to delete the project?");
@@ -113,7 +119,8 @@ const ProjectsHome = () => {
 
   const generateCode = (e) => {
     e.preventDefault();
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code = "";
     for (let i = 0; i < 6; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
@@ -123,15 +130,15 @@ const ProjectsHome = () => {
     setCodeGenerated(true);
   };
 
-  const handleProfile = () =>{
-    setOptions(prevState => !prevState);
-  }
-  const handlelogout =()=>{
-    navigate("/logout")
-  }
-  const handleCheck=()=>{
-    navigate("/createtasks")
-  }
+  const handleProfile = () => {
+    setOptions((prevState) => !prevState);
+  };
+  const handlelogout = () => {
+    navigate("/logout");
+  };
+  const handleCheck = () => {
+    navigate("/createtasks");
+  };
 
   return (
     <>
@@ -140,19 +147,26 @@ const ProjectsHome = () => {
           <h1>ClassSync</h1>
         </div>
         <div className={styles.search}>
-          <input type="text" id="search" name="search" placeholder="Search your projects" value={searchItem} onChange={handleSearch} />
+          <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Search your projects"
+            value={searchItem}
+            onChange={handleSearch}
+          />
         </div>
         <div className={styles.projects}>
           <button onClick={openModal}>Create Project</button>
         </div>
-        <div className={styles.profile} >
+        <div className={styles.profile}>
           <img src={Image} alt="profile" onClick={handleProfile} />
-          {options &&
-          <div className={styles.profileOptions}>
-           <button >Profile </button>
-           <button onClick={handlelogout}>Logout</button> 
-          </div>
-          }
+          {options && (
+            <div className={styles.profileOptions}>
+              <button>Profile </button>
+              <button onClick={handlelogout}>Logout</button>
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.store}>
@@ -222,17 +236,17 @@ const ProjectsHome = () => {
                 />
               </div>
               <div className={styles.info}>
-            <label htmlFor="students">No of Students</label>
-            <input
-              type="text"
-              name="students"
-              id="students"
-              value={students}
-              onChange={handleStudents}
-              placeholder="Enter classroom number"
-            />
-          </div>
-          {/* <div className={styles.info}>
+                <label htmlFor="students">No of Students</label>
+                <input
+                  type="text"
+                  name="students"
+                  id="students"
+                  value={students}
+                  onChange={handleStudents}
+                  placeholder="Enter classroom number"
+                />
+              </div>
+              {/* <div className={styles.info}>
             <label htmlFor="leaders">Team Leaders</label>
             <input
               type="text"
@@ -244,7 +258,14 @@ const ProjectsHome = () => {
             />
           </div> */}
               <div className={styles.btn}>
-                <button onClick={(e) => { e.stopPropagation(); generateCode(e); }}>Generate ID</button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    generateCode(e);
+                  }}
+                >
+                  Generate ID
+                </button>
                 <button type="submit">Submit</button>
               </div>
             </div>

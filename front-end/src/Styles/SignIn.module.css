@@ -87,3 +87,7 @@ body{
 .cancel:hover{
     color: red;
 }
+.error{
+    font-size: 20px;
+    color: red;
+}

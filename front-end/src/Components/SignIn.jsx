@@ -1,58 +1,53 @@
 import styles from "../Styles/SignIn.module.css";
 import { useNavigate } from "react-router-dom";
-import {useState} from "react";
+import { useState } from "react";
 import { MdCancel } from "react-icons/md";
-import Image from "../assets/case-studies-illustration-digital-services-a.png"
+import Image from "../assets/case-studies-illustration-digital-services-a.png";
 import { useAuth } from "../store/auth";
 function SignIn() {
-
-  const {storeToken} = useAuth();
+  const { storeToken } = useAuth();
+  const [login, setlogin] = useState(true);
   const [user, setuser] = useState({
     email: "",
-    password :"",
+    password: "",
     role: "",
   });
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try{
-      const response = await fetch(`http://localhost:5000/api/auth/login`,{
-        method:"POST",
-        headers : {
-          "Content-Type":"application/json",
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body : JSON.stringify(user)
+        body: JSON.stringify(user),
       });
 
-      if(response.ok){
-        alert("Login Successfull");
+      if (response.ok) {
         const data = await response.json();
         const token = data.token;
         storeToken(token);
         setuser({
-          email :" ",
-          password :" ",
-          role :" ",
-        })
-        if(user.role == "Teacher"){
+          email: " ",
+          password: " ",
+          role: " ",
+        });
+        if (user.role == "Teacher") {
           navigate("/projectshome");
-        }else{
+        } else {
           navigate("/studentshome");
         }
-
-      }else{
-        alert("Invalid password or username");
+      } else {
+        setlogin(false);
       }
-    }catch(error){
-      console.log(error);
-    }
-
+    } catch (error) {}
   };
-  
+
   const handleInput = (e) => {
-    const {name,value} =  e.target;
-    setuser({ ...user,[name]:value });
+    const { name, value } = e.target;
+    setuser({ ...user, [name]: value });
   };
   const handlevent = () => {
     return navigate("/");
@@ -60,60 +55,71 @@ function SignIn() {
 
   return (
     <>
-     <div className={styles.container}>
-     <div className={styles.imagecontainer}>
-          <div className={styles.heading}> <h1>Login to ClassSync</h1></div>
+      <div className={styles.container}>
+        <div className={styles.imagecontainer}>
+          <div className={styles.heading}>
+            {" "}
+            <h1>Login to ClassSync</h1>
+          </div>
           <div className={styles.cancel} onClick={handlevent}>
-          <MdCancel />
+            <MdCancel />
           </div>
           <div className={styles.picture}>
             <img src={Image} />
           </div>
         </div>
-        <form  onSubmit={handleSubmit}>
-        <div className={styles.details}>
-          <div className={styles.item}>
-            <label htmlFor="email">Email : </label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              value={user.email}
-              onChange={handleInput}
-              required
-            />
-          </div>
-          <div className={styles.item}>
-            <label htmlFor="password">Password : </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="*******"
-              value={user.password}
-              onChange={handleInput}
-              required
-            />
-          </div>
-          <div className={styles.item}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.details}>
+            <div className={styles.item}>
+              <label htmlFor="email">Email : </label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                value={user.email}
+                onChange={handleInput}
+                required
+              />
+            </div>
+            <div className={styles.item}>
+              <label htmlFor="password">Password : </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="*******"
+                value={user.password}
+                onChange={handleInput}
+                required
+              />
+            </div>
+            <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
-              <select className={styles.roles} id="role" name="role" value = {user.role} onChange={handleInput} required>
+              <select
+                className={styles.roles}
+                id="role"
+                name="role"
+                value={user.role}
+                onChange={handleInput}
+                required
+              >
                 <option value="">Select your role</option>
-                <option value= "Teacher">
-                  Teacher
-                </option>
-                <option value="Student">
-                  Student
-                </option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
               </select>
             </div>
-          <div className={styles.btn}>
-            <button>Sign IN</button>
-          </div>
+            {!login && (
+              <div className={styles.error}>
+                <p>Invalid email or password</p>
+              </div>
+            )}
+            <div className={styles.btn}>
+              <button>Sign IN</button>
+            </div>
           </div>
         </form>
-        </div>
+      </div>
     </>
   );
 }

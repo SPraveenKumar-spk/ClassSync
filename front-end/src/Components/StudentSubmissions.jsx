@@ -1,57 +1,73 @@
 import { NavLink } from "react-router-dom";
 import styles from "../Styles/Submissions.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function StudentSubmissions() {
-    const [submissions, setSubmissions] = useState(false);
+  const [submissions, setSubmissions] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const handleSubmissions = () => {
+    setSubmissions((prevState) => !prevState);
 
-    const[tasks, setTasks] = useState(false);
-    const handleSubmissions = () => {
-        setSubmissions(prevState => !prevState);
-    };
-    const handleTasks = async()=>{
-        try{
-            const response = await fetch(``,{
-                method: "GET",
-                headers:{
-                    "Content-Type":"application/json"
-                }
-            });
-            if(response.ok){
-                const data = response.json();
-                print(data);
-            }
-        }catch(error){
-            console.log(error);
-        }
-        setTasks(prevState => !prevState)
-    }
+    useEffect(() => {
+      const fetchSubmissions = async () => {
+        try {
+          const token = localStorage.get("token");
+          const response = await fetch(``, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (response) {
+            const data = await response.json();
+            setTasks(data);
+          }
+        } catch (error) {}
+      };
+    }, []);
+  };
 
-    return (
-        <>
-            <div className={styles.container}>
-                <div className={styles.sidebar}>
-                    <h1>ClassSync</h1>
-                    <ul>
-                        <NavLink className={styles.links} to='/studentshome'>Home</NavLink>
-                        <NavLink className={styles.links} onClick={handleTasks} >Task details</NavLink>
-                        <NavLink className={styles.links}>Drafts</NavLink>
-                        <NavLink className={styles.links} onClick={handleSubmissions}>Submissions</NavLink>
-                    </ul>
-                </div>
-                {submissions && (
-                    <div className={styles.submitbtn}>
-                        <input type="file"></input>
-                    </div>
-                )}
-            </div>
-            {/* {(tasks && tasks.length != 0)(
-                <div className={styles.tasklist}>
-                    <p></p>
-                </div>
-            )} */}
-        </>
-    );
+  return (
+    <>
+      <div className={styles.container}>
+        <div className={styles.sidebar}>
+          <h1>ClassSync</h1>
+          <ul>
+            <NavLink className={styles.links} to="/studentshome">
+              Home
+            </NavLink>
+            <NavLink className={styles.links}>Task details</NavLink>
+            <NavLink className={styles.links}>Drafts</NavLink>
+            <NavLink className={styles.links} onClick={handleSubmissions}>
+              Submissions
+            </NavLink>
+          </ul>
+        </div>
+        {submissions && tasks.length != 0 ? (
+          <div>
+            {tasks.map((task, index) => {
+              <div key={index}>
+                <p>
+                  <span>Task Name :</span> {task.taskName}
+                </p>
+                <p>
+                  <span>Task theme :</span> {task.theme}
+                </p>
+                <p>
+                  <span>Task Description :</span> {task.description}
+                </p>
+                <p>
+                  <span>Task files :</span> {task.files}
+                </p>
+              </div>;
+            })}
+          </div>
+        ) : (
+          <p>No submissions...</p>
+        )}
+      </div>
+    </>
+  );
 }
 
 export default StudentSubmissions;

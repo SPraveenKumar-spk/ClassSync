@@ -13,7 +13,10 @@ const taskSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-
+    files:{
+        type:Object,
+        default :{},
+    },
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
