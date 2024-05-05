@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -136,7 +136,9 @@ const ProjectsHome = () => {
   const handlelogout = () => {
     navigate("/logout");
   };
-  const handleCheck = () => {
+  const handleCheck = (projectCode) => {
+    localStorage.setItem("projectCode", projectCode);
+    console.log(projectCode);
     navigate("/createtasks");
   };
 
@@ -178,18 +180,25 @@ const ProjectsHome = () => {
               <h3>No of Students: {project.students}</h3>
               {/* <h3>No.of Team Leaders: {project.classroom}</h3> */}
               {project.projectCode ? (
-                <h3>Project ID: {project.projectCode}</h3>
+                <>
+                  <h3>Project ID: {project.projectCode}</h3>
+                  <div className={styles.temp}>
+                    <div className={styles.check}>
+                      <button onClick={() => handleCheck(project.projectCode)}>
+                        Assign Tasks
+                      </button>
+                    </div>
+                    <div
+                      className={styles.del}
+                      onClick={() => handleDelete(index)}
+                    >
+                      <button>Delete</button>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <h3>Project ID: Not generated</h3>
               )}
-              <div className={styles.temp}>
-                <div className={styles.check}>
-                  <button onClick={handleCheck}>Check In</button>
-                </div>
-                <div className={styles.del} onClick={() => handleDelete(index)}>
-                  <button>Delete</button>
-                </div>
-              </div>
             </div>
           ))
         ) : (

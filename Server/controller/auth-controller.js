@@ -176,7 +176,9 @@ const studentsrepo = async(req,res)=>{
 
 const assigntasks = async(req,res)=>{
     try{
-        const{taskName,theme,description,files,projectCode} = req.body;
+        const{taskName,theme,description,files} = req.body;
+        const { projectCode } = req.query.projectCode; 
+        console.log(projectCode);   
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -190,7 +192,7 @@ const assigntasks = async(req,res)=>{
             description,
             files: { data: files },
             user:UserId,
-            projectCode: projectCode,
+            projectCode,
         });
 
         res.status(200).json({
@@ -204,7 +206,7 @@ const assigntasks = async(req,res)=>{
 const assignedDetails = async(req,res)=>{
     try{
         const token = req.header("Authorization");
-        const { projectCode } = req.query;
+        const { projectCode } = req.query.projectCode;;
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
             return res.status(401).json({msg: "Unuthorized login"});
@@ -215,7 +217,7 @@ const assignedDetails = async(req,res)=>{
         if(!StudentExist){
             return res.status(401).json({msg : "User not found"});
         }
-       const tasksrepo = await tasks.find({user:UserId,projectCode: projectCode });
+       const tasksrepo = await tasks.find({projectCode });
        res.status(200).json(tasksrepo)
        
     }catch(error){

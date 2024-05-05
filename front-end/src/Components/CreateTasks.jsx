@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/CreateTasks.module.css";
 import { NavLink } from "react-router-dom";
-
+// import { useLocation } from "react-router-dom";
 function CreateTasks() {
+  const projectCode = localStorage.getItem("projectCode");
+  localStorage.removeItem("projectCode");
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
   const [assigned, setAssigned] = useState([]);
@@ -18,14 +20,14 @@ function CreateTasks() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/auth/assigntasks`,
+        `http://localhost:5000/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer${token}`,
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify({ ...values }),
         }
       );
       if (response.ok) {
@@ -72,7 +74,7 @@ function CreateTasks() {
     if (status) {
       fetchAssigned();
     }
-  }, [status]);
+  }, []);
 
   const handleTasks = async () => {
     setTasks((prevState) => !prevState);
