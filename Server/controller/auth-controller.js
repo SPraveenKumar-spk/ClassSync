@@ -177,8 +177,8 @@ const studentsrepo = async(req,res)=>{
 const assigntasks = async(req,res)=>{
     try{
         const{taskName,theme,description,files} = req.body;
-        const { projectCode } = req.query.projectCode; 
-        console.log(projectCode);   
+        const { projectCode } = req.query;   
+        console.log(projectCode);  
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -206,7 +206,8 @@ const assigntasks = async(req,res)=>{
 const assignedDetails = async(req,res)=>{
     try{
         const token = req.header("Authorization");
-        const { projectCode } = req.query.projectCode;;
+        const { projectCode } = req.query;
+        console.log(projectCode);
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
             return res.status(401).json({msg: "Unuthorized login"});

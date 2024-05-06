@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/CreateTasks.module.css";
 import { NavLink } from "react-router-dom";
-// import { useLocation } from "react-router-dom";
 function CreateTasks() {
-  const projectCode = localStorage.getItem("projectCode");
-  localStorage.removeItem("projectCode");
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
   const [assigned, setAssigned] = useState([]);
@@ -19,6 +16,7 @@ function CreateTasks() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
+      const projectCode = localStorage.getItem("projectCode");
       const response = await fetch(
         `http://localhost:5000/api/auth/assigntasks?projectCode=${projectCode}`,
         {
@@ -47,13 +45,14 @@ function CreateTasks() {
   const handleAssigned = () => {
     setStatus((prevState) => !prevState);
   };
-
   useEffect(() => {
     const fetchAssigned = async () => {
       try {
         const token = localStorage.getItem("token");
+        const projectCode = localStorage.getItem("projectCode");
+        console.log(projectCode);
         const response = await fetch(
-          `http://localhost:5000/api/auth/assignedDetails`,
+          `http://localhost:5000/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             headers: {
@@ -74,7 +73,7 @@ function CreateTasks() {
     if (status) {
       fetchAssigned();
     }
-  }, []);
+  }, [status]);
 
   const handleTasks = async () => {
     setTasks((prevState) => !prevState);
@@ -177,9 +176,9 @@ function CreateTasks() {
                 <p>
                   <span>Task Description :</span> {task.description}
                 </p>
-                <p>
+                {/* <p>
                   <span>Task files :</span> {task.files}
-                </p>
+                </p> */}
               </div>
             ))
           ) : (

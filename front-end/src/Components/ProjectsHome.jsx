@@ -138,7 +138,6 @@ const ProjectsHome = () => {
   };
   const handleCheck = (projectCode) => {
     localStorage.setItem("projectCode", projectCode);
-    console.log(projectCode);
     navigate("/createtasks");
   };
 
