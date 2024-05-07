@@ -111,7 +111,7 @@ const StudentHome = () => {
     navigate("/logout");
   };
 
-  const handleSubmissions = (projectCode) => {
+  const handlecheck = (projectCode) => {
     localStorage.setItem("projectCode", projectCode);
     navigate("/submissions");
   };
@@ -153,7 +153,7 @@ const StudentHome = () => {
               <h3>Project Code: {project.projectCode}</h3>
               <div className={styles.temp}>
                 <div className={styles.check}>
-                  <button onClick={handleSubmissions(project.projectCode)}>
+                  <button onClick={() => handlecheck(project.projectCode)}>
                     Check In
                   </button>
                 </div>
@@ -185,22 +185,22 @@ const StudentHome = () => {
           <form onSubmit={handleSubmit}>
             <div className={styles.details}>
               <div className={styles.info}>
-                <label htmlFor="projectname">Project Name</label>
+                <label htmlFor="projectName">Project Name</label>
                 <input
                   type="text"
-                  name="projectname"
-                  id="projectname"
+                  name="projectName"
+                  id="projectName"
                   value={projectName}
                   onChange={handleProject}
                   placeholder="Enter the project name"
                 />
               </div>
               <div className={styles.info}>
-                <label htmlFor="projectcode">Project Code</label>
+                <label htmlFor="projectCode">Project Code</label>
                 <input
                   type="text"
-                  name="projectcode"
-                  id="projectcode"
+                  name="projectCode"
+                  id="projectCode"
                   value={projectCode}
                   onChange={handleProjectCode}
                   placeholder="Enter project code"

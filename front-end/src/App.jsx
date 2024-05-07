@@ -18,14 +18,10 @@ function App() {
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/logout" element={<Logout />} />
-          <Route
-            path="/projectshome"
-            element={<ProjectsHome />} />
-          <Route
-            path="/studentshome"
-            element={<StudentHome />} />
-            <Route path="/submissions" element={<StudentSubmissions />}  />
-            <Route path="/createtasks" element={<CreateTasks />} />
+          <Route path="/projectshome" element={<ProjectsHome />} />
+          <Route path="/studentshome" element={<StudentHome />} />
+          <Route path="/submissions" element={<StudentSubmissions />} />
+          <Route path="/createtasks" element={<CreateTasks />} />
         </Routes>
       </BrowserRouter>
     </>
