@@ -71,3 +71,14 @@
 .templates p{
     font-size: 20px;
 }
+
+.completebtn{
+    margin-top: 1rem;
+    text-align: center;
+}
+.completebtn button{
+    padding: 5px;
+    font-size: 20px;
+    font-weight: 500px;
+    cursor: pointer;
+}

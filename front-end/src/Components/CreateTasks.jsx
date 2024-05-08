@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/CreateTasks.module.css";
 import { NavLink } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 function CreateTasks() {
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
@@ -17,6 +18,7 @@ function CreateTasks() {
     try {
       const token = localStorage.getItem("token");
       const projectCode = localStorage.getItem("projectCode");
+      const taskId = uuidv4();
       const response = await fetch(
         `http://localhost:5000/api/auth/assigntasks?projectCode=${projectCode}`,
         {
@@ -25,7 +27,7 @@ function CreateTasks() {
             "Content-Type": "application/json",
             Authorization: `Bearer${token}`,
           },
-          body: JSON.stringify({ ...values }),
+          body: JSON.stringify({ ...values, taskId }),
         }
       );
       if (response.ok) {
@@ -167,6 +169,9 @@ function CreateTasks() {
           {assigned.length ? (
             assigned.map((task, index) => (
               <div key={index} className={styles.templates}>
+                <p>
+                  <span>Task Id : </span> {task.taskId}
+                </p>
                 <p>
                   <span>Task Name :</span> {task.taskName}
                 </p>

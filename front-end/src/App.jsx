@@ -7,6 +7,7 @@ import StudentHome from "./Components/StudentHome";
 import StudentSubmissions from "./Components/StudentSubmissions";
 import CreateTasks from "./Components/CreateTasks";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import CompleteTasks from "./Components/CompleteTasks";
 // import { useEffect, useState } from "react";
 // import ProtectedRoute from "./Components/ProtectedRoute"
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/studentshome" element={<StudentHome />} />
           <Route path="/submissions" element={<StudentSubmissions />} />
           <Route path="/createtasks" element={<CreateTasks />} />
+          <Route path="/completetasks" element={<CompleteTasks />} />
         </Routes>
       </BrowserRouter>
     </>

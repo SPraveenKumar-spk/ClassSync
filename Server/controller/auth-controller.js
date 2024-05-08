@@ -176,7 +176,7 @@ const studentsrepo = async(req,res)=>{
 
 const assigntasks = async(req,res)=>{
     try{
-        const{taskName,theme,description,files} = req.body;
+        const{taskName,theme,description,files,taskId} = req.body;
         const { projectCode } = req.query;   
         console.log(projectCode);  
         const token = req.header("Authorization");
@@ -187,6 +187,7 @@ const assigntasks = async(req,res)=>{
         const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
         const UserId = isVerified.userId;
         const createTask = await tasks.create({
+            taskId,
             taskName,
             theme,
             description,

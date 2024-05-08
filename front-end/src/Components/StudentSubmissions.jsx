@@ -1,11 +1,12 @@
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import HandleDiary from "./HandleDiary";
 import styles from "../Styles/Submissions.module.css";
 import { useState } from "react";
 function StudentSubmissions() {
   const projectCode = localStorage.getItem("projectCode");
   const [assigned, setAssigned] = useState([]);
   const [status, setStatus] = useState(false);
-
+  const navigate = useNavigate();
   const handleTasks = async () => {
     setStatus((prevState) => !prevState);
     try {
@@ -29,19 +30,28 @@ function StudentSubmissions() {
       console.log("Error fetching tasks:", error);
     }
   };
+
+  const handleDiary = () => {
+    <HandleDiary />;
+  };
   return (
     <>
       <div className={styles.container}>
         <div className={styles.sidebar}>
           <h1>ClassSync</h1>
           <ul>
-            <NavLink className={styles.links} to="/studentshome">
+            <li
+              className={styles.links}
+              onClick={() => navigate("/studentshome")}
+            >
               Home
-            </NavLink>
+            </li>
             <li className={styles.links} onClick={handleTasks}>
               Task details
             </li>
-            <NavLink className={styles.links}>Drafts</NavLink>
+            <li className={styles.links} onClick={() => handleDiary}>
+              Diary Entry
+            </li>
             <NavLink className={styles.links}>Submissions</NavLink>
           </ul>
         </div>
@@ -51,6 +61,10 @@ function StudentSubmissions() {
               assigned.map((task, index) => (
                 <div key={index} className={styles.templates}>
                   <p>
+                    <span>Task Id : </span>
+                    {task.taskId}
+                  </p>
+                  <p>
                     <span>Task Name :</span> {task.taskName}
                   </p>
                   <p>
@@ -59,6 +73,11 @@ function StudentSubmissions() {
                   <p>
                     <span>Task Description :</span> {task.description}
                   </p>
+                  <div className={styles.completebtn}>
+                    <button onClick={() => navigate("/completetasks")}>
+                      Complete Task
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (
