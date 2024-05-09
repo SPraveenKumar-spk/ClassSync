@@ -5,9 +5,11 @@ import { useState } from "react";
 function StudentSubmissions() {
   const projectCode = localStorage.getItem("projectCode");
   const [assigned, setAssigned] = useState([]);
+  const [diary, setDiary] = useState(false);
   const [status, setStatus] = useState(false);
   const navigate = useNavigate();
   const handleTasks = async () => {
+    setDiary(false);
     setStatus((prevState) => !prevState);
     try {
       const token = localStorage.getItem("token");
@@ -32,7 +34,8 @@ function StudentSubmissions() {
   };
 
   const handleDiary = () => {
-    <HandleDiary />;
+    setStatus(false);
+    setDiary((prevState) => !prevState);
   };
   return (
     <>
@@ -49,7 +52,7 @@ function StudentSubmissions() {
             <li className={styles.links} onClick={handleTasks}>
               Task details
             </li>
-            <li className={styles.links} onClick={() => handleDiary}>
+            <li className={styles.links} onClick={() => handleDiary()}>
               Diary Entry
             </li>
             <NavLink className={styles.links}>Submissions</NavLink>
@@ -87,6 +90,8 @@ function StudentSubmissions() {
             )}
           </div>
         )}
+
+        {diary && <HandleDiary />}
       </div>
     </>
   );

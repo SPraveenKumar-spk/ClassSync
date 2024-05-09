@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 function CreateTasks() {
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
+
   const [assigned, setAssigned] = useState([]);
   const [values, setValues] = useState({
     taskName: "",
@@ -91,6 +92,7 @@ function CreateTasks() {
     const file = e.target.files[0];
     setValues({ ...values, files: file });
   };
+  const handleDelete = () => {};
 
   return (
     <>
@@ -184,6 +186,10 @@ function CreateTasks() {
                 {/* <p>
                   <span>Task files :</span> {task.files}
                 </p> */}
+
+                <div className={styles.deletebtn}>
+                  <button onClick={handleDelete}>Delete</button>
+                </div>
               </div>
             ))
           ) : (
