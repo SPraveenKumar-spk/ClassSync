@@ -111,18 +111,17 @@ const ProjectsHome = () => {
     const confirmation = window.confirm("Are you sure to delete the project?");
     if (confirmation) {
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:5000/api/auth/deleteproject/${projectCode}`,
+          `http://localhost:5000/api/auth/deleteproject`,
           {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
+            body: JSON.stringify({ projectCode }),
           }
         );
-        if (response) {
+        if (response.ok) {
           setProjects((prevProjects) =>
             prevProjects.filter(
               (project) => project.projectCode !== projectCode
@@ -133,7 +132,6 @@ const ProjectsHome = () => {
       } catch (error) {
         console.log(error);
       }
-      setProjects(updatedProjects);
     }
   };
 

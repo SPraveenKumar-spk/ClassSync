@@ -4,6 +4,7 @@ const student = require("../models/studentProjects")
 const tasks = require("../models/tasks");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const mongoose = require('mongoose');
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");
@@ -118,9 +119,9 @@ const userProjects = async(req,res)=>{
     }
 }
 
-const deleteproject = async(req,res)=>{
+const deleteproject = async(req,res)=>{ 
     try{
-        const {projectCode} = req.params;
+        const {projectCode} = req.body;
         const deleteProject = await Project.findOneAndDelete({projectCode});
         if(!deleteProject){
             return res.status(404).json({msg:"Project not found"});
@@ -220,7 +221,6 @@ const assigntasks = async(req,res)=>{
 const deletetask = async (req, res) => {
     try {
         const { taskId } = req.body;
-        console.log(taskId);
         const deletedTask = await tasks.findOneAndDelete({ taskId });
         if (!deletedTask) {
             return res.status(404).json({ msg: "Task not found" });
@@ -231,6 +231,30 @@ const deletetask = async (req, res) => {
         res.status(500).send("Internal server error");
     }
 };
+
+const edittask = async(req,res)=>{
+    try{
+        const {taskId} = req.query;
+        console.log(taskId);
+        const {taskName, theme, description} = req.body;
+        const exist = await tasks.findOne({taskId});
+        if(!exist){
+            return res.status(404).json({msg:"Task not found"});
+        }
+        exist.taskName = taskName;
+        exist.theme = theme;
+        exist.description = description;
+        const updatedTask = await exist.save();
+        if (updatedTask) {
+            return res.status(200).json({ msg: "Task updated successfully" });
+        } else {
+            return res.status(500).json({ msg: "Failed to update task" });
+        }
+
+    }catch(error){
+        console.log(error);
+    }
+}
 
 const assignedDetails = async(req,res)=>{
     try{
@@ -257,4 +281,4 @@ const assignedDetails = async(req,res)=>{
 
 
 
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask};
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask};
