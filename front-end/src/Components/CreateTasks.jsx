@@ -48,6 +48,7 @@ function CreateTasks() {
   const handleAssigned = () => {
     setStatus((prevState) => !prevState);
   };
+
   useEffect(() => {
     const fetchAssigned = async () => {
       try {
@@ -92,8 +93,36 @@ function CreateTasks() {
     const file = e.target.files[0];
     setValues({ ...values, files: file });
   };
-  const handleDelete = () => {};
 
+  const handleDelete = async (taskId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/auth/deletetask`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ taskId }),
+        }
+      );
+      console.log(response.json());
+      if (response.ok) {
+        setAssigned((prevAssigned) =>
+          prevAssigned.filter((task) => task.taskId !== taskId)
+        );
+        alert("Task deleted successfully");
+      } else {
+        alert("Failed to delete task");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEdit = () => {};
   return (
     <>
       <div className={styles.container}>
@@ -186,9 +215,16 @@ function CreateTasks() {
                 {/* <p>
                   <span>Task files :</span> {task.files}
                 </p> */}
+                <div className={styles.editContainer}>
+                  <div className={styles.item}>
+                    <button onClick={handleEdit}>Edit</button>
+                  </div>
 
-                <div className={styles.deletebtn}>
-                  <button onClick={handleDelete}>Delete</button>
+                  <div className={styles.item}>
+                    <button onClick={() => handleDelete(task.taskId)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))

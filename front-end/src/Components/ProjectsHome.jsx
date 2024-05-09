@@ -107,13 +107,33 @@ const ProjectsHome = () => {
     fetchProjects();
   }, []);
 
-  const handleDelete = (index) => {
+  const handleDelete = async (projectCode) => {
     const confirmation = window.confirm("Are you sure to delete the project?");
     if (confirmation) {
-      const updatedProjects = [...projects];
-      updatedProjects.splice(index, 1);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:5000/api/auth/deleteproject/${projectCode}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response) {
+          setProjects((prevProjects) =>
+            prevProjects.filter(
+              (project) => project.projectCode !== projectCode
+            )
+          );
+          alert("Your project has been deleted successfully.");
+        }
+      } catch (error) {
+        console.log(error);
+      }
       setProjects(updatedProjects);
-      alert("Your project has been deleted successfully.");
     }
   };
 
@@ -189,7 +209,7 @@ const ProjectsHome = () => {
                     </div>
                     <div
                       className={styles.del}
-                      onClick={() => handleDelete(index)}
+                      onClick={() => handleDelete(project.projectCode)}
                     >
                       <button>Delete</button>
                     </div>

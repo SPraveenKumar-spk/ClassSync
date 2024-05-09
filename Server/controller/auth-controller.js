@@ -118,6 +118,19 @@ const userProjects = async(req,res)=>{
     }
 }
 
+const deleteproject = async(req,res)=>{
+    try{
+        const {projectCode} = req.params;
+        const deleteProject = await Project.findOneAndDelete({projectCode});
+        if(!deleteProject){
+            return res.status(404).json({msg:"Project not found"});
+        }
+        res.status(200).json({msg:"Project deleted successfully"});
+
+    }catch(error){
+        console.log(error);
+    }
+}
 const studentprojects = async(req,res)=>{
     try{
         const{projectName,projectCode} = req.body;
@@ -204,6 +217,21 @@ const assigntasks = async(req,res)=>{
     }
 }
 
+const deletetask = async (req, res) => {
+    try {
+        const { taskId } = req.body;
+        console.log(taskId);
+        const deletedTask = await tasks.findOneAndDelete({ taskId });
+        if (!deletedTask) {
+            return res.status(404).json({ msg: "Task not found" });
+        }
+        res.status(200).json({ msg: "Task deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal server error");
+    }
+};
+
 const assignedDetails = async(req,res)=>{
     try{
         const token = req.header("Authorization");
@@ -229,4 +257,4 @@ const assignedDetails = async(req,res)=>{
 
 
 
-module.exports = {home,register,login,userinfo,projects,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails};
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask};

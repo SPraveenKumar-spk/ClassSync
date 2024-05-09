@@ -76,8 +76,8 @@
     width: 30rem;
     color: white;
     height: auto;
-    padding : 15px;
-    border-radius: 5px;
+    padding : 15px 15px 0 15px;
+    border-radius: 10px;
     background: linear-gradient(to right,#3cd3ad,#4cb8c4);
     margin: 2rem 1rem;
 }
@@ -88,4 +88,26 @@
 }
 .templates p{
     font-size: 20px;
+}
+
+.editContainer{
+    display: flex;
+    justify-content: center;
+}
+.item{
+    margin: 2rem 3rem;
+    text-align: center;
+}
+.item button{
+    padding: 10px;
+    font-size: 25px;
+    font-weight: 600px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.item button:hover{
+    background-color: #378CE7;
+    color: white;
 }
