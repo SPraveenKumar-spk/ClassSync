@@ -6,7 +6,8 @@ import Image from "../assets/case-studies-illustration-digital-services-a.png";
 import { useAuth } from "../store/auth";
 function SignIn() {
   const { storeToken } = useAuth();
-  const [login, setlogin] = useState(true);
+  const [login, setlogin] = useState(false);
+  const [role, setrole] = useState(false);
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -39,8 +40,10 @@ function SignIn() {
         } else {
           navigate("/studentshome");
         }
-      } else {
-        setlogin(false);
+      } else if (response.status === 404) {
+        setrole(true);
+      } else if (response.status === 401) {
+        setlogin(true);
       }
     } catch (error) {}
   };
@@ -109,11 +112,16 @@ function SignIn() {
                 <option value="Student">Student</option>
               </select>
             </div>
-            {!login && (
+            {login ? (
               <div className={styles.error}>
                 <p>Invalid email or password</p>
               </div>
-            )}
+            ) : role ? (
+              <div className={styles.error}>
+                <p>Invalid user</p>
+              </div>
+            ) : null}
+
             <div className={styles.btn}>
               <button>Sign IN</button>
             </div>

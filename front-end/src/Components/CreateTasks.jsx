@@ -122,51 +122,12 @@ function CreateTasks() {
     }
   };
 
-  const handleEdit = async (taskId, updatedValues) => {
+  const handleEdit = async () => {
     try {
-      const token = localStorage.getItem("token");
-      console.log(taskId);
-      const response = await fetch(
-        `http://localhost:5000/api/auth/edittask?taskId=${taskId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ updatedValues }),
-        }
-      );
-      if (response.ok) {
-        setAssigned((prevAssigned) =>
-          prevAssigned.map((task) =>
-            task.taskId === taskId ? { ...task, ...updatedValues } : task
-          )
-        );
-        alert("Task edited successfully");
-      } else {
-        alert("Failed to edit task");
-      }
     } catch (error) {
       console.log(error);
     }
   };
-
-  const handleInputChange = (taskId, field, value) => {
-    setAssigned((prevAssigned) =>
-      prevAssigned.map((task) =>
-        task.taskId === taskId ? { ...task, [field]: value } : task
-      )
-    );
-  };
-  const handleEdit = (taskId) => {
-    setAssigned((prevAssigned) =>
-      prevAssigned.map((task) =>
-        task.taskId === taskId ? { ...task, editing: !task.editing } : task
-      )
-    );
-  };
-
   return (
     <>
       <div className={styles.container}>
@@ -248,67 +209,22 @@ function CreateTasks() {
                   <span>Task Id : </span> {task.taskId}
                 </p>
                 <p>
-                  <span>Task Name :</span>{" "}
-                  {!task.editing ? (
-                    <span>{task.taskName}</span>
-                  ) : (
-                    <input
-                      type="text"
-                      value={task.taskName}
-                      onChange={(e) =>
-                        handleInputChange(
-                          task.taskId,
-                          "taskName",
-                          e.target.value
-                        )
-                      }
-                    />
-                  )}
+                  <span>Task Name :</span> {task.taskName}
                 </p>
                 <p>
-                  <span>Task theme :</span>{" "}
-                  {!task.editing ? (
-                    <span>{task.theme}</span>
-                  ) : (
-                    <input
-                      type="text"
-                      value={task.theme}
-                      onChange={(e) =>
-                        handleInputChange(task.taskId, "theme", e.target.value)
-                      }
-                    />
-                  )}
+                  <span>Task theme :</span> {task.theme}
                 </p>
                 <p>
-                  <span>Task Description :</span>{" "}
-                  {!task.editing ? (
-                    <span>{task.description}</span>
-                  ) : (
-                    <textarea
-                      rows="3"
-                      value={task.description}
-                      onChange={(e) =>
-                        handleInputChange(
-                          task.taskId,
-                          "description",
-                          e.target.value
-                        )
-                      }
-                    />
-                  )}
+                  <span>Task Description :</span> {task.description}
                 </p>
+                {/* <p>
+                  <span>Task files :</span> {task.files}
+                </p> */}
                 <div className={styles.editContainer}>
                   <div className={styles.item}>
-                    {!task.editing ? (
-                      <button onClick={() => handleEdit(task.taskId)}>
-                        Edit
-                      </button>
-                    ) : (
-                      <button onClick={() => handleEdit(task.taskId)}>
-                        Save
-                      </button>
-                    )}
+                    <button onClick={handleEdit}>Edit</button>
                   </div>
+
                   <div className={styles.item}>
                     <button onClick={() => handleDelete(task.taskId)}>
                       Delete

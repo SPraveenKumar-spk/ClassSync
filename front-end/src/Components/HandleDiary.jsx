@@ -7,6 +7,7 @@ export default function handleDiary() {
   const handleEntry = () => {
     setEntry(true);
   };
+
   const handlePast = () => {
     setEntry(false);
     setPast((prevState) => !prevState);
@@ -53,7 +54,7 @@ export default function handleDiary() {
               placeholder="Enter the entry"
             />
             <div className={styles.btn}>
-              <button>Submit</button>
+              <button onClick={handleSubmit}>Submit</button>
             </div>
           </div>
         )}

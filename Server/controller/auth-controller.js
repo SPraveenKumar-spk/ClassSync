@@ -37,6 +37,9 @@ const login = async (req,res)=>{
         if(!userExisted){
             return res.status(401).json({message :"Invalid Credendials"})
         }
+        if (role && userExisted.role !== role) {
+            return res.status(404).json({ message: "Invalid user" });
+        }
         const valid = await bcrypt.compare(password,userExisted.password);
         if(valid)
         {
@@ -277,6 +280,15 @@ const assignedDetails = async(req,res)=>{
     }
 }
 
+const diaryentry = async(req,res)=>{
+    try{
+        const {projectCode} = req.query;
+        const{data} = req.body;
+        
+    }catch(error){
+        console.log(error);
+    }
+}
 
 
 
