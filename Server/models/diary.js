@@ -9,6 +9,16 @@ const diarySchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    date: {
+        type: Date,
+        default: Date.now 
+      },
+      time:{
+        type : String
+      },
+      dayOfWeek: {
+        type: String
+      },
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

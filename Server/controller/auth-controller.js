@@ -284,8 +284,7 @@ const assignedDetails = async(req,res)=>{
 const diaryentry = async(req,res)=>{
     try{
         const {projectCode} = req.query;
-        console.log(projectCode);
-        const{data} = req.body;
+        const{data, date,time,dayOfWeek,} = req.body;
         const validCode = await Project.find({projectCode : projectCode})
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
@@ -300,6 +299,9 @@ const diaryentry = async(req,res)=>{
         const uploadDiary = await diary.create({
             data,
             projectCode,
+            date,
+            time,
+            dayOfWeek,
             user:UserId,
         })
 
@@ -310,7 +312,24 @@ const diaryentry = async(req,res)=>{
     }
 }
 
+const diaryrepo = async(req,res)=>{
+    try{
+        const {projectCode} = req.query;
+        const token = req.header("Authorization");
+        const jwtToken = token.replace("Bearer","").trim();
+        if(!token){
+            return res.status(401).json({msg: "Unuthorized login"});
+        }
+        const validCode = await Project.find({projectCode : projectCode})
+        if(validCode.length===0){
+            return res.status(401).json({msg:"Invalid ProjectCode"})
+        }
 
+        const pastData = await diary.find({projectCode});
+        res.status(200).json(pastData);
+    }catch(error){
+        console.log(error);
+    }
+}
 
-
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry};
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo};
