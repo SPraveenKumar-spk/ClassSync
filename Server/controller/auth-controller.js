@@ -1,10 +1,11 @@
 const User = require("../models/user")
 const Project = require("../models/projects")
 const student = require("../models/studentProjects")
-const tasks = require("../models/tasks");
+const tasks = require("../models/tasks")
+const diary = require("../models/diary")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const mongoose = require('mongoose');
+
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");
@@ -283,7 +284,26 @@ const assignedDetails = async(req,res)=>{
 const diaryentry = async(req,res)=>{
     try{
         const {projectCode} = req.query;
+        console.log(projectCode);
         const{data} = req.body;
+        const validCode = await Project.find({projectCode : projectCode})
+        const token = req.header("Authorization");
+        const jwtToken = token.replace("Bearer","").trim();
+        if(!token){
+            return res.status(401).json({msg: "Unuthorized login"});
+        }
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
+        const UserId = isVerified.userId;
+        if(validCode.length===0){
+            return res.status(401).json({msg:"Invalid ProjectCode"})
+        }
+        const uploadDiary = await diary.create({
+            data,
+            projectCode,
+            user:UserId,
+        })
+
+        res.status(200).json({msg: "Entry is successful"});
         
     }catch(error){
         console.log(error);
@@ -293,4 +313,4 @@ const diaryentry = async(req,res)=>{
 
 
 
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask};
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry};

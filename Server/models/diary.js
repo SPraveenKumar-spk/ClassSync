@@ -17,4 +17,4 @@ const diarySchema = new mongoose.Schema({
 })
 
 const Diary = new mongoose.model("Diary",diarySchema)
-modules.exports = Diary;
+module.exports = Diary;

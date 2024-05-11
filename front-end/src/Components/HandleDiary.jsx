@@ -33,6 +33,29 @@ export default function handleDiary() {
     };
   });
 
+  const handleSubmit = async () => {
+    event.preventDefault();
+    try {
+      const projectCode = localStorage.getItem("projectCode");
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/auth/diaryentry?projectCode=${projectCode}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ data: textData }),
+        }
+      );
+      if (response.ok) {
+        alert("Your Entry is successful");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className={styles.container}>
@@ -44,20 +67,24 @@ export default function handleDiary() {
             <button onClick={handlePast}>Past Entries</button>
           </div>
         </div>
-        {entry && (
-          <div className={styles.newEntry}>
-            <textarea
-              name="data"
-              id="data"
-              cols="85"
-              rows="20"
-              placeholder="Enter the entry"
-            />
-            <div className={styles.btn}>
-              <button onClick={handleSubmit}>Submit</button>
+        <form onSubmit={handleSubmit}>
+          {entry && (
+            <div className={styles.newEntry}>
+              <textarea
+                name="data"
+                id="data"
+                cols="85"
+                rows="20"
+                value={textData}
+                onChange={(e) => setData(e.target.value)}
+                placeholder="Enter the entry"
+              />
+              <div className={styles.btn}>
+                <button>Submit</button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </form>
       </div>
     </>
   );
