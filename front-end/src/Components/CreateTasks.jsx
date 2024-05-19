@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import styles from "../Styles/CreateTasks.module.css";
 import { NavLink } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import StudentStatus from "./StudentStatus";
+import Loader from "./Loader";
 function CreateTasks() {
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
-
   const [assigned, setAssigned] = useState([]);
+  const [student, setStudent] = useState(false);
   const [values, setValues] = useState({
     taskName: "",
     theme: "",
     description: "",
     files: null,
   });
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -46,11 +48,14 @@ function CreateTasks() {
   };
 
   const handleAssigned = () => {
-    setStatus((prevState) => !prevState);
+    setStatus(true);
+    setStudent(false);
+    setTasks(false);
   };
 
   useEffect(() => {
     const fetchAssigned = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const projectCode = localStorage.getItem("projectCode");
@@ -72,6 +77,8 @@ function CreateTasks() {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     if (status) {
@@ -80,8 +87,9 @@ function CreateTasks() {
   }, [status]);
 
   const handleTasks = async () => {
-    setTasks((prevState) => !prevState);
     setStatus(false);
+    setStudent(false);
+    setTasks((prevState) => !prevState);
   };
 
   const handleInputs = (e) => {
@@ -128,6 +136,12 @@ function CreateTasks() {
       console.log(error);
     }
   };
+
+  const HandleStudent = () => {
+    setStudent(true);
+    setTasks(false);
+    setStatus(false);
+  };
   return (
     <>
       <div className={styles.container}>
@@ -143,7 +157,9 @@ function CreateTasks() {
             <NavLink className={styles.links} onClick={handleTasks}>
               Assign Tasks
             </NavLink>
-            <NavLink className={styles.links}>Student Status</NavLink>
+            <NavLink className={styles.links} onClick={HandleStudent}>
+              Student Status
+            </NavLink>
           </ul>
         </div>
         {tasks && (
@@ -200,44 +216,50 @@ function CreateTasks() {
           </div>
         )}
       </div>
-      {status && (
-        <div className={styles.assignedContainer}>
-          {assigned.length ? (
-            assigned.map((task, index) => (
-              <div key={index} className={styles.templates}>
-                <p>
-                  <span>Task Id : </span> {task.taskId}
-                </p>
-                <p>
-                  <span>Task Name :</span> {task.taskName}
-                </p>
-                <p>
-                  <span>Task theme :</span> {task.theme}
-                </p>
-                <p>
-                  <span>Task Description :</span> {task.description}
-                </p>
-                {/* <p>
+
+      {loading ? (
+        <Loader />
+      ) : (
+        status && (
+          <div className={styles.assignedContainer}>
+            {assigned.length ? (
+              assigned.map((task, index) => (
+                <div key={index} className={styles.templates}>
+                  <p>
+                    <span>Task Id : </span> {task.taskId}
+                  </p>
+                  <p>
+                    <span>Task Name :</span> {task.taskName}
+                  </p>
+                  <p>
+                    <span>Task theme :</span> {task.theme}
+                  </p>
+                  <p>
+                    <span>Task Description :</span> {task.description}
+                  </p>
+                  {/* <p>
                   <span>Task files :</span> {task.files}
                 </p> */}
-                <div className={styles.editContainer}>
-                  <div className={styles.item}>
-                    <button onClick={handleEdit}>Edit</button>
-                  </div>
+                  <div className={styles.editContainer}>
+                    <div className={styles.item}>
+                      <button onClick={handleEdit}>Edit</button>
+                    </div>
 
-                  <div className={styles.item}>
-                    <button onClick={() => handleDelete(task.taskId)}>
-                      Delete
-                    </button>
+                    <div className={styles.item}>
+                      <button onClick={() => handleDelete(task.taskId)}>
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <h1>You haven't created any tasks..</h1>
-          )}
-        </div>
+              ))
+            ) : (
+              <h1>You haven't created any tasks..</h1>
+            )}
+          </div>
+        )
       )}
+      {student && <StudentStatus />}
     </>
   );
 }

@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 const StudentHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -11,7 +12,7 @@ const StudentHome = () => {
   const [projects, setProjects] = useState([]);
   const [searchItem, setSearchItem] = useState("");
   const [options, setOptions] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleProject = (e) => {
     const { value } = e.target;
@@ -33,6 +34,7 @@ const StudentHome = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const newProject = { projectName, projectCode };
 
     try {
@@ -48,6 +50,7 @@ const StudentHome = () => {
           body: JSON.stringify(newProject),
         }
       );
+      setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
         closeModal();
@@ -62,6 +65,7 @@ const StudentHome = () => {
   };
   useEffect(() => {
     const fetchProjects = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
@@ -79,6 +83,8 @@ const StudentHome = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProjects();
@@ -145,30 +151,37 @@ const StudentHome = () => {
           )}
         </div>
       </div>
-      <div className={styles.store}>
-        {filteredProjects.length ? (
-          filteredProjects.map((project, index) => (
-            <div key={index} className={styles.templates}>
-              <h3>Project Name: {project.projectName}</h3>
-              <h3>Project Code: {project.projectCode}</h3>
-              <div className={styles.temp}>
-                <div className={styles.check}>
-                  <button onClick={() => handlecheck(project.projectCode)}>
-                    Check In
-                  </button>
-                </div>
-                <div className={styles.del} onClick={() => handleDelete(index)}>
-                  <button>Delete Project</button>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className={styles.store}>
+          {filteredProjects.length ? (
+            filteredProjects.map((project, index) => (
+              <div key={index} className={styles.templates}>
+                <h3>Project Name: {project.projectName}</h3>
+                <h3>Project Code: {project.projectCode}</h3>
+                <div className={styles.temp}>
+                  <div className={styles.check}>
+                    <button onClick={() => handlecheck(project.projectCode)}>
+                      Check In
+                    </button>
+                  </div>
+                  <div
+                    className={styles.del}
+                    onClick={() => handleDelete(index)}
+                  >
+                    <button>Delete Project</button>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className={styles.text}>
+              <h2>You don't have any projects. Join Now</h2>
             </div>
-          ))
-        ) : (
-          <div className={styles.text}>
-            <h2>You don't have any projects. Join Now</h2>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

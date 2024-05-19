@@ -320,12 +320,14 @@ const diaryrepo = async(req,res)=>{
         if(!token){
             return res.status(401).json({msg: "Unuthorized login"});
         }
-        const validCode = await Project.find({projectCode : projectCode})
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
+        const userId = isVerified.userId;
+        const validCode = await Project.find({userId,projectCode : projectCode})
         if(validCode.length===0){
             return res.status(401).json({msg:"Invalid ProjectCode"})
         }
 
-        const pastData = await diary.find({projectCode});
+        const pastData = await diary.find({userId,projectCode});
         res.status(200).json(pastData);
     }catch(error){
         console.log(error);

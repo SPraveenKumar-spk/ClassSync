@@ -1,10 +1,12 @@
 import styles from "../Styles/HandleDiary.module.css";
 import { useEffect, useState } from "react";
+import Loader from "./Loader";
 export default function handleDiary() {
   const [entry, setEntry] = useState(false);
   const [past, setPast] = useState(false);
   const [textData, setData] = useState("");
   const [allData, setAll] = useState([]);
+  const [loading, setLoading] = useState(false);
   const handleEntry = () => {
     setEntry(true);
     setPast(false);
@@ -17,6 +19,7 @@ export default function handleDiary() {
 
   useEffect(() => {
     const fetchPast = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const projectCode = localStorage.getItem("projectCode");
@@ -36,6 +39,8 @@ export default function handleDiary() {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     if (past) {
@@ -110,7 +115,10 @@ export default function handleDiary() {
             </div>
           )}
         </form>
-        {allData.length > 0 &&
+        {loading ? (
+          <Loader />
+        ) : (
+          allData.length > 0 &&
           allData.map((info, index) => (
             <div
               key={index}
@@ -130,7 +138,8 @@ export default function handleDiary() {
                 readOnly
               />
             </div>
-          ))}
+          ))
+        )}
       </div>
     </>
   );

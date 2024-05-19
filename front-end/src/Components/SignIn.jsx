@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import Image from "../assets/case-studies-illustration-digital-services-a.png";
 import { useAuth } from "../store/auth";
+import Loader from "./Loader";
 function SignIn() {
   const { storeToken } = useAuth();
   const [login, setlogin] = useState(false);
@@ -13,6 +14,7 @@ function SignIn() {
     password: "",
     role: "",
   });
+
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();

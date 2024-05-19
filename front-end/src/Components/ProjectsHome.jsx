@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
+import Loader from "./Loader";
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -14,6 +15,7 @@ const ProjectsHome = () => {
   const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [options, setOptions] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const handleSearch = (e) => {
@@ -52,6 +54,7 @@ const ProjectsHome = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const newProject = {
       projectName,
       classroom,
@@ -69,6 +72,7 @@ const ProjectsHome = () => {
         },
         body: JSON.stringify(newProject),
       });
+      setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
         closeModal();
@@ -85,6 +89,7 @@ const ProjectsHome = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
@@ -102,6 +107,8 @@ const ProjectsHome = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProjects();
@@ -188,42 +195,48 @@ const ProjectsHome = () => {
           )}
         </div>
       </div>
-      <div className={styles.store}>
-        {filteredProjects.length ? (
-          filteredProjects.map((project, index) => (
-            <div key={index} className={styles.templates}>
-              <h3>Project Name: {project.projectName}</h3>
-              <h3>Classroom: {project.classroom}</h3>
-              <h3>No of Students: {project.students}</h3>
-              {/* <h3>No.of Team Leaders: {project.classroom}</h3> */}
-              {project.projectCode ? (
-                <>
-                  <h3>Project ID: {project.projectCode}</h3>
-                  <div className={styles.temp}>
-                    <div className={styles.check}>
-                      <button onClick={() => handleCheck(project.projectCode)}>
-                        Assign Tasks
-                      </button>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className={styles.store}>
+          {filteredProjects.length ? (
+            filteredProjects.map((project, index) => (
+              <div key={index} className={styles.templates}>
+                <h3>Project Name: {project.projectName}</h3>
+                <h3>Classroom: {project.classroom}</h3>
+                <h3>No of Students: {project.students}</h3>
+                {/* <h3>No.of Team Leaders: {project.classroom}</h3> */}
+                {project.projectCode ? (
+                  <>
+                    <h3>Project ID: {project.projectCode}</h3>
+                    <div className={styles.temp}>
+                      <div className={styles.check}>
+                        <button
+                          onClick={() => handleCheck(project.projectCode)}
+                        >
+                          Assign Tasks
+                        </button>
+                      </div>
+                      <div
+                        className={styles.del}
+                        onClick={() => handleDelete(project.projectCode)}
+                      >
+                        <button>Delete</button>
+                      </div>
                     </div>
-                    <div
-                      className={styles.del}
-                      onClick={() => handleDelete(project.projectCode)}
-                    >
-                      <button>Delete</button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <h3>Project ID: Not generated</h3>
-              )}
+                  </>
+                ) : (
+                  <h3>Project ID: Not generated</h3>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className={styles.text}>
+              <h2>You don't have any projects. Create one.</h2>
             </div>
-          ))
-        ) : (
-          <div className={styles.text}>
-            <h2>You don't have any projects. Create one.</h2>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
