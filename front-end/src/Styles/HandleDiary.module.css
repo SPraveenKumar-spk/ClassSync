@@ -44,4 +44,25 @@
 }
 .timeDetails{
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.feed{
+    padding: 10px;
+}
+.feed button{
+    padding: 5px;
+    font-size: 20px;
+    font-weight: 600px;
+    cursor: pointer;
+}
+.diaryResult{
+    padding: 10px;
+}
+.item p{
+    font-size: 20px;
+}
+.item  input{
+    margin-top: 10px;
+    padding: 5px;
 }

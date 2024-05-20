@@ -323,9 +323,7 @@ const diaryrepo = async(req,res)=>{
         }
         const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
         const userId = isVerified.userId;
-        console.log(userId)
         const validCode = await Project.find({projectCode})
-        console.log(validCode);
         if(validCode.length===0){   
             return res.status(401).json({msg:"Invalid ProjectCode"})
         }
@@ -338,4 +336,28 @@ const diaryrepo = async(req,res)=>{
     }
 }
 
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo};
+const studentdiaryrepo = async(req,res)=>{
+    try{
+        const {projectCode} = req.query;
+        console.log(projectCode)
+        const token = req.header("Authorization");
+        const jwtToken = token.replace("Bearer","").trim();
+        if(!token){
+            return res.status(401).json({msg: "Unuthorized login"});
+        }
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
+        const userId = isVerified.userId;
+        const validCode = await Project.find({projectCode})
+        if(validCode.length===0){   
+            return res.status(401).json({msg:"Invalid ProjectCode"})
+        }
+
+        const pastData = await diary.find({projectCode:projectCode}).populate('user','email');
+        console.log(pastData);
+        res.status(200).json(pastData);
+    }catch(error){  
+        console.log(error);
+    }
+}
+
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo};
