@@ -137,6 +137,21 @@ export default function handleDiary() {
                 value={info.data}
                 readOnly
               />
+              {info.comments && (
+                <div className={styles.feedback}>
+                  <h4>
+                    <span>Feedback:</span>
+                  </h4>
+                  <p>
+                    <span>Comments: </span>
+                    {info.comments}
+                  </p>
+                  <p>
+                    <span>Marks: </span>
+                    {info.marks}
+                  </p>
+                </div>
+              )}
             </div>
           ))
         )}

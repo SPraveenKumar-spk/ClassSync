@@ -339,7 +339,6 @@ const diaryrepo = async(req,res)=>{
 const studentdiaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
-        console.log(projectCode)
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -353,11 +352,21 @@ const studentdiaryrepo = async(req,res)=>{
         }
 
         const pastData = await diary.find({projectCode:projectCode}).populate('user','email');
-        console.log(pastData);
         res.status(200).json(pastData);
     }catch(error){  
         console.log(error);
     }
 }
 
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo};
+const submitFeedBack = async(req,res)=>{
+    try {
+        const { diaryId, comments, marks } = req.body;
+        await diary.findByIdAndUpdate(diaryId, { comments, marks });
+        res.status(200).json({ msg: "Feedback submitted successfully" });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Server error" });
+      }
+}
+
+module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};

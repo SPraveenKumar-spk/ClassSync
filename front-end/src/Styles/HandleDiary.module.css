@@ -66,3 +66,21 @@
     margin-top: 10px;
     padding: 5px;
 }
+
+.submitbtn{
+    padding: 10px;
+    margin-top: 20px;
+}
+.feedback{
+    padding: 15px;
+}
+.feedback h4 span{
+    color: red;
+    font-size: 23px;
+    font-weight: 700px;
+}
+.feedback p span {
+    color: blueviolet;
+    font-size: 20px;
+    font-weight: 600px;
+}

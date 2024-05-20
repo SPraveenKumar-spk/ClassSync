@@ -8,6 +8,8 @@ export default function StudentStatus() {
   const [taskData, setTaskData] = useState([]);
   const [diaryData, setDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState("");
+  const [marks, setMarks] = useState("");
   const taskSubmissions = () => {
     setTaskbtn(true);
     setDiarybtn(false);
@@ -19,6 +21,31 @@ export default function StudentStatus() {
 
   const handleFeed = (index) => {
     setFeed(index);
+  };
+  const handleFeedbackSubmit = async (diaryId) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/submitFeedback",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ diaryId, comments, marks }),
+        }
+      );
+      if (response.ok) {
+        alert("Feedback submitted successfully");
+        setFeed(-1);
+        setComments("");
+        setMarks("");
+      } else {
+        alert("Failed to submit feedback");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    }
   };
   useEffect(() => {
     const fetchdiaries = async () => {
@@ -37,7 +64,6 @@ export default function StudentStatus() {
         );
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setDiaryData(data);
         }
       } catch (error) {
@@ -109,13 +135,28 @@ export default function StudentStatus() {
                               id="comment"
                               cols="20"
                               rows="2"
+                              value={comments}
+                              onChange={(e) => setComments(e.target.value)}
                             />{" "}
                           </div>
                           <div className={styles.item}>
                             <p>
                               Marks :{" "}
-                              <input type="number" name="marks" id="marks" />{" "}
+                              <input
+                                type="text"
+                                name="marks"
+                                id="marks"
+                                value={marks}
+                                onChange={(e) => setMarks(e.target.value)}
+                              />{" "}
                             </p>
+                          </div>
+                          <div className={styles.submitbtn}>
+                            <button
+                              onClick={() => handleFeedbackSubmit(info._id)}
+                            >
+                              Submit FeedBack
+                            </button>
                           </div>
                         </div>
                       )}

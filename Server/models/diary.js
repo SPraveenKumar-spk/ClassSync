@@ -19,6 +19,12 @@ const diarySchema = new mongoose.Schema({
       dayOfWeek: {
         type: String
       },
+      comments: {
+        type: String,
+      },
+      marks: {
+        type: Number,
+      },
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
