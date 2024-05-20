@@ -315,6 +315,7 @@ const diaryentry = async(req,res)=>{
 const diaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
+        console.log(projectCode)
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -322,14 +323,17 @@ const diaryrepo = async(req,res)=>{
         }
         const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
         const userId = isVerified.userId;
-        const validCode = await Project.find({userId,projectCode : projectCode})
-        if(validCode.length===0){
+        console.log(userId)
+        const validCode = await Project.find({projectCode})
+        console.log(validCode);
+        if(validCode.length===0){   
             return res.status(401).json({msg:"Invalid ProjectCode"})
         }
 
-        const pastData = await diary.find({userId,projectCode});
+        const pastData = await diary.find({user:userId,projectCode:projectCode});
+        console.log(pastData);
         res.status(200).json(pastData);
-    }catch(error){
+    }catch(error){  
         console.log(error);
     }
 }
