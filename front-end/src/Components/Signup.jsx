@@ -1,19 +1,23 @@
-import { useState} from "react";
+import { useState } from "react";
 import { MdCancel } from "react-icons/md";
-import {NavLink,useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "../Styles/Signup.module.css";
 import Image from "../assets/register-removebg-preview.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function Signup() {
-  const {storeToken} = useAuth();
+  const notifySuccess = () => toast.success("Registration is successfull");
+  const notifyError = () => toast.error("Email already exists try another");
+  const { storeToken } = useAuth();
   const [user, setuser] = useState({
     name: "",
     email: "",
-    password :"",
+    password: "",
     role: "",
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleInput = (e) => {
     const name = e.target.name;
     let val = e.target.value;
@@ -30,19 +34,19 @@ function Signup() {
         body: JSON.stringify(user),
       });
       if (response.ok) {
-        const res_data = await  response.json();
-        storeToken(res_data.token);    
+        const res_data = await response.json();
+        storeToken(res_data.token);
         setuser({
           name: "",
           email: "",
-          password:"",
+          password: "",
           role: "",
         });
-  
+
         navigate("/login");
-        alert("Reistration is successfull");
-      }else if(response.status == 401){
-        alert("Email already exists try another")
+        notifySuccess();
+      } else if (response.status == 401) {
+        notifyError();
       }
     } catch (error) {
       console.log(error);
@@ -51,17 +55,32 @@ function Signup() {
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => console.log(tokenResponse),
   });
- 
+
   const handlevent = () => {
     return navigate("/");
   };
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.container}>
         <div className={styles.imagecontainer}>
-          <div className={styles.heading}> <h1>Welcome to ClassSync</h1></div>
+          <div className={styles.heading}>
+            {" "}
+            <h1>Welcome to ClassSync</h1>
+          </div>
           <div className={styles.cancel} onClick={handlevent}>
-          <MdCancel />
+            <MdCancel />
           </div>
           <div className={styles.picture}>
             <img src={Image} />
@@ -115,14 +134,16 @@ function Signup() {
             </div>
             <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
-              <select className={styles.roles} id="role" name="role" value={user.role} onChange={handleInput}>
+              <select
+                className={styles.roles}
+                id="role"
+                name="role"
+                value={user.role}
+                onChange={handleInput}
+              >
                 <option value="">Select your role</option>
-                <option value="Teacher">
-                  Teacher
-                </option>
-                <option value="Student">
-                  Student
-                </option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
               </select>
             </div>
             <div className={styles.btn}>
@@ -130,10 +151,14 @@ function Signup() {
             </div>
           </div>
           <div className={styles.direct}>
-          <p>Already registered ? <span><NavLink to = "/login"> Login </NavLink></span></p>
-        </div>
+            <p>
+              Already registered ?{" "}
+              <span>
+                <NavLink to="/login"> Login </NavLink>
+              </span>
+            </p>
+          </div>
         </form>
-        
       </div>
     </>
   );

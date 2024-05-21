@@ -4,6 +4,8 @@ import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loader from "./Loader";
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -17,6 +19,8 @@ const ProjectsHome = () => {
   const [options, setOptions] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const notifySuccess = () =>
+    toast.success("Your Project has been deleted successfully");
   const navigate = useNavigate();
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
@@ -134,7 +138,7 @@ const ProjectsHome = () => {
               (project) => project.projectCode !== projectCode
             )
           );
-          alert("Your project has been deleted successfully.");
+          notifySuccess();
         }
       } catch (error) {
         console.log(error);
@@ -168,6 +172,18 @@ const ProjectsHome = () => {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.navbar}>
         <div className={styles.logo}>
           <h1>ClassSync</h1>
