@@ -194,7 +194,7 @@ const studentsrepo = async(req,res)=>{
 
 const assigntasks = async(req,res)=>{
     try{
-        const{taskName,theme,description,files,taskId} = req.body;
+        const{taskName,theme,description,deadline,files,taskId} = req.body;
         const { projectCode } = req.query;   
         console.log(projectCode);  
         const token = req.header("Authorization");
@@ -209,6 +209,7 @@ const assigntasks = async(req,res)=>{
             taskName,
             theme,
             description,
+            deadline,
             files: { data: files },
             user:UserId,
             projectCode,

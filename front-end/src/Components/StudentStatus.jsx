@@ -1,6 +1,8 @@
 import styles from "../Styles/HandleDiary.module.css";
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function StudentStatus() {
   const [taskbtn, setTaskbtn] = useState(false);
   const [diarybtn, setDiarybtn] = useState(false);
@@ -10,6 +12,12 @@ export default function StudentStatus() {
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState("");
   const [marks, setMarks] = useState("");
+
+  const notifySuccess = () => toast.success("Feedback submitted successfully");
+
+  const notifyError = () => {
+    toast.error("Failed to submit feedback");
+  };
   const taskSubmissions = () => {
     setTaskbtn(true);
     setDiarybtn(false);
@@ -36,12 +44,12 @@ export default function StudentStatus() {
         }
       );
       if (response.ok) {
-        alert("Feedback submitted successfully");
+        notifySuccess();
         setFeed(-1);
         setComments("");
         setMarks("");
       } else {
-        alert("Failed to submit feedback");
+        notifyError();
       }
     } catch (error) {
       console.error("Error submitting feedback:", error);
@@ -78,6 +86,18 @@ export default function StudentStatus() {
   }, [diarybtn]);
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.container}>
         <div className={styles.clickevents}>
           <div className={styles.item}>

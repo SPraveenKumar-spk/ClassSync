@@ -18,6 +18,10 @@
             type:String,
             required:true,
         },
+        deadline:{
+            type : String,
+            required : true,
+        },
         files:{
             type:Object,
             default :{},

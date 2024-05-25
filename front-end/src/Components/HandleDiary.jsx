@@ -1,12 +1,21 @@
 import styles from "../Styles/HandleDiary.module.css";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function handleDiary() {
   const [entry, setEntry] = useState(false);
   const [past, setPast] = useState(false);
   const [textData, setData] = useState("");
   const [allData, setAll] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const notifyError = () => {
+    toast.error("Failed to make the entry");
+  };
+  const notifySuccess = () => {
+    toast.success("Your Entry is successful");
+  };
   const handleEntry = () => {
     setEntry(true);
     setPast(false);
@@ -80,7 +89,9 @@ export default function handleDiary() {
         }
       );
       if (response.ok) {
-        alert("Your Entry is successful");
+        notifySuccess();
+      } else {
+        notifyError();
       }
     } catch (error) {
       console.log(error);
@@ -88,6 +99,18 @@ export default function handleDiary() {
   };
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.container}>
         <div className={styles.clickevents}>
           <div className={styles.item}>

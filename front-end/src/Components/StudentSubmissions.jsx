@@ -83,6 +83,9 @@ function StudentSubmissions() {
                     <p>
                       <span>Task Description :</span> {task.description}
                     </p>
+                    <p>
+                      <span>Last Date:</span> {task.deadline}
+                    </p>
                     <div className={styles.completebtn}>
                       <button onClick={() => navigate("/completetasks")}>
                         Complete Task

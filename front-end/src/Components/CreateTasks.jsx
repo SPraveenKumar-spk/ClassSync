@@ -3,6 +3,8 @@ import styles from "../Styles/CreateTasks.module.css";
 import { NavLink } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import StudentStatus from "./StudentStatus";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loader from "./Loader";
 function CreateTasks() {
   const [status, setStatus] = useState(false);
@@ -13,8 +15,18 @@ function CreateTasks() {
     taskName: "",
     theme: "",
     description: "",
+    deadline: "",
     files: null,
   });
+  const notifySuccess = () => {
+    toast.success("Task assigned successfully");
+  };
+  const notifySuccess2 = () => {
+    toast.success("Task deleted successfully");
+  };
+  const notifyError = () => {
+    toast.error("Failed to delete task");
+  };
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,9 +50,10 @@ function CreateTasks() {
           taskName: " ",
           theme: " ",
           description: " ",
+          deadline: " ",
           files: null,
         });
-        alert("Task assigned successfully");
+        notifySuccess();
       }
     } catch (error) {
       console.log(error);
@@ -121,9 +134,9 @@ function CreateTasks() {
         setAssigned((prevAssigned) =>
           prevAssigned.filter((task) => task.taskId !== taskId)
         );
-        alert("Task deleted successfully");
+        notifySuccess2();
       } else {
-        alert("Failed to delete task");
+        notifyError();
       }
     } catch (error) {
       console.log(error);
@@ -144,6 +157,18 @@ function CreateTasks() {
   };
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.container}>
         <div className={styles.sidebar}>
           <h1>ClassSync</h1>
@@ -201,6 +226,17 @@ function CreateTasks() {
                 />
               </div>
               <div>
+                <label htmlFor="deadline">Last Date : </label>
+                <input
+                  type="date"
+                  id="deadline"
+                  name="deadline"
+                  value={values.deadline}
+                  onChange={handleInputs}
+                  required
+                />
+              </div>
+              <div>
                 <label htmlFor="files">Any Files : </label>
                 <input
                   type="file"
@@ -236,6 +272,9 @@ function CreateTasks() {
                   </p>
                   <p>
                     <span>Task Description :</span> {task.description}
+                  </p>
+                  <p>
+                    <span>Last Submission :</span> {task.deadline}
                   </p>
                   {/* <p>
                   <span>Task files :</span> {task.files}
