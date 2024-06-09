@@ -17,13 +17,14 @@ const connectDB = async () => {
 };
 
 const corsOptions = {
-  origin: "https://classsync.vercel.app/",
+  origin: "https://classsync.vercel.app", 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, 
+  credentials: true,
   optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); 
 app.use(express.json());
 
 const router = require("./auth/auth-router");
