@@ -113,6 +113,7 @@
     .profile{
         display: flex;
         position: relative;
+        
     }
     .profile img{
         margin-left: -3rem;

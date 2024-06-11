@@ -5,11 +5,7 @@ import styles from "../Styles/Signup.module.css";
 import Image from "../assets/register-removebg-preview.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 function Signup() {
-  const notifySuccess = () => toast.success("Registration is successfull");
-  const notifyError = () => toast.error("Email already exists try another");
   const { storeToken } = useAuth();
   const [user, setuser] = useState({
     name: "",
@@ -61,18 +57,6 @@ function Signup() {
   };
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className={styles.container}>
         <div className={styles.imagecontainer}>
           <div className={styles.heading}>
@@ -143,6 +127,7 @@ function Signup() {
               >
                 <option value="">Select your role</option>
                 <option value="Teacher">Teacher</option>
+                <option value="Leader">Team Leader</option>
                 <option value="Student">Student</option>
               </select>
             </div>
