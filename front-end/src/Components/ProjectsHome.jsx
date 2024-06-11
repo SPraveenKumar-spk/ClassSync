@@ -68,14 +68,17 @@ const ProjectsHome = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`https://classsyncserver.vercel.app/api/auth/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newProject),
-      });
+      const response = await fetch(
+        `https://classsync-y1qe.onrender.com/api/auth/projects`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newProject),
+        }
+      );
       setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
@@ -97,7 +100,7 @@ const ProjectsHome = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://classsyncserver.vercel.app/api/auth/userProjects`,
+          `https://classsync-y1qe.onrender.com/api/auth/userProjects`,
           {
             method: "GET",
             headers: {
@@ -123,7 +126,7 @@ const ProjectsHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `https://classsyncserver.vercel.app/api/auth/deleteproject`,
+          `https://classsync-y1qe.onrender.com/api/auth/deleteproject`,
           {
             method: "DELETE",
             headers: {

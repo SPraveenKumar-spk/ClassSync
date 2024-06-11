@@ -17,7 +17,7 @@ function StudentSubmissions() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `https://classsyncserver.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
+        `https://classsync-y1qe.onrender.com/api/auth/assignedDetails?projectCode=${projectCode}`,
         {
           method: "GET",
           headers: {

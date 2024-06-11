@@ -33,7 +33,7 @@ export default function StudentStatus() {
   const handleFeedbackSubmit = async (diaryId) => {
     try {
       const response = await fetch(
-        "https://classsyncserver.vercel.app/api/auth/submitFeedback",
+        "https://classsync-y1qe.onrender.com/api/auth/submitFeedback",
         {
           method: "POST",
           headers: {
@@ -62,7 +62,7 @@ export default function StudentStatus() {
         const token = localStorage.getItem("token");
         const projectCode = localStorage.getItem("projectCode");
         const response = await fetch(
-          `https://classsyncserver.vercel.app/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
+          `https://classsync-y1qe.onrender.com/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
             headers: {

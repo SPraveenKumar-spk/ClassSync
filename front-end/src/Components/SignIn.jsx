@@ -19,13 +19,16 @@ function SignIn() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`https://classsyncserver.vercel.app/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        `https://classsync-y1qe.onrender.com/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
