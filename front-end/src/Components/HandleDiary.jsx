@@ -33,7 +33,7 @@ export default function handleDiary() {
         const token = localStorage.getItem("token");
         const projectCode = localStorage.getItem("projectCode");
         const response = await fetch(
-          `http://localhost:5000/api/auth/diaryrepo?projectCode=${projectCode}`,
+          `https://classsync-y1qe.onrender.com/api/auth/diaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
             headers: {
@@ -73,7 +73,7 @@ export default function handleDiary() {
         weekday: "long",
       });
       const response = await fetch(
-        `http://localhost:5000/api/auth/diaryentry?projectCode=${projectCode}`,
+        `https://classsync-y1qe.onrender.com/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
