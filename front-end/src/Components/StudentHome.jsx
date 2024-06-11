@@ -40,7 +40,7 @@ const StudentHome = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/auth/studentprojects`,
+        `https://classsyncserver.vercel.app/api/auth/studentprojects`,
         {
           method: "POST",
           headers: {
@@ -69,7 +69,7 @@ const StudentHome = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:5000/api/auth/studentsrepo`,
+          `https://classsyncserver.vercel.app/api/auth/studentsrepo`,
           {
             method: "GET",
             headers: {

@@ -35,7 +35,7 @@ function CreateTasks() {
       const projectCode = localStorage.getItem("projectCode");
       const taskId = uuidv4();
       const response = await fetch(
-        `http://localhost:5000/api/auth/assigntasks?projectCode=${projectCode}`,
+        `https://classsyncserver.vercel.app/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
@@ -74,7 +74,7 @@ function CreateTasks() {
         const projectCode = localStorage.getItem("projectCode");
         console.log(projectCode);
         const response = await fetch(
-          `http://localhost:5000/api/auth/assignedDetails?projectCode=${projectCode}`,
+          `https://classsyncserver.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             headers: {
@@ -119,7 +119,7 @@ function CreateTasks() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/auth/deletetask`,
+        `https://classsyncserver.vercel.app/api/auth/deletetask`,
         {
           method: "DELETE",
           headers: {

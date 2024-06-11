@@ -68,7 +68,7 @@ const ProjectsHome = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/auth/projects`, {
+      const response = await fetch(`https://classsyncserver.vercel.app/api/auth/projects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ const ProjectsHome = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:5000/api/auth/userProjects`,
+          `https://classsyncserver.vercel.app/api/auth/userProjects`,
           {
             method: "GET",
             headers: {
@@ -123,7 +123,7 @@ const ProjectsHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/deleteproject`,
+          `https://classsyncserver.vercel.app/api/auth/deleteproject`,
           {
             method: "DELETE",
             headers: {
