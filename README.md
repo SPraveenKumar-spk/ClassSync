@@ -2,7 +2,10 @@
 
 "ClassSync is a comprehensive platform designed to streamline classroom project management and collaboration. With features tailored to the unique needs of educators and students, ClassSync enables seamless coordination between teachers and student teams. Teachers can effortlessly distribute assignments, provide feedback, and track progress, while students can collaborate on projects, share updates, and receive guidance from their instructors. With intuitive tools for task management, document collaboration, and progress tracking, ClassSync empowers educators to foster teamwork, creativity, and academic success within their classrooms."
 
-#Key Features 
+# Checkout
+Checkout the application https://classsync-pr6d.onrender.com/
+
+# Key Features 
 1. Classroom project management
 2. Collaboration platform
 3. Coordination between teachers and students
@@ -14,7 +17,7 @@
 9. Seamless coordination
 10. Academic success enhancement
 
-#Screenshots 
+# Screenshots 
 
 Home Page:
 ![Screenshot 2024-05-11 215223](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/7521a830-aa2f-4cc1-9d8e-c5d0725d6625)
