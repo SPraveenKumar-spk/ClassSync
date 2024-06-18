@@ -8,8 +8,6 @@ import StudentSubmissions from "./Components/StudentSubmissions";
 import CreateTasks from "./Components/CreateTasks";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import CompleteTasks from "./Components/CompleteTasks";
-// import { useEffect, useState } from "react";
-// import ProtectedRoute from "./Components/ProtectedRoute"
 function App() {
   return (
     <>
@@ -24,6 +22,7 @@ function App() {
           <Route path="/submissions" element={<StudentSubmissions />} />
           <Route path="/createtasks" element={<CreateTasks />} />
           <Route path="/completetasks" element={<CompleteTasks />} />
+          <Route  path="*" element={<Navigate to="/" />}/>
         </Routes>
       </BrowserRouter>
     </>

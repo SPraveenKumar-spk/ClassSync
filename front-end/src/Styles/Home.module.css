@@ -1,0 +1,175 @@
+/* Mobiles */
+
+@media only screen  and (max-width : 767px){
+  .heading{
+    position: relative;
+    top: 8px;
+    left: 0.5rem;
+  }
+  .heading a{
+    font-size: 35px;
+    color:#13bbff;
+  }
+  .desktopNav{
+    display: none;
+  }
+  .container{
+    display: none;
+  }
+
+  .text p {
+    font-size: 30px;
+  }
+  .btn button {
+    padding: 8px 100px;
+}
+.mobileMenu{
+  position: fixed;
+  top: 8px;
+  right: 0.8rem;
+}
+.iconMenu{
+  font-size: 30px;
+  color: white;
+}
+
+.dropdownContent {
+  position: absolute;
+  cursor: pointer;
+  top: 90%; 
+  right: 0;
+  background-color: #ffffff; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  border-radius: 5px;
+  width: 6.5rem;
+  padding: 10px;
+}
+
+.dropdownContent li {
+  margin-bottom: 8px; 
+}
+
+.dropdownContent li a {
+  color: #333333;
+  font-size: 16px; 
+  font-weight: bold;
+}
+
+.dropdownContent li a:hover {
+  color: #007bff; 
+}
+
+}
+
+@media only screen and (min-width : 1200px ){
+  .heading{
+    position: absolute;
+    top: 15px;
+    left: 2rem;
+  }
+  .heading a{
+    font-size: 40px;
+    color:white;
+  }
+  .container{
+    position: absolute;
+    top: 15px;
+    right: 5rem;
+    display: flex;
+  }
+  
+  .text p {
+    font-size: 40px;
+  }
+  .btn button {
+    padding: 10px 20px;
+}
+.desktopNav{
+  position : absolute;
+  top: 15px;
+  left: 50%;
+  transform: translate(-50%);
+}
+.desktopNav  li  {
+  display: inline-block;
+  margin-left: 30px;
+}
+.desktopNav  li a{
+  font-size: 20px;
+  color: white;
+}
+}
+
+.hero {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+}
+.imageWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+}
+
+.hero img {
+  width: 100%;
+  height: 100vh;
+  filter: brightness(0.7) saturate(75%); 
+}
+
+.heading a{
+  font-weight: bold;
+  cursor: pointer;
+}
+.item{
+  margin-left: 20px;
+}
+.item button{
+  color: #13bbff;
+  background-color: white;
+  padding: 6px 0.75rem;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease; 
+}
+.item button:hover {
+  background-color: #13bbff; 
+  color: white; 
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white; 
+  
+}
+
+.text p {
+  font-weight: bold;
+  color: white; 
+}
+.btn{
+  padding-top:2rem;
+}
+.btn button {
+  font-size: 20px;
+  font-weight: bold;
+  color: #13bbff;
+  background-color: white;
+  filter: contrast(0.7);
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease; 
+}
+
+.btn button:hover {
+  background-color: #13bbff; 
+  color: white; 
+}

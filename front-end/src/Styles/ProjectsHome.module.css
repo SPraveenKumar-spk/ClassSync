@@ -1,18 +1,25 @@
 @media only screen and (max-width: 767px) {
     .logo h1 {
-      font-size: 20px; 
+      font-size: 28px; 
       color: white;
+      margin-left: 5px;
     }
   
+  .profile{
+    right: 1.5rem;
+  }
     .profile img {
       width: 40px; 
       height: 40px; 
     }
+    .profileOptions {
+    right: 0;
+    }
   
     .search input {
-      width: 90%; 
+      width: 75%; 
       padding: 3px;
-      margin-left: 5px;
+      margin-left: 10px;
     }
 
     .modalcustom{
@@ -22,84 +29,10 @@
     .store{
         flex-direction: column;
     }
-  }
-
-/* laptops.. */
-  @media only screen and (min-width: 992px) and (max-width: 1199px) {
-    .navbar{
-        background-color: #378CE7;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
-    .logo h1{
-        color: whitesmoke;
-        padding-left: 3rem;
-        padding-top: 5px;
-        font-size: 40px;
-    }
-    .profile img{
-        margin-left: -3rem;
-        width: 60px;
-        height: 60px;
-        cursor: pointer;
+    .projects{
+      display: none;
     }
     
-    .search input{
-        margin-left: -3rem;
-        padding: 0.5rem;
-        width: 30rem;
-       border: none;
-       border-radius: 5px;
-    }
-    
-    .projects button{
-        padding: 10px;
-        margin-left: -3rem;
-        font-size: 20px;
-        border-width: 0.1px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-  }
-
-/* tablets */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-    .navbar{
-        background-color: #378CE7;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
-    .logo h1{
-        color: whitesmoke;
-        padding-left: 3rem;
-        padding-top: 5px;
-        font-size: 40px;
-    }
-    .profile img{
-        margin-left: -3rem;
-        width: 60px;
-        height: 60px;
-        cursor: pointer;
-    }
-    
-    .search input{
-        margin-left: -3rem;
-        padding: 0.5rem;
-        width: 30rem;
-       border: none;
-       border-radius: 5px;
-    }
-    
-    .projects button{
-        padding: 10px;
-        margin-left: -3rem;
-        font-size: 20px;
-        border-width: 0.1px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
   }
 
   /* desktop */
@@ -109,20 +42,9 @@
         padding-left: 3rem;
         padding-top: 5px;
         font-size: 40px;
-    }
-    .profile{
-        display: flex;
-        position: relative;
-    }
-    .profile img{
-        margin-left: -3rem;
-        width: 60px;
-        height: 60px;
-        cursor: pointer;
-    }
-    
+    } 
+   
     .search input{
-        margin-left: -3rem;
         padding: 0.5rem;
         width: 30rem;
        border: none;
@@ -131,7 +53,6 @@
     
     .projects button{
         padding: 10px;
-        margin-left: -3rem;
         font-size: 20px;
         border-width: 0.1px;
         border-radius: 10px;
@@ -142,6 +63,7 @@
         height: auto;
     }
   }
+
 
   .navbar{
     height: 4rem;
@@ -177,8 +99,6 @@
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    /* width: 50%; */
-    /* height: auto; */
     border-radius: 20px;
   }
 .cancel{
@@ -255,18 +175,51 @@
     text-align: center;
 }
 
-.profileOptions{
-    position: absolute;
-    top: 100%;
-    left: -6.6rem;
-    display: flex;
-    justify-content: space-between;
+.profile{
+    position: relative;
+    display: inline-block;
 }
-
-.profileOptions button{
-    padding: 8px;
-    margin-left: 2rem;
-    font-size: 12px;
-    font-weight: 600px;
+  .profileImage{
+    width: 60px;
+    height: 60px;
     cursor: pointer;
-}
+  }
+
+  .profileOptions {
+    
+    position: absolute;
+
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100px;
+    display: none;
+  }
+  
+  .profile:hover .profileOptions {
+    display: block;
+  }
+
+  .profileOptions li {
+    padding: 5px;
+    text-align: left;
+  }
+  .icons{
+    font-size: 20px;
+   margin-right: 10px;
+  }
+  
+  .profileOptions a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profileOptions a:hover {
+    background-color: #f0f0f0;
+  }
+  

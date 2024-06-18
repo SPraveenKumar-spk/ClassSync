@@ -1,12 +1,15 @@
-import styles from "../Styles/ProjectsHome.module.css";
-import React, { useEffect, useState } from "react";
-import Modal from "react-modal";
-import Image from "../assets/profile.png";
-import { MdCancel } from "react-icons/md";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import { useNavigate,NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Modal from "react-modal";
+import Image from "../assets/profile.png";
+import { MdCancel } from "react-icons/md"; 
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { FaFolderPlus } from "react-icons/fa";
 import Loader from "./Loader";
+import styles from "../Styles/ProjectsHome.module.css";
+
 const ProjectsHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -22,6 +25,7 @@ const ProjectsHome = () => {
   const notifySuccess = () =>
     toast.success("Your Project has been deleted successfully");
   const navigate = useNavigate();
+
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
   };
@@ -150,7 +154,6 @@ const ProjectsHome = () => {
   };
 
   const generateCode = (e) => {
-    e.preventDefault();
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code = "";
@@ -162,12 +165,11 @@ const ProjectsHome = () => {
     setCodeGenerated(true);
   };
 
-  const handleProfile = () => {
-    setOptions((prevState) => !prevState);
-  };
-  const handlelogout = () => {
+
+  const handleLogout = () => {
     navigate("/logout");
   };
+
   const handleCheck = (projectCode) => {
     localStorage.setItem("projectCode", projectCode);
     navigate("/createtasks");
@@ -204,13 +206,36 @@ const ProjectsHome = () => {
         <div className={styles.projects}>
           <button onClick={openModal}>Create Project</button>
         </div>
-        <div className={styles.profile}>
-          <img src={Image} alt="profile" onClick={handleProfile} />
+        <div className={styles.profile}   onMouseEnter={() => setOptions(true)}
+           onMouseLeave={() => setOptions(false)}  >
+          <img
+            src={Image}
+            alt="profile"
+            onMouseEnter={() => setOptions(true)}
+            className={styles.profileImage}
+           
+          />
           {options && (
-            <div className={styles.profileOptions}>
-              <button>Profile </button>
-              <button onClick={handlelogout}>Logout</button>
-            </div>
+             <div className={styles.profileOptions}>
+             <ul>
+               <li>
+                 <a>
+                   <AiOutlineUser className={styles.icon} /> Profile
+                 </a>
+               </li>
+               <li>
+                <a onClick={openModal}>
+                <FaFolderPlus className={styles.icon} /> Create 
+                </a>
+               </li>
+               <li>
+                   <a onClick={handleLogout}>
+                     <AiOutlineLogout className={styles.icon} /> Logout
+                   </a>
+               </li>
+               
+             </ul>
+           </div>
           )}
         </div>
       </div>
@@ -224,16 +249,13 @@ const ProjectsHome = () => {
                 <h3>Project Name: {project.projectName}</h3>
                 <h3>Classroom: {project.classroom}</h3>
                 <h3>No of Students: {project.students}</h3>
-                {/* <h3>No.of Team Leaders: {project.classroom}</h3> */}
                 {project.projectCode ? (
                   <>
                     <h3>Project ID: {project.projectCode}</h3>
                     <div className={styles.temp}>
                       <div className={styles.check}>
-                        <button
-                          onClick={() => handleCheck(project.projectCode)}
-                        >
-                          Assign Tasks
+                        <button onClick={() => handleCheck(project.projectCode)}>
+                          Check In
                         </button>
                       </div>
                       <div
@@ -304,27 +326,10 @@ const ProjectsHome = () => {
                   placeholder="Enter classroom number"
                 />
               </div>
-              {/* <div className={styles.info}>
-            <label htmlFor="leaders">Team Leaders</label>
-            <input
-              type="text"
-              name="leaders"
-              id="leaders"
-              value={classroom}
-              onChange={handleClassroom}
-              placeholder="Enter classroom number"
-            />
-          </div> */}
               <div className={styles.btn}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    generateCode(e);
-                  }}
-                >
-                  Generate ID
+                <button type="submit" onClick={generateCode}>
+                  Submit
                 </button>
-                <button type="submit">Submit</button>
               </div>
             </div>
           </form>

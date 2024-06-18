@@ -130,7 +130,6 @@ function Signup() {
               >
                 <option value="">Select your role</option>
                 <option value="Teacher">Teacher</option>
-                <option value="Leader">Team Leader</option>
                 <option value="Student">Student</option>
               </select>
             </div>

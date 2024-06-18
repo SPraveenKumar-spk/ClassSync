@@ -1,10 +1,8 @@
-import React from "react";
-import styles from "../Styles/Loader.module.css";
 import { ThreeCircles } from "react-loader-spinner";
 
 export default function Loader() {
   return (
-    <div className={styles.loader}>
+    <div className="loader">
       <ThreeCircles
         visible={true}
         height="70"
