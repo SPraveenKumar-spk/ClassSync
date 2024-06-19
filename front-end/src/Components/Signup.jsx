@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { MdCancel } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
-import styles from "../Styles/Signup.module.css";
-import Image from "../assets/register-removebg-preview.png";
+import styles from "../Styles/userlogin.module.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
+import { FaGoogle, FaGithub, FaLinkedin, FaEye, FaEyeSlash } from 'react-icons/fa';
+
+
+
 function Signup() {
   const { storeToken } = useAuth();
   const [user, setuser] = useState({
@@ -14,11 +16,13 @@ function Signup() {
     role: "",
   });
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const handleInput = (e) => {
     const name = e.target.name;
     let val = e.target.value;
     setuser({ ...user, [name]: val });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -41,16 +45,16 @@ function Signup() {
           password: "",
           role: "",
         });
-
         navigate("/login");
         notifySuccess();
-      } else if (response.status == 401) {
+      } else if (response.status === 401) {
         notifyError();
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => console.log(tokenResponse),
   });
@@ -58,34 +62,18 @@ function Signup() {
   const handlevent = () => {
     return navigate("/");
   };
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.imagecontainer}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.heading}>
-            {" "}
             <h1>Welcome to ClassSync</h1>
           </div>
-          <div className={styles.cancel} onClick={handlevent}>
-            <MdCancel />
-          </div>
-          <div className={styles.picture}>
-            <img src={Image} />
-          </div>
-        </div>
-        <form onSubmit={handleSubmit}>
           <div className={styles.details}>
-            <div className={styles.media}>
-              <button onClick={() => login()}>Sign in with Google</button>
-            </div>
-            <div className={styles.linecontainer}>
-              <div className={styles.line}>
-                <hr />
-              </div>
-              <div className={styles.text}>
-                <p>or</p>
-              </div>
-            </div>
             <div className={styles.item}>
               <label htmlFor="name">Enter Your Name </label>
               <input
@@ -110,14 +98,22 @@ function Signup() {
             </div>
             <div className={styles.item}>
               <label htmlFor="password">Password </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={user.password}
-                onChange={handleInput}
-                required
-              ></input>
+              <div className={styles.passwordInput}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  placeholder="*******"
+                  value={user.password}
+                  onChange={handleInput}
+                  required
+                />
+                {showPassword ? (
+                  <FaEyeSlash className={styles.passwordIcon} onClick={togglePassword} />
+                ) : (
+                  <FaEye className={styles.passwordIcon} onClick={togglePassword} />
+                )}
+              </div>
             </div>
             <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
@@ -135,6 +131,20 @@ function Signup() {
             </div>
             <div className={styles.btn}>
               <button>Get Started</button>
+            </div>
+            <div className={styles.media}>
+            <div>Use Social Media Credentials</div>
+              <FaGoogle
+                onClick={() => handleGoogle()}
+                className={styles.icon}
+              />
+             
+              <FaGithub
+                className={styles.icon}
+              />
+              <FaLinkedin
+                className={styles.icon}
+              />
             </div>
           </div>
           <div className={styles.direct}>

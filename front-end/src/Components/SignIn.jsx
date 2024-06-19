@@ -1,13 +1,15 @@
-import styles from "../Styles/SignIn.module.css";
+import styles from "../Styles/userlogin.module.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { MdCancel } from "react-icons/md";
-import Image from "../assets/case-studies-illustration-digital-services-a.png";
+import { FaGoogle, FaGithub, FaLinkedin, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
+
 function SignIn() {
   const { storeToken } = useAuth();
   const [login, setlogin] = useState(false);
   const [role, setrole] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -59,26 +61,23 @@ function SignIn() {
   const handlevent = () => {
     return navigate("/");
   };
-
+  const handleGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse) => console.log(tokenResponse),
+  });
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.imagecontainer}>
-          <div className={styles.heading}>
+        <form onSubmit={handleSubmit}>
+        <div className={styles.heading}>
             {" "}
             <h1>Login to ClassSync</h1>
           </div>
-          <div className={styles.cancel} onClick={handlevent}>
-            <MdCancel />
-          </div>
-          <div className={styles.picture}>
-            <img src={Image} />
-          </div>
-        </div>
-        <form onSubmit={handleSubmit}>
           <div className={styles.details}>
             <div className={styles.item}>
-              <label htmlFor="email">Email : </label>
+              <label htmlFor="email">Email  </label>
               <input
                 type="text"
                 id="email"
@@ -90,16 +89,23 @@ function SignIn() {
               />
             </div>
             <div className={styles.item}>
-              <label htmlFor="password">Password : </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="*******"
-                value={user.password}
-                onChange={handleInput}
-                required
-              />
+              <label htmlFor="password">Password  </label>
+              <div className={styles.passwordInput}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  placeholder="********"
+                  value={user.password}
+                  onChange={handleInput}
+                  required
+                />
+                {showPassword ? (
+                  <FaEyeSlash className={styles.passwordIcon} onClick={togglePassword} />
+                ) : (
+                  <FaEye className={styles.passwordIcon} onClick={togglePassword} />
+                )}
+              </div>
             </div>
             <div className={styles.item}>
               <label htmlFor="role">Enter Your Role </label>
@@ -130,6 +136,20 @@ function SignIn() {
             <div className={styles.btn}>
               <button>Sign IN</button>
             </div>
+            <div className={styles.media}>
+            <p>Use Social Media Credentials</p>
+            <FaGoogle
+              onClick={() => handleGoogle()}
+              className={styles.icon}
+            />
+           
+            <FaGithub
+              className={styles.icon}
+            />
+            <FaLinkedin
+              className={styles.icon}
+            />
+          </div>
           </div>
         </form>
       </div>
