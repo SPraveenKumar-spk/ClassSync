@@ -5,7 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import StudentStatus from "./StudentStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { IoMenuSharp } from "react-icons/io5";
 import Loader from "./Loader";
+
 function CreateTasks() {
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
@@ -28,6 +30,7 @@ function CreateTasks() {
     toast.error("Failed to delete task");
   };
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -40,7 +43,7 @@ function CreateTasks() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ ...values, taskId }),
         }
@@ -54,16 +57,11 @@ function CreateTasks() {
           files: null,
         });
         notifySuccess();
+        setTasks(false);
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleAssigned = () => {
-    setStatus(true);
-    setStudent(false);
-    setTasks(false);
   };
 
   useEffect(() => {
@@ -72,19 +70,17 @@ function CreateTasks() {
       try {
         const token = localStorage.getItem("token");
         const projectCode = localStorage.getItem("projectCode");
-        console.log(projectCode);
         const response = await fetch(
           `https://classsync-y1qe.onrender.com/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
         if (response.ok) {
           const data = await response.json();
-          setTasks(false);
           setAssigned(data);
           setStatus(true);
         }
@@ -94,10 +90,17 @@ function CreateTasks() {
         setLoading(false);
       }
     };
-    if (status) {
+
+    if (!status) {
       fetchAssigned();
     }
   }, [status]);
+
+  const handleAssigned = () => {
+    setStatus(true);
+    setStudent(false);
+    setTasks(false);
+  };
 
   const handleTasks = async () => {
     setStatus(false);
@@ -129,7 +132,6 @@ function CreateTasks() {
           body: JSON.stringify({ taskId }),
         }
       );
-      console.log(response.json());
       if (response.ok) {
         setAssigned((prevAssigned) =>
           prevAssigned.filter((task) => task.taskId !== taskId)
@@ -145,6 +147,7 @@ function CreateTasks() {
 
   const handleEdit = async () => {
     try {
+
     } catch (error) {
       console.log(error);
     }
@@ -155,6 +158,13 @@ function CreateTasks() {
     setTasks(false);
     setStatus(false);
   };
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
   return (
     <>
       <ToastContainer
@@ -172,26 +182,49 @@ function CreateTasks() {
       <div className={styles.container}>
         <div className={styles.sidebar}>
           <h1>ClassSync</h1>
-          <ul>
-            <NavLink className={styles.links} to="/projectshome">
-              Home
-            </NavLink>
-            <NavLink className={styles.links} onClick={handleAssigned}>
+          <div className={styles.mobileMenu}>
+            <p onClick={toggleDropdown}>
+              <IoMenuSharp className={styles.iconMenu} />
+            </p>
+            {showDropdown && (
+              <ul>
+                <NavLink className={styles.links} to="/projectshome">
+                  Home
+                </NavLink>
+                <NavLink className={styles.links} onClick={handleAssigned}>
               Assigned Tasks
             </NavLink>
-            <NavLink className={styles.links} onClick={handleTasks}>
-              Assign Tasks
+                <NavLink className={styles.links} onClick={handleTasks}>
+                  Assign Tasks
+                </NavLink>
+                <NavLink className={styles.links} onClick={HandleStudent}>
+                  Student Status
+                </NavLink>
+              </ul>
+            )}
+          </div>
+          <div className={styles.desktopNav}>
+            <ul>
+              <NavLink className={styles.links} to="/projectshome">
+                Home
+              </NavLink>
+              <NavLink className={styles.links} onClick={handleAssigned}>
+              Assigned Tasks
             </NavLink>
-            <NavLink className={styles.links} onClick={HandleStudent}>
-              Student Status
-            </NavLink>
-          </ul>
+              <NavLink className={styles.links} onClick={handleTasks}>
+                Assign Tasks
+              </NavLink>
+              <NavLink className={styles.links} onClick={HandleStudent}>
+                Student Status
+              </NavLink>
+            </ul>
+          </div>
         </div>
         {tasks && (
           <div className={styles.taskcontainer}>
             <form onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="taskName">Task Name : </label>
+                <label htmlFor="taskName">Task Name :</label>
                 <input
                   type="text"
                   id="taskName"
@@ -202,7 +235,7 @@ function CreateTasks() {
                 />
               </div>
               <div>
-                <label htmlFor="theme">Theme : </label>
+                <label htmlFor="theme">Theme :</label>
                 <input
                   type="text"
                   id="theme"
@@ -213,20 +246,20 @@ function CreateTasks() {
                 />
               </div>
               <div>
-                <label htmlFor="description">Description : </label>
+                <label htmlFor="description">Description :</label>
                 <textarea
                   id="description"
                   name="description"
                   rows="10"
                   cols="65"
-                  placeholder="Describe about the task"
+                  placeholder="Describe the task"
                   value={values.description}
                   onChange={handleInputs}
                   required
                 />
               </div>
               <div>
-                <label htmlFor="deadline">Last Date : </label>
+                <label htmlFor="deadline">Last Date :</label>
                 <input
                   type="date"
                   id="deadline"
@@ -237,7 +270,7 @@ function CreateTasks() {
                 />
               </div>
               <div>
-                <label htmlFor="files">Any Files : </label>
+                <label htmlFor="files">Any Files :</label>
                 <input
                   type="file"
                   name="files"
@@ -256,14 +289,11 @@ function CreateTasks() {
       {loading ? (
         <Loader />
       ) : (
-        status && (
+        (!tasks && !student) && (
           <div className={styles.assignedContainer}>
             {assigned.length ? (
               assigned.map((task, index) => (
                 <div key={index} className={styles.templates}>
-                  <p>
-                    <span>Task Id : </span> {task.taskId}
-                  </p>
                   <p>
                     <span>Task Name :</span> {task.taskName}
                   </p>
@@ -276,14 +306,10 @@ function CreateTasks() {
                   <p>
                     <span>Last Submission :</span> {task.deadline}
                   </p>
-                  {/* <p>
-                  <span>Task files :</span> {task.files}
-                </p> */}
                   <div className={styles.editContainer}>
                     <div className={styles.item}>
                       <button onClick={handleEdit}>Edit</button>
                     </div>
-
                     <div className={styles.item}>
                       <button onClick={() => handleDelete(task.taskId)}>
                         Delete

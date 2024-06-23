@@ -6,7 +6,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../store/auth";
 
 function SignIn() {
-  const { storeToken } = useAuth();
+  const { storeValues } = useAuth();
   const [login, setlogin] = useState(false);
   const [role, setrole] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,8 @@ function SignIn() {
       if (response.ok) {
         const data = await response.json();
         const token = data.token;
-        storeToken(token);
+        storeValues(token,user.role);
+        console.log(user.role);
         setuser({
           email: " ",
           password: " ",

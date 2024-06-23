@@ -135,7 +135,7 @@ export default function StudentStatus() {
                     <textarea
                       name="data"
                       id="data"
-                      cols="85"
+                      cols="72"
                       rows="20"
                       value={info.data}
                       readOnly

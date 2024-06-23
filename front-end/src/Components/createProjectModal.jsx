@@ -1,5 +1,3 @@
-// CreateProjectModal.js
-
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { MdCancel } from "react-icons/md";

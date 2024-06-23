@@ -1,8 +1,9 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import HandleDiary from "./HandleDiary";
-import styles from "../Styles/Submissions.module.css";
-import { useState } from "react";
+import styles from "../Styles/CreateTasks.module.css";
+import { useState, useEffect } from "react";
 import Loader from "./Loader";
+
 function StudentSubmissions() {
   const projectCode = localStorage.getItem("projectCode");
   const [assigned, setAssigned] = useState([]);
@@ -10,10 +11,41 @@ function StudentSubmissions() {
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAssignedTasks = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `https://classsync-y1qe.onrender.com/api/auth/assignedDetails?projectCode=${projectCode}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setLoading(false);
+        if (response.ok) {
+          const data = await response.json();
+          setAssigned(data);
+          setStatus(true); // Set status to true to render assigned tasks
+        } else {
+          console.log("Failed to fetch tasks");
+        }
+      } catch (error) {
+        console.log("Error fetching tasks:", error);
+      }
+    };
+
+    fetchAssignedTasks();
+  }, []);
+
   const handleTasks = async () => {
     setDiary(false);
     setLoading(true);
-    setStatus((prevState) => !prevState);
+    setStatus(true);
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -41,16 +73,14 @@ function StudentSubmissions() {
     setStatus(false);
     setDiary((prevState) => !prevState);
   };
+
   return (
     <>
       <div className={styles.container}>
         <div className={styles.sidebar}>
           <h1>ClassSync</h1>
           <ul>
-            <li
-              className={styles.links}
-              onClick={() => navigate("/studentshome")}
-            >
+            <li className={styles.links} onClick={() => navigate("/studentshome")}>
               Home
             </li>
             <li className={styles.links} onClick={handleTasks}>
@@ -70,10 +100,6 @@ function StudentSubmissions() {
               {assigned.length ? (
                 assigned.map((task, index) => (
                   <div key={index} className={styles.templates}>
-                    <p>
-                      <span>Task Id : </span>
-                      {task.taskId}
-                    </p>
                     <p>
                       <span>Task Name :</span> {task.taskName}
                     </p>

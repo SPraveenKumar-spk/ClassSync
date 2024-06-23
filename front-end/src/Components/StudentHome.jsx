@@ -1,10 +1,15 @@
-import styles from "../Styles/StudentHome.module.css";
+import styles from "../Styles/ProjectsHome.module.css";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
 import { MdCancel } from "react-icons/md";
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { FaFolderPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const StudentHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -14,6 +19,12 @@ const StudentHome = () => {
   const [options, setOptions] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const notifySuccess = () =>
+    toast.success("Your Project has been deleted successfully");
+  
+  const notifyError = () =>{
+    toast.error("Error in deleting your project");
+  }
   const handleProject = (e) => {
     const { value } = e.target;
     setProjectName(value);
@@ -90,15 +101,39 @@ const StudentHome = () => {
     fetchProjects();
   }, []);
 
-  const handleDelete = (index) => {
-    const confirmation = window.confirm("Are you sure to delete the project?");
-    if (confirmation) {
-      const updatedProjects = [...projects];
-      updatedProjects.splice(index, 1);
-      setProjects(updatedProjects);
-      alert("Your project has been deleted successfully.");
-    }
-  };
+    const handleDelete = async (projectCode) => {
+      const role = localStorage.getItem("userRole");
+      const token = localStorage.getItem("token");
+      const confirmation = window.confirm("Are you sure to delete the project?");
+      if (confirmation) {
+        try {
+          const response = await fetch(
+            `https://classsync-pr6d.onrender.com/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization : `Bearer ${token}`,
+              },
+              
+            }
+          
+          );
+          if (response.ok) {
+            setProjects((prevProjects) =>
+              prevProjects.filter(
+                (project) => project.projectCode !== projectCode
+              )
+            );
+            notifySuccess();
+          }else{
+            notifyError();
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
 
   const handleSearch = (e) => {
     setSearchItem(e.target.value);
@@ -110,10 +145,7 @@ const StudentHome = () => {
       )
     : projects;
 
-  const handleProfile = () => {
-    setOptions((prevState) => !prevState);
-  };
-  const handlelogout = () => {
+  const handleLogout = () => {
     navigate("/logout");
   };
 
@@ -121,9 +153,25 @@ const StudentHome = () => {
     localStorage.setItem("projectCode", projectCode);
     navigate("/submissions");
   };
+  const handleProfile = () =>{
+    navigate("/userprofile");
+  }
+
 
   return (
     <>
+     <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles.navbar}>
         <div className={styles.logo}>
           <h1>ClassSync</h1>
@@ -141,13 +189,36 @@ const StudentHome = () => {
         <div className={styles.projects}>
           <button onClick={openModal}>Join Project</button>
         </div>
-        <div className={styles.profile}>
-          <img src={Image} alt="profile" onClick={handleProfile} />
+        <div className={styles.profile}   onMouseEnter={() => setOptions(true)}
+           onMouseLeave={() => setOptions(false)}  >
+          <img
+            src={Image}
+            alt="profile"
+            onMouseEnter={() => setOptions(true)}
+            className={styles.profileImage}
+           
+          />
           {options && (
-            <div className={styles.profileOptions}>
-              <button>Profile </button>
-              <button onClick={handlelogout}>Logout</button>
-            </div>
+             <div className={styles.profileOptions}>
+             <ul>
+               <li>
+                 <a onClick={handleProfile}>
+                   <AiOutlineUser className={styles.icon} /> Profile
+                 </a>
+               </li>
+               <li>
+                <a onClick={openModal}>
+                <FaFolderPlus className={styles.icon} /> Join 
+                </a>
+               </li>
+               <li>
+                   <a onClick={handleLogout}>
+                     <AiOutlineLogout className={styles.icon} /> Logout
+                   </a>
+               </li>
+               
+             </ul>
+           </div>
           )}
         </div>
       </div>
@@ -167,11 +238,11 @@ const StudentHome = () => {
                     </button>
                   </div>
                   <div
-                    className={styles.del}
-                    onClick={() => handleDelete(index)}
-                  >
-                    <button>Delete Project</button>
-                  </div>
+                        className={styles.del}
+                        onClick={() => handleDelete(project.projectCode)}
+                      >
+                        <button>Delete</button>
+                      </div>
                 </div>
               </div>
             ))

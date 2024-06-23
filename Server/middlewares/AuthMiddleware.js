@@ -5,18 +5,14 @@ const AuthMiddleware = async(req,res,next) =>{
   
         const token = req.header("Authorization");
         if(!token){
-            return res.status.json({msg:"Token not found"});
+            return res.status(200).json({msg:"Token not found"});
         }
-        const jwtToken = token.remove("Bearer","").trim();
-        console.log(jwtToken);
+        const jwtToken = token.replace("Bearer","").trim();
      
     try{
        
         const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-
-        console.log(isVerified);
-
-        const details = await User.findOne({email : isverified.email}).select({password:0});
+        const details = await User.findOne({email : isVerified.email}).select({password:0});
         console.log(details);
         req.user = details,
         req.token =  token,
@@ -25,7 +21,7 @@ const AuthMiddleware = async(req,res,next) =>{
         next();
     }catch(error){
         console.log(error);
-        return res.status.json({msg:"unAuthorized access"});
+        return res.status(404).json({msg:"unAuthorized access"});
     }
     
 }

@@ -79,7 +79,7 @@
     justify-content: center;
     align-items: center;
 }
-.templates{
+.projecttemplates{
     border: 1px solid black;
     width: 20rem;
     padding : 15px;
@@ -88,7 +88,7 @@
     margin: 2rem 1rem;
 }
 
-.templates h3{
+.projecttemplates h3{
     padding-top: 20px;
 }
 .modalcustom{

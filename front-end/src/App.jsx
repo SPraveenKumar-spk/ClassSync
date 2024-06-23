@@ -2,6 +2,7 @@ import Home from "./Components/Home";
 import Signup from "./Components/Signup";
 import SignIn from "./Components/SignIn";
 import Logout from "./Components/Logout";
+import UserProfile from "./Components/UserProfile";
 import ProjectsHome from "./Components/ProjectsHome";
 import StudentHome from "./Components/StudentHome";
 import StudentSubmissions from "./Components/StudentSubmissions";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/projectshome" element={<ProjectsHome />} />
           <Route path="/studentshome" element={<StudentHome />} />
           <Route path="/submissions" element={<StudentSubmissions />} />

@@ -21,6 +21,7 @@
     font-weight: 500px;
     height: auto;
     border: 1px solid blueviolet;
+    border-width: auto;
     border-radius: 15px;
     color: #555;
     &::-webkit-scrollbar{display: none;}
@@ -40,7 +41,7 @@
     border: 1px solid blue;
     border-radius: 15px;
     height: auto;
-    width: 99.5%;
+    width: auto;
 }
 .timeDetails{
     padding: 10px;

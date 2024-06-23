@@ -5,7 +5,6 @@ const tasks = require("../models/tasks")
 const diary = require("../models/diary")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");
@@ -58,10 +57,15 @@ const login = async (req,res)=>{
 }
 
 const userinfo = async(req,res) =>{
+    const token = req.header("Authorization");
+    if(!token){
+        return res.status(200).json({msg:"Token not found"});
+    }
+    const jwtToken = token.replace("Bearer","").trim();
     try{
-        const userdata = req.user;
-        res.status(200).json({userdata});
-      
+        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
+        const details = await User.findOne({email : isVerified.email}).select({password:0});
+        res.status(200).json(details);
     }catch(error){
         res.status(500).json({msg:"user not logined"});
     }
@@ -102,7 +106,6 @@ const projects = async(req,res) =>{
 
 const userProjects = async(req,res)=>{
     try{
-
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -123,22 +126,44 @@ const userProjects = async(req,res)=>{
     }
 }
 
-const deleteproject = async(req,res)=>{ 
-    try{
-        const {projectCode} = req.body;
-        const deleteProject = await Project.findOneAndDelete({projectCode});
-        if(!deleteProject){
-            return res.status(404).json({msg:"Project not found"});
-        }
-        res.status(200).json({msg:"Project deleted successfully"});
 
-    }catch(error){
-        console.log(error);
+
+const deleteproject = async (req, res) => {
+    try {
+
+        const projectCode = req.query.projectCode;
+        const role = req.query.role;
+   
+        const token = req.header("Authorization");
+        if (!token) {
+            return res.status(401).json({ msg: "Unauthorized login" });
+        }
+
+        const jwtToken = token.replace("Bearer ", "").trim();
+        const isVerified = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
+        const userId = isVerified.userId;
+
+        if (role === "Teacher") {
+            await Project.findOneAndDelete({ projectCode, user: userId });
+            await student.deleteMany({ projectCode });
+            return res.status(200).json({ msg: "Project deleted successfully" });
+        } else if (role === "Student") {
+            await student.findOneAndDelete({ projectCode, user: userId });
+            return res.status(200).json({ msg: "Project deleted successfully" });
+        } else {
+            return res.status(400).json({ msg: "Invalid role" });
+        }
+    } catch (error) {
+        console.error("Delete project error:", error);
+        return res.status(500).json({ msg: "Server Error" });
     }
-}
+};
+
+  
 const studentprojects = async(req,res)=>{
     try{
         const{projectName,projectCode} = req.body;
+    
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -195,8 +220,7 @@ const studentsrepo = async(req,res)=>{
 const assigntasks = async(req,res)=>{
     try{
         const{taskName,theme,description,deadline,files,taskId} = req.body;
-        const { projectCode } = req.query;   
-        console.log(projectCode);  
+        const { projectCode } = req.query;    
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -240,7 +264,6 @@ const deletetask = async (req, res) => {
 const edittask = async(req,res)=>{
     try{
         const {taskId} = req.query;
-        console.log(taskId);
         const {taskName, theme, description} = req.body;
         const exist = await tasks.findOne({taskId});
         if(!exist){
@@ -316,7 +339,6 @@ const diaryentry = async(req,res)=>{
 const diaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
-        console.log(projectCode)
         const token = req.header("Authorization");
         const jwtToken = token.replace("Bearer","").trim();
         if(!token){
@@ -330,7 +352,6 @@ const diaryrepo = async(req,res)=>{
         }
 
         const pastData = await diary.find({user:userId,projectCode:projectCode});
-        console.log(pastData);
         res.status(200).json(pastData);
     }catch(error){  
         console.log(error);
