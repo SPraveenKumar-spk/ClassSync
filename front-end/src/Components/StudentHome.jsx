@@ -1,14 +1,13 @@
-import styles from "../Styles/ProjectsHome.module.css";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Image from "../assets/profile.png";
-import { MdCancel } from "react-icons/md";
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
 import { FaFolderPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import style from "../Styles/ProjectsHome.module.css";
 
 const StudentHome = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -24,6 +23,10 @@ const StudentHome = () => {
   
   const notifyError = () =>{
     toast.error("Error in deleting your project");
+  }
+
+  const notifyInvalidCode = ()=>{
+    toast.error("Invalid Project Code");
   }
   const handleProject = (e) => {
     const { value } = e.target;
@@ -49,16 +52,15 @@ const StudentHome = () => {
     const newProject = { projectName, projectCode };
 
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(
-        `https://classsync-y1qe.onrender.com/api/auth/studentprojects`,
+        `http://localhost:5000/api/auth/studentprojects`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(newProject),
+          credentials: 'include'
         }
       );
       setLoading(false);
@@ -68,24 +70,20 @@ const StudentHome = () => {
         setProjectName("");
         setProjectCode("");
       } else if (response.status == 401) {
-        alert("Invalid ProjectCode");
+        notifyInvalidCode();
       }
     } catch (error) {
-      console.log(error);
     }
   };
   useEffect(() => {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://classsync-y1qe.onrender.com/api/auth/studentsrepo`,
+          `http://localhost:5000/api/auth/studentsrepo`,
           {
             method: "GET",
-            headers: {
-              Authorization: `Bearer${token}`,
-            },
+            credentials: 'include'
           }
         );
         if (response.ok) {
@@ -93,7 +91,6 @@ const StudentHome = () => {
           setProjects(data);
         }
       } catch (error) {
-        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -102,19 +99,15 @@ const StudentHome = () => {
   }, []);
 
     const handleDelete = async (projectCode) => {
-      const role = localStorage.getItem("userRole");
-      const token = localStorage.getItem("token");
+      const role = sessionStorage.getItem("userRole");
       const confirmation = window.confirm("Are you sure to delete the project?");
       if (confirmation) {
         try {
           const response = await fetch(
-            `https://classsync-pr6d.onrender.com/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+            `http://localhost:5000/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
             {
               method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization : `Bearer ${token}`,
-              },
+              credentials: 'include'
               
             }
           
@@ -149,8 +142,8 @@ const StudentHome = () => {
     navigate("/logout");
   };
 
-  const handlecheck = (projectCode) => {
-    localStorage.setItem("projectCode", projectCode);
+  const handleCheck = (projectCode) => {
+    sessionStorage.setItem("projectCode", projectCode);
     navigate("/submissions");
   };
   const handleProfile = () =>{
@@ -160,7 +153,7 @@ const StudentHome = () => {
 
   return (
     <>
-     <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -172,129 +165,166 @@ const StudentHome = () => {
         pauseOnHover
         theme="colored"
       />
-      <div className={styles.navbar}>
-        <div className={styles.logo}>
-          <h1>ClassSync</h1>
+      <div className="d-fixed navbar navbar-expand-lg navbar-dark bg-primary">
+        <div className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${style.mainItems}`}>
+          <div>
+          <h1 className={`navbar-brand fs-1 ${style.logo}`}>ClassSync</h1>
+          </div>
+          <div>
+            <input
+              type="text"
+              className={`form-control ${style.searchInput}`}
+              id="search"
+              name="search"
+              placeholder="Search your projects"
+              value={searchItem}
+              onChange={handleSearch}
+            />
+          </div>
+          <div>
+            <button className="btn btn-primary ms-2 border rounded-sm d-none d-lg-block" onClick={openModal}>
+              Join Project
+            </button>
+          </div>
+        
+          <div className={`profile d-inline position-relative ${style.mainProfile}`}  onMouseEnter={() => setOptions(true)}
+              onMouseLeave={() => setOptions(false)}>
+            <img
+              src={Image}
+              alt="profile"
+              className={`profileImage img-fluid ${style.profileImage} `} style={{cursor :"pointer"}}
+              onMouseEnter={() => setOptions(true)}
+         
+            />
+            {options && (
+              <div className={`profileOptions position-absolute top-100  bg-light border rounded p-3 h-auto ${style.menuItems}`} >
+                <ul className="list-unstyled fs-5 " style={{cursor :"pointer"}}>
+                  <li>
+                    <a
+                      className="text-decoration-none d-flex align-items-center text-dark pb-1"
+                      onClick={handleProfile}
+                    >
+                      <AiOutlineUser className="icons me-2 " /> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="text-decoration-none d-flex align-items-center  text-dark pb-1"
+                      onClick={openModal}
+                    >
+                      <FaFolderPlus className="icons me-2 " /> Join
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="text-decoration-none d-flex align-items-center  text-dark"
+                      onClick={handleLogout}
+                    >
+                      <AiOutlineLogout className="icons me-2 " /> Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
-        <div className={styles.search}>
-          <input
-            type="text"
-            id="search"
-            name="search"
-            placeholder="Search your projects"
-            value={searchItem}
-            onChange={handleSearch}
-          />
         </div>
-        <div className={styles.projects}>
-          <button onClick={openModal}>Join Project</button>
-        </div>
-        <div className={styles.profile}   onMouseEnter={() => setOptions(true)}
-           onMouseLeave={() => setOptions(false)}  >
-          <img
-            src={Image}
-            alt="profile"
-            onMouseEnter={() => setOptions(true)}
-            className={styles.profileImage}
-           
-          />
-          {options && (
-             <div className={styles.profileOptions}>
-             <ul>
-               <li>
-                 <a onClick={handleProfile}>
-                   <AiOutlineUser className={styles.icon} /> Profile
-                 </a>
-               </li>
-               <li>
-                <a onClick={openModal}>
-                <FaFolderPlus className={styles.icon} /> Join 
-                </a>
-               </li>
-               <li>
-                   <a onClick={handleLogout}>
-                     <AiOutlineLogout className={styles.icon} /> Logout
-                   </a>
-               </li>
-               
-             </ul>
-           </div>
-          )}
-        </div>
-      </div>
       {loading ? (
         <Loader />
       ) : (
-        <div className={styles.store}>
+        <div className="container d-flex justify-content-center align-items-center flex-wrap mt-5 ">
           {filteredProjects.length ? (
             filteredProjects.map((project, index) => (
-              <div key={index} className={styles.templates}>
-                <h3>Project Name: {project.projectName}</h3>
-                <h3>Project Code: {project.projectCode}</h3>
-                <div className={styles.temp}>
-                  <div className={styles.check}>
-                    <button onClick={() => handlecheck(project.projectCode)}>
-                      Check In
-                    </button>
-                  </div>
-                  <div
-                        className={styles.del}
-                        onClick={() => handleDelete(project.projectCode)}
-                      >
-                        <button>Delete</button>
+              <div key={index} className="card m-2" style={{minWidth : "20rem"}}>
+                <div className="card-body rounded bg-secondary">
+                  <h3 className="card-title p-1"><span className="text-info">Project Name: </span>{project.projectName}</h3>
+                  
+                  {project.projectCode ? (
+                    <>
+                      <h3 className="card-text"> <span className="text-info">Project ID: </span>{project.projectCode}</h3>
+                      <div className="d-flex justify-content-between pt-5">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleCheck(project.projectCode)}
+                        >
+                          Check In
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(project.projectCode)}
+                        >
+                          Delete
+                        </button>
                       </div>
+                    </>
+                  ) : (
+                    <h3 className="card-text">Project ID: Not generated</h3>
+                  )}
                 </div>
               </div>
             ))
           ) : (
-            <div className={styles.text}>
-              <h2>You don't have any projects. Join Now</h2>
+            <div className="alert alert-info text-center w-100" role="alert">
+              You don't have any projects. Join Now
             </div>
           )}
         </div>
       )}
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Join Project Modal"
-        className={styles.modalcustom}
+        contentLabel="Create Project Modal"
+        className="modal-dialog"
       >
-        <div className={styles.container}>
-          <div className={styles.header}>
-            <h1>Join Project</h1>
+        <div className="container p-5 position-fixed top-50 start-50 translate-middle">
+        <div className=" p-4 modal-content border border  bg-light rounded-4">
+          <div className="modal-header position-relative">
+            <div > 
+              <h1 className="modal-title">Join Project</h1>
+            </div>
+           <div className="position-absolute top-0 end-0">
+              <button type="button" className="btn-close fs-5 text-danger " onClick={closeModal}>
+              </button>
+            </div>
+            
           </div>
-          <div className={styles.cancel} onClick={closeModal}>
-            <MdCancel />
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className={styles.details}>
-              <div className={styles.info}>
-                <label htmlFor="projectName">Project Name</label>
+          <div className="modal-body">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="projectname" className="form-label">Project Name</label>
                 <input
                   type="text"
-                  name="projectName"
-                  id="projectName"
+                  className="form-control"
+                  id="projectname"
+                  name="projectname"
                   value={projectName}
                   onChange={handleProject}
-                  placeholder="Enter the project name"
+                  required
                 />
               </div>
-              <div className={styles.info}>
-                <label htmlFor="projectCode">Project Code</label>
+              <div className="mb-3">
+                <label htmlFor="projectcode" className="form-label">ProjectCode</label>
                 <input
                   type="text"
-                  name="projectCode"
+                  className="form-control"
                   id="projectCode"
+                  name="projectCode"
                   value={projectCode}
                   onChange={handleProjectCode}
-                  placeholder="Enter project code"
+                  required
                 />
               </div>
-              <div className={styles.btn}>
-                <button type="submit">Join</button>
+              
+              <div className="d-flex justify-content-center">
+                  <button type="submit" className="btn btn-success mb-3 pe-5 ps-5 fs-4 text-center">
+                    Join
+                  </button>
               </div>
-            </div>
-          </form>
+
+            </form>
+          </div>
+        </div>
         </div>
       </Modal>
     </>

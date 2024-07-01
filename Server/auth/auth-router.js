@@ -6,7 +6,7 @@ const {home,register,login,userinfo,projects,deleteproject,userProjects,studentp
 router.route("/").get(home)
 router.route("/register").post(register)
 router.route("/login").post(login);
-router.route("/userinfo").get(authMiddleware,userinfo)
+router.route("/userinfo").get(userinfo)
 router.route("/projects").post(projects);
 router.route("/deleteproject").delete(deleteproject);
 router.route("/userProjects").get(userProjects);

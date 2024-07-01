@@ -4,10 +4,10 @@ const student = require("../models/studentProjects")
 const tasks = require("../models/tasks")
 const diary = require("../models/diary")
 const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+
 const home = (req,res)=>{
     try{
-        res.status(200).send("from home");
+        res.status(200).send("from home");  
     }catch(error){
         consolr.log(error);
     }
@@ -21,9 +21,10 @@ const register = async(req,res)=>{
             return res.status(401).json({msg:"Email already exists"})
         }
         const userCreated = await User.create({name,email,password,role});
+        req.session.userId = userCreated._id.toString();
         res.status(200).json({
             msg : "user created",
-            token : await userCreated.generateToken(),
+          
             userId : userCreated._id.toString(),
     });
     }catch(error){
@@ -43,9 +44,9 @@ const login = async (req,res)=>{
         const valid = await bcrypt.compare(password,userExisted.password);
         if(valid)
         {
+            req.session.userId = userExisted._id.toString();
             res.status(200).json({
             msg : "Login Successful",
-            token : await userExisted.generateToken(),
             userId : userExisted._id.toString(),
         });
         }else{
@@ -56,42 +57,37 @@ const login = async (req,res)=>{
     }
 }
 
-const userinfo = async(req,res) =>{
-    const token = req.header("Authorization");
-    if(!token){
-        return res.status(200).json({msg:"Token not found"});
+const userinfo = async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ msg: "User not logged in" });
+      }
+      const userId = req.session.userId;
+      const userDetails = await User.findById(userId).select({ password: 0 });
+      if (!userDetails) {
+        return res.status(404).json({ msg: "User details not found" });
+      }
+      res.status(200).json(userDetails);
+    } catch (error) {
+      res.status(500).json({ msg: "Internal server error" });
     }
-    const jwtToken = token.replace("Bearer","").trim();
-    try{
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const details = await User.findOne({email : isVerified.email}).select({password:0});
-        res.status(200).json(details);
-    }catch(error){
-        res.status(500).json({msg:"user not logined"});
-    }
-}
+  };
+  
 
 const projects = async(req,res) =>{
     try{
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-           return res.send("User not logged In");
-        }
-        const secret_key = process.env.JWT_SECRET_KEY;
-        const decoded = jwt.verify(jwtToken,secret_key);
-        const UserId = decoded.userId;
-        const Existence = await User.findById(UserId)
-        if(!Existence){
-           return res.status(401).json({msg : "No user Existed"});
-        }
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+          const userId = req.session.userId;
         const {projectName,classroom,students,projectCode} = req.body;
         const projectCreated = await Project.create({
             projectName,
             classroom,
             students,
             projectCode,
-            user : UserId
+            user : userId
         });
         res.status(200).json({
             data : projectCreated.projectName,
@@ -99,26 +95,19 @@ const projects = async(req,res) =>{
 
         });
 
-    }catch(jwtError){
+    }catch(error){
         res.status(401).json({msg : "Unauthorized user"})
     }
 }
 
 const userProjects = async(req,res)=>{
     try{
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-           return res.send("User not logged In");
-        }
-        const secret_key = process.env.JWT_SECRET_KEY;
-        const decoded = jwt.verify(jwtToken,secret_key);
-        const UserId = decoded.userId;
-        const Existence = await User.findById(UserId)
-        if(!Existence){
-           return res.status(401).json({msg : "No user Existed"});
-        }
-        const projectsData = await Project.find({user:UserId});
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+          const userId = req.session.userId;
+        const projectsData = await Project.find({user:userId});
         res.status(200).json(projectsData);
 
     }catch(error){
@@ -130,18 +119,13 @@ const userProjects = async(req,res)=>{
 
 const deleteproject = async (req, res) => {
     try {
-
         const projectCode = req.query.projectCode;
         const role = req.query.role;
-   
-        const token = req.header("Authorization");
-        if (!token) {
-            return res.status(401).json({ msg: "Unauthorized login" });
-        }
-
-        const jwtToken = token.replace("Bearer ", "").trim();
-        const isVerified = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
-        const userId = isVerified.userId;
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+          const userId = req.session.userId;
 
         if (role === "Teacher") {
             await Project.findOneAndDelete({ projectCode, user: userId });
@@ -154,7 +138,6 @@ const deleteproject = async (req, res) => {
             return res.status(400).json({ msg: "Invalid role" });
         }
     } catch (error) {
-        console.error("Delete project error:", error);
         return res.status(500).json({ msg: "Server Error" });
     }
 };
@@ -163,19 +146,12 @@ const deleteproject = async (req, res) => {
 const studentprojects = async(req,res)=>{
     try{
         const{projectName,projectCode} = req.body;
-    
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const UserId = isVerified.userId;
-        const StudentExist = await User.findById(UserId);
-        if(!StudentExist){
-            return res.status(401).json({msg : "User not found"});
-        }
-        validCode = await Project.find({projectCode : projectCode})
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+        const userId = req.session.userId;
+        const validCode = await Project.find({projectCode : projectCode})
         if(validCode.length===0){
             return res.status(401).json({msg:"Invalid ProjectCode"})
         }
@@ -183,37 +159,30 @@ const studentprojects = async(req,res)=>{
         const StudentProject = await student.create({
             projectName,
             projectCode,
-            user:UserId,
+            user:userId,
         });
         res.status(200).json({
             msg: "Project saved successfully",
             data : StudentProject.projectName,
             
         })
-       
-
     }catch(error){
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 const studentsrepo = async(req,res)=>{
     try{
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const UserId = isVerified.userId;
-        const StudentExist = await User.findById(UserId);
-        if(!StudentExist){
-            return res.status(401).json({msg : "User not found"});
-        }
-       const repo = await student.find({user:UserId});
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+          const userId = req.session.userId;
+       const repo = await student.find({user:userId});
        res.status(200).json(repo)
        
 
     }catch(error){
-
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
@@ -221,13 +190,11 @@ const assigntasks = async(req,res)=>{
     try{
         const{taskName,theme,description,deadline,files,taskId} = req.body;
         const { projectCode } = req.query;    
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const UserId = isVerified.userId;
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+          const userId = req.session.userId;
         const createTask = await tasks.create({
             taskId,
             taskName,
@@ -235,7 +202,7 @@ const assigntasks = async(req,res)=>{
             description,
             deadline,
             files: { data: files },
-            user:UserId,
+            user:userId,
             projectCode,
         });
 
@@ -244,6 +211,7 @@ const assigntasks = async(req,res)=>{
         });
 
     }catch(error){
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
@@ -256,7 +224,6 @@ const deletetask = async (req, res) => {
         }
         res.status(200).json({ msg: "Task deleted successfully" });
     } catch (error) {
-        console.log(error);
         res.status(500).send("Internal server error");
     }
 };
@@ -280,43 +247,36 @@ const edittask = async(req,res)=>{
         }
 
     }catch(error){
-        console.log(error);
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
 const assignedDetails = async(req,res)=>{
     try{
-        const token = req.header("Authorization");
         const { projectCode } = req.query;
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const UserId = isVerified.userId;
-        const StudentExist = await User.findById(UserId);
-        if(!StudentExist){
-            return res.status(401).json({msg : "User not found"});
-        }
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+    
        const tasksrepo = await tasks.find({projectCode });
        res.status(200).json(tasksrepo)
        
     }catch(error){
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
 const diaryentry = async(req,res)=>{
     try{
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+        const userId = req.session.userId;
         const {projectCode} = req.query;
         const{data, date,time,dayOfWeek,} = req.body;
         const validCode = await Project.find({projectCode : projectCode})
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY);
-        const UserId = isVerified.userId;
         if(validCode.length===0){
             return res.status(401).json({msg:"Invalid ProjectCode"})
         }
@@ -326,26 +286,24 @@ const diaryentry = async(req,res)=>{
             date,
             time,
             dayOfWeek,
-            user:UserId,
+            user:userId,
         })
 
         res.status(200).json({msg: "Entry is successful"});
         
     }catch(error){
-        console.log(error);
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
 const diaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
-        const userId = isVerified.userId;
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+        const userId = req.session.userId;
         const validCode = await Project.find({projectCode})
         if(validCode.length===0){   
             return res.status(401).json({msg:"Invalid ProjectCode"})
@@ -354,20 +312,18 @@ const diaryrepo = async(req,res)=>{
         const pastData = await diary.find({user:userId,projectCode:projectCode});
         res.status(200).json(pastData);
     }catch(error){  
-        console.log(error);
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
 const studentdiaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
-        const token = req.header("Authorization");
-        const jwtToken = token.replace("Bearer","").trim();
-        if(!token){
-            return res.status(401).json({msg: "Unuthorized login"});
-        }
-        const isVerified = jwt.verify(jwtToken,process.env.JWT_SECRET_KEY)
-        const userId = isVerified.userId;
+        if (!req.session.userId) {
+            return res.status(401).json({ msg: "User not logged in" });
+          }
+      
+        //   const userId = req.session.userId;
         const validCode = await Project.find({projectCode})
         if(validCode.length===0){   
             return res.status(401).json({msg:"Invalid ProjectCode"})
@@ -376,7 +332,7 @@ const studentdiaryrepo = async(req,res)=>{
         const pastData = await diary.find({projectCode:projectCode}).populate('user','email');
         res.status(200).json(pastData);
     }catch(error){  
-        console.log(error);
+        res.status(500).json({msg:"Internal server error"});
     }
 }
 
@@ -386,7 +342,6 @@ const submitFeedBack = async(req,res)=>{
         await diary.findByIdAndUpdate(diaryId, { comments, marks });
         res.status(200).json({ msg: "Feedback submitted successfully" });
       } catch (error) {
-        console.log(error);
         res.status(500).json({ msg: "Server error" });
       }
 }
