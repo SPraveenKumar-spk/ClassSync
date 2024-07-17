@@ -62,39 +62,9 @@ export default function UserProfile() {
                   <img src={Image} alt="avatar" className="rounded-circle img-fluid" style={{ width: '150px' }} />
                   <h5 className="my-3">{user.name}</h5>
                   <p className="text-muted mb-1"><span className='text-dark'>Designation : </span>{user.role}</p>
-                  {/* <p className="text-muted mb-4">{user.location}</p>
-                    <div className="d-flex justify-content-center mb-2">
-                      <button type="button" className="btn btn-primary">Follow</button>
-                      <button type="button" className="btn btn-outline-primary ms-1">Message</button>
-                    </div> */}
+                  
                   </div>
               </div>
-              {/* <div className="card">
-                <div className="card-body p-0">
-                  <ul className="list-group list-group-flush rounded-3">
-                    <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i className="fas fa-globe fa-lg text-warning"></i>
-                      <p className="mb-0">{user.website}</p>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i className="fab fa-github fa-lg text-body"></i>
-                      <p className="mb-0">{user.github}</p>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i className="fab fa-twitter fa-lg" style={{ color: '#55acee' }}></i>
-                      <p className="mb-0">@{user.twitter}</p>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i className="fab fa-instagram fa-lg" style={{ color: '#ac2bac' }}></i>
-                      <p className="mb-0">{user.instagram}</p>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <i className="fab fa-facebook-f fa-lg" style={{ color: '#3b5998' }}></i>
-                      <p className="mb-0">{user.facebook}</p>
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
             </div>
             <div className="col-lg-8">
               <div className="card mb-4">
@@ -202,7 +172,7 @@ export default function UserProfile() {
                 <div className="col-md-6">
                   <div className="card mb-4">
                     <div className="card-body">
-                      <p className="mb-4"><span className="text-primary font-italic me-1">assignment</span> Project Status</p>
+                      <p className="mb-4"><span className="text-primary font-italic fs-4 me-1">Present Projects</span></p>
                       <p className="mb-1" style={{ fontSize: '.77rem' }}>Web Design</p>
                       <div className="progress rounded" style={{ height: '5px' }}>
                         <div className="progress-bar bg-primary" role="progressbar" style={{ width: '80%' }} aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>

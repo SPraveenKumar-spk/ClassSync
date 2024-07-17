@@ -12,6 +12,7 @@ function CreateTasks() {
   const [tasks, setTasks] = useState(false);
   const [assigned, setAssigned] = useState([]);
   const [student, setStudent] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(true);
   const [values, setValues] = useState({
     taskName: "",
     theme: "",
@@ -150,7 +151,7 @@ function CreateTasks() {
     setStatus(false);
   };
 
-  const [showDropdown, setShowDropdown] = useState(true);
+  
 
   const toggleDropdown = () => {
     setShowDropdown((prevState) => !prevState);
@@ -174,21 +175,20 @@ function CreateTasks() {
         pauseOnHover
         theme="colored"
       />
-      <div className="navbar navbar-expand-lg navbar-dark bg-info " style={{ height: "4rem",position:"fixed" }}>
+      <div className="position-fixed top-0 start-0 w-100 navbar navbar-expand-lg navbar-dark bg-info" style={{ height: "4rem", zIndex: 1030 }}>
         <div className="container d-flex justify-content-start">
           <button className="navbar-toggler-lg bg-info text-white fs-5 border-0" onClick={toggleDropdown}>
             <IoMenuSharp className="navbar-toggler-icon" />
           </button>
-          <a className="navbar-brand ms-5" href="/">
+          <a className="navbar-brand ms-5">
             <h1 className="fs-1 ms-3 p-2">ClassSync</h1>
           </a>
         </div>
       </div>
 
-      <div className="container">
+      <div className="container" style={{ marginTop: "4rem" }}>
         <div className="row">
-          <div className="col-md-3 col-lg-2">
-            <div className={`position-fixed start-0 bg-dark min-vh-100 p-4 sidebar ${showDropdown ? 'sidebar-open' : 'sidebar-closed'}`}>
+          <div className={`col-md-3 col-lg-auto position-fixed top-10 start-0 bg-dark min-vh-100 p-4 sidebar ${showDropdown ? 'sidebar-open' : 'sidebar-closed'}`}>
               <div>
                 <ul className="list-unstyled ">
                   <li className="pb-3 fs-5">
@@ -215,7 +215,7 @@ function CreateTasks() {
               </div>
             </div>
           </div>
-              <div className="container " >
+              <div className="container-lg" >
                 {tasks  &&(
                   <div className="position-absolute top-50 start-50 translate-middle border rounded p-4  bg-secondary" style={{marginTop : "2rem",minWidth: "20rem"}}>
                     <form onSubmit={handleSubmit}>
@@ -286,7 +286,7 @@ function CreateTasks() {
                   </div>
                   )}
               </div>
-          <div className="position-relative  col-md-9 col-lg-10">
+          <div className=" col-md-9 col-lg-10 d-flex justify-content-center flex-wrap ">
             {!loading && !tasks && !student  && (
               <div className="d-flex flex-wrap justify-content-around mt-5">
                 {assigned.length ? (
@@ -316,7 +316,6 @@ function CreateTasks() {
             )}
           </div>
         </div>
-      </div>
 
       {student && <StudentStatus />}
     </>

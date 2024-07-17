@@ -4,6 +4,7 @@ const student = require("../models/studentProjects")
 const tasks = require("../models/tasks")
 const diary = require("../models/diary")
 const bcrypt = require("bcryptjs")
+const nodemailer = require('nodemailer');
 
 const home = (req,res)=>{
     try{
@@ -13,20 +14,74 @@ const home = (req,res)=>{
     }
 }
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'spraveen.961435@gmail.com', 
+        pass: 'ljyvtcwmeqouveur' 
+    }
+});
+
+transporter.verify((error, success) => {
+    if (error) {
+    } else {
+    }
+});
+
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
+        
         const userExist = await User.findOne({email});
         if(userExist){
             return res.status(401).json({msg:"Email already exists"})
         }
         const userCreated = await User.create({name,email,password,role});
+
+        let mailOptions = {
+            from: 'spraveen.961435@gmail.com', 
+            to: email, 
+            subject: 'Welcome to ClassSync',
+            html: `
+                <p>Dear ${name},</p>
+                <p>We are thrilled to welcome you to ClassSync! Your account registration has been successfully completed, and you are now part of our dynamic platform designed to streamline classroom management and enhance collaboration between teachers and students.</p>
+                
+                <p>As a member of ClassSync, you now have access to a comprehensive set of features tailored to meet your educational needs:</p>
+                <ul>
+                    <li><strong>Classroom Project Management:</strong> Efficiently organize and oversee classroom projects.</li>
+                    <li><strong>Collaboration Platform:</strong> Foster seamless collaboration among students and teachers.</li>
+                    <li><strong>Coordination Between Teachers and Students:</strong> Facilitate effective communication and interaction.</li>
+                    <li><strong>Assignment Distribution:</strong> Easily distribute assignments and tasks to students.</li>
+                    <li><strong>Feedback Provision:</strong> Provide timely feedback to students on their work.</li>
+                    <li><strong>Progress Tracking:</strong> Monitor and track student progress over time.</li>
+                    <li><strong>Task Management:</strong> Manage tasks and assignments effortlessly.</li>
+                    <li><strong>Student Teamwork Facilitation:</strong> Promote teamwork and collaboration among students.</li>
+                </ul>
+                
+                <p>Explore our platform and discover how ClassSync can transform your classroom experience.</p>
+                
+                <p>If you have any questions or need assistance, please do not hesitate to contact our dedicated support team .</p>
+                
+                <p>We are excited to have you join us at ClassSync and look forward to supporting your educational journey.</p>
+                
+                <p>Best regards,</p>
+                <p>S. Praveen Kumar,</p>
+                <p>ClassSync.</p>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+           
+        });
+
         req.session.userId = userCreated._id.toString();
         res.status(200).json({
             msg : "user created",
-          
             userId : userCreated._id.toString(),
-    });
+        });
     }catch(error){
         res.status(500).send("Internal server error");
     }

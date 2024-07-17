@@ -16,10 +16,11 @@ export default function StudentStatus() {
   const notifySuccess = () => toast.success("Feedback submitted successfully");
 
   const notifyError = () => toast.error("Failed to submit feedback");
-
+  const notifySubmissionError = () => toast.error("There is no task submissions till now.. ")
   const taskSubmissions = () => {
     setTaskbtn(true);
     setDiarybtn(false);
+    notifySubmissionError();
   };
 
   const diaryEntries = () => {
@@ -115,7 +116,7 @@ export default function StudentStatus() {
             <div>
               {diaryData.length ? (
                 diaryData.map((info, index) => (
-                  <div key={index} className="mb-3 border p-3">
+                  <div key={index} className="mb-3 border border-secondary border-3 rounded p-3">
                     <div className="row">
                       <div className="col-md-6">
                         <h3>Email: {info.user.email}</h3>
@@ -127,6 +128,7 @@ export default function StudentStatus() {
                       </div>
                     </div>
                     <textarea
+                      style={{borderWidth:"5px"}}
                       name="data"
                       id="data"
                       className="form-control mt-3"
@@ -147,7 +149,7 @@ export default function StudentStatus() {
                               onChange={(e) => setComments(e.target.value)}
                             />
                           </div>
-                          <div className="form-group">
+                          <div className="mt-3 form-group">
                             <label>Marks:</label>
                             <input
                               type="text"
@@ -156,7 +158,7 @@ export default function StudentStatus() {
                               onChange={(e) => setMarks(e.target.value)}
                             />
                           </div>
-                          <button className="btn btn-primary" onClick={() => handleFeedbackSubmit(info._id)}>
+                          <button className=" mt-4 btn btn-primary" onClick={() => handleFeedbackSubmit(info._id)}>
                             Submit Feedback
                           </button>
                         </div>

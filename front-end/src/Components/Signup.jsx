@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../store/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaUser, FaEnvelope, FaLock, FaKey } from 'react-icons/fa';
 

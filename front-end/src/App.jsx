@@ -1,4 +1,5 @@
 import Home from "./Components/Home";
+import About from "./pages/About";
 import Signup from "./Components/Signup";
 import SignIn from "./Components/SignIn";
 import Logout from "./Components/Logout";
@@ -15,6 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path = "/about" element={<About />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/logout" element={<Logout />} />

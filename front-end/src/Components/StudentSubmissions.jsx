@@ -4,7 +4,7 @@ import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMenuSharp } from "react-icons/io5";
-
+ 
 function StudentSubmissions() {
   const projectCode = sessionStorage.getItem("projectCode");
   const [assigned, setAssigned] = useState([]);
@@ -15,6 +15,7 @@ function StudentSubmissions() {
   const [past, setPast] = useState(false);
   const [textData, setTextData] = useState("");
   const [allData, setAllData] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(true);
   const notifySuccess = () => {
     toast.success("Your diary entry has been saved successfully.");
   };
@@ -179,50 +180,48 @@ function StudentSubmissions() {
         pauseOnHover
         theme="colored"
       />
-      <div className="navbar navbar-expand-lg navbar-dark bg-info" style={{ height: "4rem" }}>
+      <div className="position-fixed top-0 start-0 w-100 navbar navbar-expand-lg navbar-dark bg-info" style={{ height: "4rem", zIndex: 1030 }}>
         <div className="container d-flex justify-content-start">
           <button className="navbar-toggler-lg bg-info text-white fs-5 border-0" onClick={toggleDropdown}>
             <IoMenuSharp className="navbar-toggler-icon" />
           </button>
-          <a className="navbar-brand ms-5" href="/">
+          <a className="navbar-brand ms-5">
             <h1 className="fs-1 ms-3 p-2">ClassSync</h1>
           </a>
         </div>
       </div>
 
-      <div className="container">
-        <div className="row">
-          <div className="col-md-3 col-lg-2">
-            <div className="position-fixed start-0 bg-dark min-vh-100 p-4 sidebar">
-              <ul className="list-unstyled">
-                <li className="pb-3 fs-5">
-                  <NavLink className="text-white text-decoration-none" to="/studentshome">
-                    Home
-                  </NavLink>
-                </li>
-                <li className="pb-3 fs-5">
-                  <NavLink className="text-white text-decoration-none" onClick={handleTasks}>
-                    Task details
-                  </NavLink>
-                </li>
-                <li className="pb-3 fs-5">
-                  <NavLink className="text-white text-decoration-none" onClick={handleDiaryToggle}>
-                    Diary Entry
-                  </NavLink>
-                </li>
-                {diary && (
-                  <div>
-                    <li className="pb-3 fs-5">
-                      <NavLink className="text-white text-decoration-none" onClick={handleEntry}>New Entry</NavLink>
-                    </li>
-                    <li className="pb-3 fs-5">
-                      <NavLink className="text-white text-decoration-none" onClick={handlePast}>Past Entries</NavLink>
-                    </li>
-                  </div>
-                )}
-              </ul>
-            </div>
+<div className="container" style={{ marginTop: "4rem" }}>
+  <div className="row">
+    <div className={`col-md-3 col-lg-auto position-fixed top-10 start-0 bg-dark min-vh-100 p-4 sidebar ${showDropdown ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <ul className="list-unstyled">
+        <li className="pb-3 fs-5">
+          <NavLink className="text-white text-decoration-none" to="/studentshome">
+            Home
+          </NavLink>
+        </li>
+        <li className="pb-3 fs-5">
+          <NavLink className="text-white text-decoration-none" onClick={handleTasks}>
+            Task details
+          </NavLink>
+        </li>
+        <li className="pb-3 fs-5">
+          <NavLink className="text-white text-decoration-none" onClick={handleDiaryToggle}>
+            Diary Entry
+          </NavLink>
+        </li>
+        {diary && (
+          <div>
+            <li className="pb-3 fs-5">
+              <NavLink className="text-white text-decoration-none" onClick={handleEntry}>New Entry</NavLink>
+            </li>
+            <li className="pb-3 fs-5">
+              <NavLink className="text-white text-decoration-none" onClick={handlePast}>Past Entries</NavLink>
+            </li>
           </div>
+        )}
+      </ul>
+    </div>
 
           <div className="col-md-9 col-lg-10">
             {loading ? (
@@ -268,7 +267,7 @@ function StudentSubmissions() {
 
       <form onSubmit={handleSubmit}>
         {entry && (
-          <div className="row  " style={{position:"absolute",top:"50%", left : "55%", transform : "translate(-50%,-50%)"}}>
+          <div className="row " style={{position:"absolute",top:"50%", left : "55%", transform : "translate(-50%,-50%)"}}>
             <textarea
               className="form-control border-3 border-secondary rounded-4"
               name="data"
@@ -287,10 +286,10 @@ function StudentSubmissions() {
       </form>
 
       {past && (
-        <div className="container mt-5">
+        <div className="container ps-5 mt-5 " style={{position:"absolute", left:"10%", top:"10%" }}>
           {allData.length > 0 ? (
             allData.map((info, index) => (
-              <div key={index} className="row mb-3 border rounded p-3">
+              <div key={index} className="row mb-3 border border-secondary border-2 rounded p-3">
                 <div className="col-md-12 mb-3">
                   <h3>Date : {info.date}</h3>
                   <h3>Time : {info.time}</h3>
