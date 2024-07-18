@@ -29,7 +29,21 @@ export default function UserProfile() {
     fetchUser();
   }, []);
 
+  const handlePasswordUpdate = async()=>{
+    try{
+      const response = await fetch(`http://localhost:5000/api/auth/updatepassword`,{
+        method:"POST",
+        credentials : "include",
+      });
+      if(response.ok){
+
+      }
+    }catch(error){
+      console.log(error);
+    }
+  }
   const handlePassowrd = () => {
+    handlePasswordUpdate();
     setPassword(prev => !prev);
   };
 

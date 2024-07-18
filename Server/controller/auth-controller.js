@@ -31,7 +31,6 @@ transporter.verify((error, success) => {
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
-        
         const userExist = await User.findOne({email});
         if(userExist){
             return res.status(401).json({msg:"Email already exists"})
@@ -112,6 +111,24 @@ const login = async (req,res)=>{
     }
 }
 
+const updatePassword = async(req,res)=>{
+    try{
+        const user = req.session.userId;
+        const{currPassword,newPassword} = req.body;
+        const  isMatch = bcrypt.compare(currPassword,user.password);
+        if(!isMatch){
+            res.status(401).json({msg:"Invalid Password"});
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ msg: 'Password updated successfully' });
+    }catch(error){
+        res.status(500).json({msg:"Internal server error"});
+    }
+}
 const userinfo = async (req, res) => {
     try {
       if (!req.session.userId) {
@@ -401,4 +418,4 @@ const submitFeedBack = async(req,res)=>{
       }
 }
 
-module.exports = {home,register,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};
+module.exports = {home,register,updatePassword,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};
