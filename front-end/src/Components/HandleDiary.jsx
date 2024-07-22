@@ -1,84 +1,73 @@
-import styles from "../Styles/HandleDiary.module.css";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export default function handleDiary() {
+
+function HandleDiary() {
   const [entry, setEntry] = useState(false);
   const [past, setPast] = useState(false);
-  const [textData, setData] = useState("");
-  const [allData, setAll] = useState([]);
+  const [textData, setTextData] = useState("");
+  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const notifyError = () => {
     toast.error("Failed to make the entry");
   };
+
   const notifySuccess = () => {
     toast.success("Your Entry is successful");
   };
+
   const handleEntry = () => {
     setEntry(true);
     setPast(false);
+    setLoading(false);
   };
 
-  const handlePast = () => {
+  const handlePast = async () => {
     setEntry(false);
     setPast(true);
-  };
-
-  useEffect(() => {
-    const fetchPast = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        const projectCode = localStorage.getItem("projectCode");
-        const response = await fetch(
-          `https://classsync-y1qe.onrender.com/api/auth/diaryrepo?projectCode=${projectCode}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response) {
-          const data = await response.json();
-          console.log(data);
-          setAll(data);
+    setLoading(true);
+    try {
+      const projectCode = sessionStorage.getItem("projectCode");
+      const response = await fetch(
+        `http://localhost:5000/api/auth/diaryrepo?projectCode=${projectCode}`,
+        {
+          method: "GET",
+          credentials: "include",
         }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setAllData(data);
       }
-    };
-    if (past) {
-      fetchPast();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }, [past, setAll]);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const projectCode = localStorage.getItem("projectCode");
-      const token = localStorage.getItem("token");
+      const projectCode = sessionStorage.getItem("projectCode");
       const currentDate = new Date();
       const dateOnly = currentDate.toISOString().split("T")[0];
-      const optionsDate = { dateStyle: "medium" };
-      const optionsTime = { timeZone: "Asia/Kolkata", timeStyle: "medium" };
-
-      const date = dateOnly;
+      const optionsTime = {
+        timeZone: "Asia/Kolkata",
+        timeStyle: "medium",
+      };
       const time = currentDate.toLocaleTimeString("en-IN", optionsTime);
       const dayOfWeek = currentDate.toLocaleDateString("en-IN", {
         weekday: "long",
       });
       const response = await fetch(
-        `https://classsync-y1qe.onrender.com/api/auth/diaryentry?projectCode=${projectCode}`,
+        `http://localhost:5000/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             data: textData,
@@ -86,6 +75,7 @@ export default function handleDiary() {
             time: time,
             dayOfWeek: dayOfWeek,
           }),
+          credentials: "include",
         }
       );
       if (response.ok) {
@@ -97,6 +87,7 @@ export default function handleDiary() {
       console.log(error);
     }
   };
+
   return (
     <>
       <ToastContainer
@@ -111,29 +102,34 @@ export default function handleDiary() {
         pauseOnHover
         theme="colored"
       />
-      <div className={styles.container}>
-        <div className={styles.clickevents}>
-          <div className={styles.item}>
-            <button onClick={handleEntry}>New Entry</button>
+      <div className="position-absolute top-30 start-50 transform-middle">
+        <div className="d-flex justify-content-between">
+          <div className="col-md-6">
+            <button className="btn btn-primary p-2 fs-5" onClick={handleEntry}>
+              New Entry
+            </button>
           </div>
-          <div className={styles.item}>
-            <button onClick={handlePast}>Past Entries</button>
+          <div className="col-md-6 w-auto">
+            <button className="btn btn-primary p-2 fs-5" onClick={handlePast}>
+              Past Entries
+            </button>
           </div>
         </div>
         <form onSubmit={handleSubmit}>
           {entry && (
-            <div className={styles.newEntry}>
+            <div className="row mb-3">
               <textarea
+                className="form-control"
                 name="data"
                 id="data"
                 cols="85"
-                rows="20"
+                rows="10"
                 value={textData}
-                onChange={(e) => setData(e.target.value)}
+                onChange={(e) => setTextData(e.target.value)}
                 placeholder="Enter the entry"
               />
-              <div className={styles.btn}>
-                <button>Submit</button>
+              <div className="text-center mt-3">
+                <button className="btn btn-primary">Submit</button>
               </div>
             </div>
           )}
@@ -143,36 +139,34 @@ export default function handleDiary() {
         ) : (
           allData.length > 0 &&
           allData.map((info, index) => (
-            <div
-              key={index}
-              className={`${styles.newEntry} ${styles.feedContainer}`}
-            >
-              <div className={styles.timeDetails}>
+            <div key={index} className="row mb-3 border rounded p-3">
+              <div className="col-md-12 mb-3">
                 <h3>Date : {info.date}</h3>
                 <h3>Time : {info.time}</h3>
                 <h3>Day : {info.dayOfWeek}</h3>
               </div>
               <textarea
+                className="form-control"
                 name="data"
                 id="data"
                 cols="85"
-                rows="20"
+                rows="10"
                 value={info.data}
                 readOnly
               />
               {info.comments && (
-                <div className={styles.feedback}>
-                  <h4>
+                <div>
+                  <div className="col-md-12 mt-3">
                     <span>Feedback:</span>
-                  </h4>
-                  <p>
-                    <span>Comments: </span>
-                    {info.comments}
-                  </p>
-                  <p>
-                    <span>Marks: </span>
-                    {info.marks}
-                  </p>
+                    <p>
+                      <span>Comments: </span>
+                      {info.comments}
+                    </p>
+                    <p>
+                      <span>Marks: </span>
+                      {info.marks}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -182,3 +176,5 @@ export default function handleDiary() {
     </>
   );
 }
+
+export default HandleDiary;

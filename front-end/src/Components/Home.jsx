@@ -21,9 +21,8 @@ function Home() {
         </div>
         <div className={styles.navbar}>
           <div className={styles.heading}>
-            <a href="/">ClassSync</a>
+            <a  className='text-decoration-none' href="/">ClassSync</a>
           </div>
-          {/* Menu button for mobile */}
           <div className={styles.mobileMenu}>
             <p onClick={toggleDropdown}><IoMenuSharp className={styles.iconMenu} /></p>
             {showDropdown && (
@@ -37,16 +36,15 @@ function Home() {
             )}
           </div>
         </div>
-        {/* End of mobile menu */}
         <ul className={styles.desktopNav}>
         <li>
-              <a href="/">Home</a>
+              <a className='text-decoration-none' href="/">Home</a>
             </li>
             <li>
-              <a href="/">About</a>
+              <a  className='text-decoration-none' href="/about">About</a>
             </li>
             <li>
-              <a href="/">Contact Us</a>
+              <a  className='text-decoration-none' href="/">Contact Us</a>
               </li>
         </ul>
       </div>

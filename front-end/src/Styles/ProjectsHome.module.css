@@ -1,225 +1,42 @@
-@media only screen and (max-width: 767px) {
-    .logo h1 {
-      font-size: 28px; 
-      color: white;
-      margin-left: 5px;
-    }
-  
-  .profile{
-    right: 1.5rem;
+@media only screen and (max-width : 768px ){
+  .logo h1{
+    font-size: 18px; 
   }
-    .profile img {
-      width: 40px; 
-      height: 40px; 
-    }
-    .profileOptions {
-    right: 0;
-    }
-  
-    .search input {
-      width: 75%; 
-      padding: 3px;
-      margin-left: 10px;
-    }
-
-    .modalcustom{
-        width: 90%;
-        height: auto;
-    }
-    .store{
-        flex-direction: column;
-    }
-    .projects{
-      display: none;
-    }
-    
+  .searchInput{
+    width: 75%;
   }
-
-  /* desktop */
-  @media only screen and (min-width: 1200px) {
-    .logo h1{
-        color: whitesmoke;
-        padding-left: 3rem;
-        padding-top: 5px;
-        font-size: 40px;
-    } 
-   
-    .search input{
-        padding: 0.5rem;
-        width: 30rem;
-       border: none;
-       border-radius: 5px;
-    }
-    
-    .projects button{
-        padding: 10px;
-        font-size: 20px;
-        border-width: 0.1px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-    .modalcustom{
-        width: 50%;
-        height: auto;
-    }
+  .mainProfile{
+    right: 0.1rem;
   }
-
-
-  .navbar{
-    height: 4rem;
-    width: 100%;
-    background-color: #378CE7;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-.store{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-}
-.projecttemplates{
-    border: 1px solid black;
-    width: 20rem;
-    padding : 15px;
-    border-radius: 5px;
-    background: linear-gradient(to right,#3cd3ad,#4cb8c4);
-    margin: 2rem 1rem;
-}
-
-.projecttemplates h3{
-    padding-top: 20px;
-}
-.modalcustom{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    border-radius: 20px;
-  }
-.cancel{
-    position: absolute;
-    top: 0;
-    right: 0;
-    border: none;
-    font-size: 35px;
-    color: gray;
-    cursor: pointer;
-}
-.cancel:hover{
-    color: red;
-}
-.btn{
-    display: flex;
-    flex-direction: column;
-  
-}
-.btn button{
-    padding: 10px;
-    margin-top: 15px;
-    font-size: 20px;
-    color: black;
-    font-weight: bold;
-    background-color: transparent;
-    cursor: pointer;
-    border-width: 1px;
-    border-radius:10px ;
-}
-
-.header{
-    text-align: center;
-
-}
-.info{
-    padding-top: 18px;
-}
-.info label{
-    margin-bottom: 10px;
-}
-.info input{
-    border: none;
-    margin: 5px 0;
-    width: 100%;
-    padding: 10px;
-}
-.temp{
-    display: flex;
-    justify-content: space-around;
-    padding-top: 2.5rem;
-}
-.check button{
-    padding: 10px;
-        font-size: 20px;
-        color: black;
-        font-weight: bold;
-        background-color: transparent;
-        cursor: pointer;
-        border-radius:10px ;    
-}
-.del button{
-    background-color: #ffcccc;
-    padding: 10px;
-        font-size: 20px;
-        color: black;
-        font-weight: bold;
-        cursor: pointer;
-        border-radius:10px ;
-}
-.text{
-    width: 100%;
-    margin-top: 1rem;
-    text-align: center;
-}
-
-.profile{
-    position: relative;
-    display: inline-block;
-}
   .profileImage{
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
+    height: 40px;
+    width: 40px;
+  }
+  .menuItems{
+    right: 0;
   }
 
-  .profileOptions {
-    
-    position: absolute;
+}
+@media only screen and (min-width:769px){
+  .searchInput{
+    width: 30rem;
+  }
+}
 
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100px;
-    display: none;
-  }
-  
-  .profile:hover .profileOptions {
-    display: block;
-  }
 
-  .profileOptions li {
-    padding: 5px;
-    text-align: left;
-  }
-  .icons{
-    font-size: 20px;
-   margin-right: 10px;
-  }
-  
-  .profileOptions a {
-    display: block;
-    width: 100%;
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .profileOptions a:hover {
-    background-color: #f0f0f0;
-  }
-  
+.mainItems{
+  height: 3rem;
+  width: 100%;
+}
+.profileImage{
+  height: 60px;
+  width: 60px;
+}
+
+.menuItems{
+  z-index :1000;
+}
+
+.logo h1{
+  font-size: 75px;
+}

@@ -1,8 +1,8 @@
-import styles from "../Styles/HandleDiary.module.css";
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 export default function StudentStatus() {
   const [taskbtn, setTaskbtn] = useState(false);
   const [diarybtn, setDiarybtn] = useState(false);
@@ -15,13 +15,14 @@ export default function StudentStatus() {
 
   const notifySuccess = () => toast.success("Feedback submitted successfully");
 
-  const notifyError = () => {
-    toast.error("Failed to submit feedback");
-  };
+  const notifyError = () => toast.error("Failed to submit feedback");
+  const notifySubmissionError = () => toast.error("There is no task submissions till now.. ")
   const taskSubmissions = () => {
     setTaskbtn(true);
     setDiarybtn(false);
+    notifySubmissionError();
   };
+
   const diaryEntries = () => {
     setDiarybtn(true);
     setTaskbtn(false);
@@ -30,17 +31,18 @@ export default function StudentStatus() {
   const handleFeed = (index) => {
     setFeed(index);
   };
+
   const handleFeedbackSubmit = async (diaryId) => {
     try {
       const response = await fetch(
-        "https://classsync-y1qe.onrender.com/api/auth/submitFeedback",
+        "http://localhost:5000/api/auth/submitFeedback",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({ diaryId, comments, marks }),
+          credentials: 'include',
         }
       );
       if (response.ok) {
@@ -55,20 +57,18 @@ export default function StudentStatus() {
       console.error("Error submitting feedback:", error);
     }
   };
+
   useEffect(() => {
-    const fetchdiaries = async () => {
+    const fetchDiaries = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const projectCode = localStorage.getItem("projectCode");
+        const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
-          `https://classsync-y1qe.onrender.com/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
+          `http://localhost:5000/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+            credentials: 'include',
+          },
         );
         if (response.ok) {
           const data = await response.json();
@@ -81,9 +81,10 @@ export default function StudentStatus() {
       }
     };
     if (diarybtn) {
-      fetchdiaries();
+      fetchDiaries();
     }
   }, [diarybtn]);
+
   return (
     <>
       <ToastContainer
@@ -98,13 +99,13 @@ export default function StudentStatus() {
         pauseOnHover
         theme="colored"
       />
-      <div className={styles.container}>
-        <div className={styles.clickevents}>
-          <div className={styles.item}>
-            <button onClick={taskSubmissions}>Task Submissions</button>
+      <div className="container py-3 " style={{width:"70%"}}>
+        <div className="d-flex justify-content-around mb-3 flex-wrap gap-5">
+          <div>
+            <button className="btn btn-primary fs-5" onClick={taskSubmissions}>Task Submissions</button>
           </div>
-          <div className={styles.item}>
-            <button onClick={diaryEntries}>Diary Entries</button>
+          <div >
+            <button className="btn btn-primary fs-5" onClick={diaryEntries}>Diary Entries</button>
           </div>
         </div>
         {taskbtn && <div></div>}
@@ -115,76 +116,60 @@ export default function StudentStatus() {
             <div>
               {diaryData.length ? (
                 diaryData.map((info, index) => (
-                  <div
-                    key={index}
-                    className={`${styles.newEntry} ${styles.feedContainer}`}
-                  >
-                    <div className={styles.timeDetails}>
-                      <div>
-                        {" "}
+                  <div key={index} className="mb-3 border border-secondary border-3 rounded p-3">
+                    <div className="row">
+                      <div className="col-md-6">
                         <h3>Email: {info.user.email}</h3>
                       </div>
-                      <div>
-                        <h3>
-                          Date: {new Date(info.date).toLocaleDateString()}
-                        </h3>
+                      <div className="col-md-6">
+                        <h3>Date: {new Date(info.date).toLocaleDateString()}</h3>
                         <h3>Time: {info.time}</h3>
                         <h3>Day: {info.dayOfWeek}</h3>
                       </div>
                     </div>
                     <textarea
+                      style={{borderWidth:"5px"}}
                       name="data"
                       id="data"
-                      cols="72"
-                      rows="20"
+                      className="form-control mt-3"
+                      rows="8"
                       value={info.data}
                       readOnly
                     />
-                    <div className={styles.feed}>
-                      <button onClick={() => handleFeed(index)}>
-                        Give FeedBack
-                      </button>
-
+                    <div className="mt-3">
+                      <button className="btn btn-success" onClick={() => handleFeed(index)}>Give Feedback</button>
                       {feed === index && (
-                        <div className={styles.diaryResult}>
-                          <div className={styles.item}>
-                            <p>Comments : </p>
+                        <div className="mt-3">
+                          <div className="form-group">
+                            <label>Comments:</label>
                             <textarea
-                              type="text"
-                              name="comment"
-                              id="comment"
-                              cols="20"
+                              className="form-control"
                               rows="2"
                               value={comments}
                               onChange={(e) => setComments(e.target.value)}
-                            />{" "}
+                            />
                           </div>
-                          <div className={styles.item}>
-                            <p>
-                              Marks :{" "}
-                              <input
-                                type="text"
-                                name="marks"
-                                id="marks"
-                                value={marks}
-                                onChange={(e) => setMarks(e.target.value)}
-                              />{" "}
-                            </p>
+                          <div className="mt-3 form-group">
+                            <label>Marks:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={marks}
+                              onChange={(e) => setMarks(e.target.value)}
+                            />
                           </div>
-                          <div className={styles.submitbtn}>
-                            <button
-                              onClick={() => handleFeedbackSubmit(info._id)}
-                            >
-                              Submit FeedBack
-                            </button>
-                          </div>
+                          <button className=" mt-4 btn btn-primary" onClick={() => handleFeedbackSubmit(info._id)}>
+                            Submit Feedback
+                          </button>
                         </div>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No diary entries</p>
+                <div className="container mt-5  text-center " style={{width:"auto"}}>
+                  <p className="alert alert-danger">No diary entries</p>
+                </div>
               )}
             </div>
           )
