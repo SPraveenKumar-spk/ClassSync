@@ -227,7 +227,7 @@ function StudentSubmissions() {
             {loading ? (
               <Loader />
             ) : status && !entry && !past ? (
-              <div className="assignedContainer d-flex flex-wrap justify-content-around">
+              <div className=" d-flex flex-wrap justify-content-around">
                 {assigned.length ? (
                   assigned.map((task, index) => (
                     <div key={index} className="mt-5 card m-2 p-3 w-auto bg-gradient bg-secondary fs-5">
@@ -286,7 +286,7 @@ function StudentSubmissions() {
       </form>
 
       {past && (
-        <div className="container ps-5 mt-5 " style={{position:"absolute", left:"10%", top:"10%" }}>
+        <div className="container ps-5 mt-5 " >
           {allData.length > 0 ? (
             allData.map((info, index) => (
               <div key={index} className="row mb-3 border border-secondary border-2 rounded p-3">

@@ -215,9 +215,9 @@ function CreateTasks() {
               </div>
             </div>
           </div>
-              <div className="container-lg" >
+              <div className=" postion-absolute d-flex justify-content-center" >
                 {tasks  &&(
-                  <div className="position-absolute top-50 start-50 translate-middle border rounded p-4  bg-secondary" style={{marginTop : "2rem",minWidth: "20rem"}}>
+                  <div className="m-5 border rounded p-4  bg-secondary">
                     <form onSubmit={handleSubmit}>
                       <div className="mb-3" >
                         <label htmlFor="taskName" className="form-label">Task Name :</label>
@@ -286,6 +286,7 @@ function CreateTasks() {
                   </div>
                   )}
               </div>
+            </div>
           <div className=" col-md-9 col-lg-10 d-flex justify-content-center flex-wrap ">
             {!loading && !tasks && !student  && (
               <div className="d-flex flex-wrap justify-content-around mt-5">
@@ -307,7 +308,7 @@ function CreateTasks() {
                     </div>
                   ))
                 ) : (
-                  <div class="position-absolute top-50 start-50 transform-translate-middle container  text-center fs-3 w-50">
+                  <div class="position-absolute  d-flex justify-content-end  text-center fs-3 w-50">
                   <p class="alert alert-danger">You haven't created any tasks..</p>
                 </div>
           
@@ -315,7 +316,7 @@ function CreateTasks() {
               </div>
             )}
           </div>
-        </div>
+
 
       {student && <StudentStatus />}
     </>
