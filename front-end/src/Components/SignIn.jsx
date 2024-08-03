@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import { useAuth } from "../store/auth";
+import ForgotPassword from "./ForgotPassword";
 
 function SignIn() {
   const { storeValues } = useAuth();
@@ -36,8 +37,7 @@ function SignIn() {
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.ok) {s
         storeValues(user.role);
         setUser({
           email: "",
@@ -65,10 +65,10 @@ function SignIn() {
   return (
     <>
     <div className="navbarnavbar navbar-expand-lg navbar-dark bg-primary " style={{height : "4rem"}}>
-    <div className="container">
-    <a className="navbar-brand d-flex align-items-center" href="/">
-        <h1 className="fs-1 ms-3 p-2 " >ClassSync</h1>
-        </a>
+        <div className="container">
+              <a className="navbar-brand d-flex align-items-center" href="/">
+                  <h1 className="fs-1 ms-3 p-2 " >ClassSync</h1>
+              </a>
         </div>
     </div>
     <section className=" mt-5 ">
@@ -161,9 +161,10 @@ function SignIn() {
                 >
                   Login
                 </button>
-                <NavLink to="/forgot-password" className="text-body">
-                  Forgot password?
+                <NavLink  className="text-body" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Forgot password?
                 </NavLink>
+  
               </div>
 
               <div className="text-center text-lg-start mt-4 ">
@@ -180,6 +181,7 @@ function SignIn() {
         </div>
       </div>
     </section>
+    <ForgotPassword />
     </>
   );
 }

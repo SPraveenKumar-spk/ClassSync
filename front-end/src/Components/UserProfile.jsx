@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from '../assets/user.png';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UserProfile() {
   const [user, setUser] = useState({});
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState({ oldpassword: false, newpassword: false });
   const [password, setPassword] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
+
+  const notifySuccess = () => toast.success("Password Changed successfully");
+  const notify500 = () => toast.error("Internal server error");
+  const notify401 = () => toast.error("Invalid password");
+  const notifyError = () => toast.error("Failed to change your password");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,33 +39,60 @@ export default function UserProfile() {
     fetchUser();
   }, []);
 
-  const handlePasswordUpdate = async()=>{
-    try{
-      const response = await fetch(`http://localhost:5000/api/auth/updatepassword`,{
-        method:"POST",
-        credentials : "include",
-      });
-      if(response.ok){
 
+  const handlePasswordUpdate = async(e)=>{
+    e.preventDefault();
+    try{
+      const response = await fetch(`http://localhost:5000/api/auth/updatePassword`,{
+        method:"POST",
+        headers :{
+          "Content-Type" : "application/json",
+        },
+        credentials : "include",
+        body : JSON.stringify({oldPassword,newPassword}),
+      }
+    );
+      if(response.ok){
+        notifySuccess();
+      }else if(response.status === 401){
+        notify401();
+      }else if(response.status === 500){
+        notify500();
+      }
+      else{
+        notifyError();
       }
     }catch(error){
       console.log(error);
     }
   }
   const handlePassowrd = () => {
-    handlePasswordUpdate();
     setPassword(prev => !prev);
   };
-
   const handleRoute = () => {
     navigate(-1); 
   };
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
+  const togglePassword = (field) => {
+    setShowPassword(prevState =>({
+      ...prevState,
+      [field] : !prevState[field],
+    }));
   };
 
   return (
     <>
+    <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <section style={{ backgroundColor: '#eee' }}>
         <div className="container py-5">
           <div className="row">
@@ -119,69 +156,77 @@ export default function UserProfile() {
                     </div>
                   </div>
                   <hr />
-                  {password && 
-                  <div>
+                  <form onSubmit={handlePasswordUpdate}>
+                    {password &&
+                    <div>
+                      <div className="row">
+                      <div className="col-sm-3">
+                        <p className="mb-0">Current Password</p>
+                      </div>
+                      <div className="col-sm-9">
+                      <div className="input-group">
+                    <input
+                      type={showPassword.oldpassword ? "text" : "password"}
+                      id="oldpassword"
+                      name="oldpassword"
+                      className="form-control form-control-sm"
+                      placeholder="Password"
+                      value={oldPassword}
+                      onChange={(e)=>{setOldPassword(e.target.value)}}
+                      required
+                    />
+                
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={()=> togglePassword('oldpassword')}
+                    >
+                      {showPassword.oldpassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                      </div>
+                    </div>
+                    <hr />
                     <div className="row">
-                    <div className="col-sm-3">
-                      <p className="mb-0">Current Password</p>
-                    </div>
-                    <div className="col-sm-9">
-                    <div className="input-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    className="form-control form-control-sm"
-                    placeholder="Password"
-                
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={togglePassword}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-                    </div>
+                      <div className="col-sm-3">
+                        <p className="mb-0">New Password</p>
+                      </div>
+                      <div className="col-sm-9">
+                      <div className="input-group">
+                    <input
+                      type={showPassword.newpassword ? "text" : "password"}
+                      id="newpassword"
+                      name="newpassword"
+                      className="form-control form-control-sm"
+                      placeholder="Password"
+                      value={newPassword}
+                      onChange={(e)=>{setNewPassword(e.target.value)}}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={()=>togglePassword('newpassword')}
+                    >
+                      {showPassword.newpassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
                   </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col-sm-3">
-                      <p className="mb-0">New Password</p>
+                  
+                 </div>
+                 
                     </div>
-                    <div className="col-sm-9">
-                    <div className="input-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="newpassword"
-                    name="newpassword"
-                    className="form-control form-control-sm"
-                    placeholder="Password"
-                
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={togglePassword}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
+                    <hr/>
                     </div>
-                  </div>
-                  <hr/>
-                  </div>
-                  }
+                 }
                
-                  <div className="d-flex justify-content-start mb-2">
-                      <button type="button" className="btn btn-primary" onClick={handlePassowrd}>Change Password</button>
-                      <button type="button" className="btn btn-outline-primary ms-1">Update Profile</button>
-                    </div>  
-                </div>
+                        <div className="d-flex justify-content-start mb-2">
+                            <button type='button'  className="btn btn-primary"  onClick={handlePassowrd}>Change Password</button>
+                            <button type="submit" className="btn btn-outline-primary ms-1" >Update Profile</button>
+                        </div> 
+                  </form>
+                  </div>
               </div>
+              
               <div className="row">
                 <div className="col-md-6">
                   <div className="card mb-4">
