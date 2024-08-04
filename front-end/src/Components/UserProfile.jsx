@@ -22,7 +22,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/userinfo`, {
+        const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/userinfo`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -43,7 +43,7 @@ export default function UserProfile() {
   const handlePasswordUpdate = async(e)=>{
     e.preventDefault();
     try{
-      const response = await fetch(`http://localhost:5000/api/auth/updatePassword`,{
+      const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/updatePassword`,{
         method:"POST",
         headers :{
           "Content-Type" : "application/json",

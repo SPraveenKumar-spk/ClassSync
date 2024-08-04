@@ -35,7 +35,7 @@ export default function StudentStatus() {
   const handleFeedbackSubmit = async (diaryId) => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/submitFeedback",
+        "https://class-sync-geht.vercel.app/api/auth/submitFeedback",
         {
           method: "POST",
           headers: {
@@ -64,7 +64,7 @@ export default function StudentStatus() {
       try {
         const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
-          `http://localhost:5000/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
+          `https://class-sync-geht.vercel.app/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials: 'include',

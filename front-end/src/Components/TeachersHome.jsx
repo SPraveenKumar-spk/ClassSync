@@ -76,7 +76,7 @@ const TeachersHome = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/auth/projects`,
+        `https://class-sync-geht.vercel.app/api/auth/projects`,
         {
           method: "POST",
           headers: {
@@ -106,7 +106,7 @@ const TeachersHome = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/userProjects`,
+          `https://class-sync-geht.vercel.app/api/auth/userProjects`,
           {
             method: "GET",
             credentials: 'include'
@@ -131,7 +131,7 @@ const TeachersHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+          `https://class-sync-geht.vercel.app/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
           {
             method: "DELETE",
             credentials: 'include'
