@@ -5,8 +5,10 @@ import StudentStatus from "./StudentStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMenuSharp } from "react-icons/io5";
+import { useAuth } from "../store/auth";
 
 function CreateTasks() {
+  const { baseURL } = useAuth();
   const navigate  = useNavigate();
   const [status, setStatus] = useState(false);
   const [tasks, setTasks] = useState(false);
@@ -37,7 +39,7 @@ function CreateTasks() {
       const projectCode = sessionStorage.getItem("projectCode");
       const taskId = uuidv4();
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/assigntasks?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
@@ -69,7 +71,7 @@ function CreateTasks() {
       try {
         const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
-          `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
+          `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials:'include',
@@ -117,7 +119,7 @@ function CreateTasks() {
   const handleDelete = async (taskId) => {
     try {
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/deletetask`,
+        `${baseURL}/api/auth/deletetask`,
         {
           method: "DELETE",
           
