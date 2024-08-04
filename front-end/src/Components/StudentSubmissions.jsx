@@ -4,8 +4,10 @@ import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMenuSharp } from "react-icons/io5";
- 
+import { useAuth } from "../store/auth";
+
 function StudentSubmissions() {
+  const { baseURL } = useAuth();
   const projectCode = sessionStorage.getItem("projectCode");
   const [assigned, setAssigned] = useState([]);
   const [diary, setDiary] = useState(false);
@@ -32,7 +34,7 @@ function StudentSubmissions() {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
+          `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials: "include",
@@ -63,7 +65,7 @@ function StudentSubmissions() {
     setPast(false);
     try {
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -104,7 +106,7 @@ function StudentSubmissions() {
     try {
       const projectCode = sessionStorage.getItem("projectCode");
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/diaryrepo?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -140,7 +142,7 @@ function StudentSubmissions() {
         weekday: "long",
       });
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/diaryentry?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {

@@ -7,6 +7,7 @@ import ForgotPassword from "./ForgotPassword";
 
 function SignIn() {
   const { storeValues } = useAuth();
+  const { baseURL } = useAuth();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
@@ -20,13 +21,13 @@ function SignIn() {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
-
+console.log("ur;",`${baseURL}/api/auth/login`)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/login`,
+        `${baseURL}/api/auth/login`,
         {
           method: "POST",
           headers: {
@@ -37,7 +38,7 @@ function SignIn() {
         }
       );
 
-      if (response.ok) {s
+      if (response.ok) {
         storeValues(user.role);
         setUser({
           email: "",

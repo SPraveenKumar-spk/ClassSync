@@ -2,8 +2,10 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaUser, FaEnvelope, FaLock, FaKey } from 'react-icons/fa';
+import { useAuth } from "../store/auth";
 
 function Signup() {
+  const { baseURL } = useAuth();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -23,7 +25,7 @@ function Signup() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/register`,
+        `${baseURL}/api/auth/register`,
         {
           method: "POST",
           headers: {

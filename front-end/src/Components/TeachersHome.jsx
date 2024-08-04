@@ -8,8 +8,10 @@ import Loader from "./Loader";
 import styles from "../Styles/ProjectsHome.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../store/auth";
 
 const TeachersHome = () => {
+  const { baseURL } = useAuth();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState([]);
@@ -76,7 +78,7 @@ const TeachersHome = () => {
 
     try {
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/projects`,
+        `${baseURL}/api/auth/projects`,
         {
           method: "POST",
           headers: {
@@ -106,7 +108,7 @@ const TeachersHome = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://class-sync-geht.vercel.app/api/auth/userProjects`,
+          `${baseURL}/api/auth/userProjects`,
           {
             method: "GET",
             credentials: 'include'
@@ -131,7 +133,7 @@ const TeachersHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `https://class-sync-geht.vercel.app/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+          `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
           {
             method: "DELETE",
             credentials: 'include'

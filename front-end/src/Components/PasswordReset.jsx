@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from "../store/auth";
 
 function PasswordReset() {
+  const { baseURL } = useAuth();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
@@ -29,7 +31,7 @@ function PasswordReset() {
     }
 
     try {
-      const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/resetpassword?token=${token}`, {
+      const response = await fetch(`${baseURL}/api/auth/resetpassword?token=${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

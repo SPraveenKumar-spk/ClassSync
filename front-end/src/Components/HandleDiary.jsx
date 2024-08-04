@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../store/auth";
 
 function HandleDiary() {
+  const { baseURL } = useAuth();
   const [entry, setEntry] = useState(false);
   const [past, setPast] = useState(false);
   const [textData, setTextData] = useState("");
@@ -31,7 +33,7 @@ function HandleDiary() {
     try {
       const projectCode = sessionStorage.getItem("projectCode");
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/diaryrepo?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -63,7 +65,7 @@ function HandleDiary() {
         weekday: "long",
       });
       const response = await fetch(
-        `https://class-sync-geht.vercel.app/api/auth/diaryentry?projectCode=${projectCode}`,
+        `${baseURL}/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {

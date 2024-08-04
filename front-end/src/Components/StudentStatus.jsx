@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../store/auth";
 
 export default function StudentStatus() {
+  const { baseURL } = useAuth();
   const [taskbtn, setTaskbtn] = useState(false);
   const [diarybtn, setDiarybtn] = useState(false);
   const [feed, setFeed] = useState(-1);
@@ -35,7 +37,7 @@ export default function StudentStatus() {
   const handleFeedbackSubmit = async (diaryId) => {
     try {
       const response = await fetch(
-        "https://class-sync-geht.vercel.app/api/auth/submitFeedback",
+        "${baseURL}/api/auth/submitFeedback",
         {
           method: "POST",
           headers: {
@@ -64,7 +66,7 @@ export default function StudentStatus() {
       try {
         const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
-          `https://class-sync-geht.vercel.app/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
+          `${baseURL}/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials: 'include',

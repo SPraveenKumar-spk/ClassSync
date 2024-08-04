@@ -1,13 +1,14 @@
 import { useState } from "react";
+import { useAuth } from "../store/auth";
 
 const ForgotPassword = () => {
-
+  const { baseURL } = useAuth();
   const[email,setEmail] = useState('');
 
   const handleEmail = async(e) =>{
     e.preventDefault();
     try{
-      const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/forgotpassword`,{
+      const response = await fetch(`${baseURL}/api/auth/forgotpassword`,{
         method : "POST",
         headers : {
           "Content-Type" : "application/json",

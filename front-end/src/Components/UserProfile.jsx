@@ -4,8 +4,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from '../assets/user.png';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../store/auth";
 
 export default function UserProfile() {
+  const { baseURL } = useAuth();
   const [user, setUser] = useState({});
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -22,7 +24,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/userinfo`, {
+        const response = await fetch(`${baseURL}/api/auth/userinfo`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -43,7 +45,7 @@ export default function UserProfile() {
   const handlePasswordUpdate = async(e)=>{
     e.preventDefault();
     try{
-      const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/updatePassword`,{
+      const response = await fetch(`${baseURL}/api/auth/updatePassword`,{
         method:"POST",
         headers :{
           "Content-Type" : "application/json",
