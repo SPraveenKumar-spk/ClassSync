@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(sessionStorage.getItem("userRole"));
   // const baseURL = "https://class-sync-geht.vercel.app";
-  const baseURL = "http://localhost:5000";
+  const baseURL = "https://class-sync-2hir.vercel.app";
 
   const storeValues = (role) => {
     sessionStorage.setItem("userRole", role);
