@@ -32,7 +32,7 @@ function StudentSubmissions() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/assignedDetails?projectCode=${projectCode}`,
+          `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials: "include",
@@ -63,7 +63,7 @@ function StudentSubmissions() {
     setPast(false);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/auth/assignedDetails?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -104,7 +104,7 @@ function StudentSubmissions() {
     try {
       const projectCode = sessionStorage.getItem("projectCode");
       const response = await fetch(
-        `http://localhost:5000/api/auth/diaryrepo?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -140,7 +140,7 @@ function StudentSubmissions() {
         weekday: "long",
       });
       const response = await fetch(
-        `http://localhost:5000/api/auth/diaryentry?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {

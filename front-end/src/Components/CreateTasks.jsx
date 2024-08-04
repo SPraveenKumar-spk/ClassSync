@@ -37,7 +37,7 @@ function CreateTasks() {
       const projectCode = sessionStorage.getItem("projectCode");
       const taskId = uuidv4();
       const response = await fetch(
-        `http://localhost:5000/api/auth/assigntasks?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
@@ -69,7 +69,7 @@ function CreateTasks() {
       try {
         const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
-          `http://localhost:5000/api/auth/assignedDetails?projectCode=${projectCode}`,
+          `https://class-sync-geht.vercel.app/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
             credentials:'include',
@@ -117,7 +117,7 @@ function CreateTasks() {
   const handleDelete = async (taskId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/auth/deletetask`,
+        `https://class-sync-geht.vercel.app/api/auth/deletetask`,
         {
           method: "DELETE",
           

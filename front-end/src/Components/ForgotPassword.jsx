@@ -7,7 +7,7 @@ const ForgotPassword = () => {
   const handleEmail = async(e) =>{
     e.preventDefault();
     try{
-      const response = await fetch(`http://localhost:5000/api/auth/forgotpassword`,{
+      const response = await fetch(`https://class-sync-geht.vercel.app/api/auth/forgotpassword`,{
         method : "POST",
         headers : {
           "Content-Type" : "application/json",

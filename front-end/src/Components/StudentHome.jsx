@@ -53,7 +53,7 @@ const StudentHome = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/auth/studentprojects`,
+        `https://class-sync-geht.vercel.app/api/auth/studentprojects`,
         {
           method: "POST",
           headers: {
@@ -80,7 +80,7 @@ const StudentHome = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/studentsrepo`,
+          `https://class-sync-geht.vercel.app/api/auth/studentsrepo`,
           {
             method: "GET",
             credentials: 'include'
@@ -104,7 +104,7 @@ const StudentHome = () => {
       if (confirmation) {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+            `https://class-sync-geht.vercel.app/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
             {
               method: "DELETE",
               credentials: 'include'

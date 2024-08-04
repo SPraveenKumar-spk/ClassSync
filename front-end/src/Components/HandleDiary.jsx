@@ -31,7 +31,7 @@ function HandleDiary() {
     try {
       const projectCode = sessionStorage.getItem("projectCode");
       const response = await fetch(
-        `http://localhost:5000/api/auth/diaryrepo?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
           credentials: "include",
@@ -63,7 +63,7 @@ function HandleDiary() {
         weekday: "long",
       });
       const response = await fetch(
-        `http://localhost:5000/api/auth/diaryentry?projectCode=${projectCode}`,
+        `https://class-sync-geht.vercel.app/api/auth/diaryentry?projectCode=${projectCode}`,
         {
           method: "POST",
           headers: {
