@@ -2,6 +2,7 @@ import Home from "./Components/Home";
 import About from "./pages/About";
 import Signup from "./Components/Signup";
 import SignIn from "./Components/SignIn";
+import PasswordReset from "./Components/PasswordReset";
 import Logout from "./Components/Logout";
 import UserProfile from "./Components/UserProfile";
 import TeachersHome from "./Components/TeachersHome";
@@ -19,6 +20,7 @@ function App() {
           <Route path = "/about" element={<About />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<SignIn />} />
+          <Route path="/resetpassword" element ={<PasswordReset />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/teachersHome" element={<TeachersHome />} />

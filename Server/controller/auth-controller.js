@@ -5,7 +5,8 @@ const tasks = require("../models/tasks")
 const diary = require("../models/diary")
 const bcrypt = require("bcryptjs")
 const nodemailer = require('nodemailer');
-
+const PasswordResetToken = require('../models/passwordReset');
+const crypto = require("crypto")
 const home = (req,res)=>{
     try{
         res.status(200).send("from home");  
@@ -22,16 +23,13 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-transporter.verify((error, success) => {
-    if (error) {
-    } else {
-    }
-});
 
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
+
         const userExist = await User.findOne({email});
+
         if(userExist){
             return res.status(401).json({msg:"Email already exists"})
         }
@@ -65,6 +63,7 @@ const register = async(req,res)=>{
                 
                 <p>Best regards,</p>
                 <p>S. Praveen Kumar,</p>
+                <p>(founder of ClassSync ) </p>
                 <p>ClassSync.</p>
             `
         };
@@ -85,6 +84,7 @@ const register = async(req,res)=>{
         res.status(500).send("Internal server error");
     }
 }
+
 const login = async (req,res)=>{
     try{
         const{email,password,role} = req.body;
@@ -114,21 +114,92 @@ const login = async (req,res)=>{
 const updatePassword = async(req,res)=>{
     try{
         const user = req.session.userId;
-        const{currPassword,newPassword} = req.body;
-        const  isMatch = bcrypt.compare(currPassword,user.password);
-        if(!isMatch){
-            res.status(401).json({msg:"Invalid Password"});
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-        user.password = hashedPassword;
-        await user.save();
+        const userDetails = await User.findById(user);
 
-        res.json({ msg: 'Password updated successfully' });
+        const {oldPassword,newPassword} = req.body;
+
+        const  isMatch =await bcrypt.compare(oldPassword,userDetails.password);
+        if(!isMatch){
+           return res.status(401).json({msg:"Invalid Password"});
+        }
+        userDetails.password = newPassword;
+
+        await userDetails.save();
+       return res.status(200).json({ msg: 'Password updated successfully' });
     }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+       return  res.status(500).json({msg:"Internal server error"});
     }
 }
+
+const forgotpassword = async(req,res)=>{
+    try{
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+      
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = Date.now() + 10 * 60 * 1000; 
+
+        await PasswordResetToken.create({
+          email,
+          token,
+          expiresAt,
+          used: false
+        });
+        const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
+
+        await transporter.sendMail({
+          to: email,
+          subject: 'Password Reset Request',
+          html: `
+           <p>Dear ${user.name},</p>
+           <p>As you have requested for reset password instructions, here they are, please follow the URL:</p>
+          <p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 10 minutes.</p>
+          `,
+        });
+      
+        res.status(200).json({ message: 'Reset link sent to your email' });
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const resetpassword = async(req,res) =>{
+    try{
+        const { token } = req.query;
+        const { newPassword } = req.body;
+        const passwordResetToken = await PasswordResetToken.findOne({ token });
+
+        if (!passwordResetToken || passwordResetToken.used) {
+          return res.status(400).json({ message: 'Invalid or expired link' });
+        }
+    
+        if (passwordResetToken.expiresAt < Date.now()) {
+          return res.status(400).json({ message: 'link has expired' });
+        }
+      
+        const user = await User.findOne({ email: passwordResetToken.email });
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+        user.password = newPassword; 
+
+        await user.save();
+       
+        passwordResetToken.used = true;
+
+        await passwordResetToken.save();
+
+      
+        res.status(200).json({ message: 'Password reset successfull' });
+      
+    }catch(error){
+        console.log(error);
+    }
+}
+
 const userinfo = async (req, res) => {
     try {
       if (!req.session.userId) {
@@ -141,7 +212,7 @@ const userinfo = async (req, res) => {
       }
       res.status(200).json(userDetails);
     } catch (error) {
-      res.status(500).json({ msg: "Internal server error" });
+     return res.status(500).json({ msg: "Internal server error" });
     }
   };
   
@@ -152,7 +223,7 @@ const projects = async(req,res) =>{
             return res.status(401).json({ msg: "User not logged in" });
           }
       
-          const userId = req.session.userId;
+        const userId = req.session.userId;
         const {projectName,classroom,students,projectCode} = req.body;
         const projectCreated = await Project.create({
             projectName,
@@ -418,4 +489,4 @@ const submitFeedBack = async(req,res)=>{
       }
 }
 
-module.exports = {home,register,updatePassword,login,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};
+module.exports = {home,register,login,updatePassword,forgotpassword,resetpassword,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};
