@@ -21,7 +21,7 @@ const store = new MongoDBStore({
     uri: process.env.MongoDBURI,
     collection: 'sessions'
 });
-app.use(cors({ credentials: true, origin: 'http://localhost:5173' }))
+app.use(cors({ credentials: true, origin: 'https://class-sync-livid.vercel.app' }))
 app.use(cookieParser());
 app.use(express.json())
 app.use(session({
