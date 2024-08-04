@@ -149,7 +149,7 @@ const forgotpassword = async(req,res)=>{
           expiresAt,
           used: false
         });
-        const resetLink = `https://class-sync-livid.vercel.app/resetpassword?token=${token}`;
+        const resetLink = `https://classsync-cvojq1lbt-abcs-projects-daf0d76d.vercel.app/resetpassword?token=${token}`;
 
         await transporter.sendMail({
           to: email,
