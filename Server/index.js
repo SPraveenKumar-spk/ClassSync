@@ -24,7 +24,7 @@ const store = new MongoDBStore({
 });
 
 const corsOptions = {
-  origin: 'https://classsync-cvojq1lbt-abcs-projects-daf0d76d.vercel.app',
+  origin: 'http://localhost:5173',
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization'

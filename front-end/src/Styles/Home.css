@@ -1,0 +1,33 @@
+.hero img {
+  filter: brightness(0.7) saturate(75%);
+}
+
+.item button {
+  color: #13bbff;
+  background-color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.item button:hover {
+  background-color: #13bbff;
+  color: white;
+}
+
+.content .btn button {
+
+  color: #13bbff;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.content .btn button:hover {
+  background-color: #13bbff;
+  color: white;
+}
+

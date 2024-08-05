@@ -16,12 +16,13 @@ function SignIn() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [InvalidUser, setInvalidUser] = useState(false);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
-console.log("ur;",`${baseURL}/api/auth/login`)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -50,11 +51,15 @@ console.log("ur;",`${baseURL}/api/auth/login`)
         } else {
           navigate("/studentshome");
         }
-      } else if (response.status === 404 || response.status === 401) {
+      } else if ( response.status === 401) {
         setLoginError(true);
+        setInvalidUser(false);
+      }else{
+        setInvalidUser(true);
+        setLoginError(false);
       }
     } catch (error) {
-      console.error("Login error:", error);
+
       setLoginError(true); 
     }
   };
@@ -152,7 +157,12 @@ console.log("ur;",`${baseURL}/api/auth/login`)
                 <div className="alert alert-danger" role="alert">
                   Invalid email or password.
                 </div>
-              )}
+              ) }
+              {InvalidUser &&
+              <div className="alert alert-danger" role="alert">
+              Invalid user.
+            </div>
+              }
 
               <div className="d-flex justify-content-between align-items-center mb-4">
               <button

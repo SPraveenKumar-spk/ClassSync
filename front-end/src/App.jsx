@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from "./Components/Home";
 import About from "./pages/About";
 import Signup from "./Components/Signup";

@@ -31,7 +31,7 @@ const ForgotPassword = () => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog" style={{ width: '300px' }}>
+      <div className="modal-dialog" >
         <div className="modal-content text-center">
           <div className="modal-header h5 text-white bg-primary justify-content-center">
             Password Reset
