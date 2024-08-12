@@ -58,7 +58,6 @@
                       Contact Us
                     </NavLink>
                   </li>
-                 
                 </ul>
                 <ul className="navbar-nav ms-auto d-none d-md-flex">
                   <li className="nav-item">
@@ -92,7 +91,7 @@
             </p>
           </div>
           <div className="btn pt-4">
-            <NavLink to="/register">
+            <NavLink to="/login">
               <button className="btn btn-outline-primary fs-3 p-2 fw-semibold text-nowrap ">
                 Transform Learning
               </button>
