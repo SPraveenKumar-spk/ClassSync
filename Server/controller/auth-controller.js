@@ -147,7 +147,7 @@ const forgotpassword = async(req,res)=>{
           expiresAt,
           used: false
         });
-        const resetLink = `https://classsync-cvojq1lbt-abcs-projects-daf0d76d.vercel.app/resetpassword?token=${token}`;
+        const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
 
         await transporter.sendMail({
           to: email,
@@ -328,34 +328,37 @@ const studentsrepo = async(req,res)=>{
     }
 }
 
-const assigntasks = async(req,res)=>{
-    try{
-        const{taskName,theme,description,deadline,files,taskId} = req.body;
-        const { projectCode } = req.query;    
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
-          }
-      
-          const userId = req.session.userId;
-        const createTask = await tasks.create({
-            taskId,
-            taskName,
-            theme,
-            description,
-            deadline,
-            files: { data: files },
-            user:userId,
-            projectCode,
-        });
+const assigntasks = async (req, res) => {
+    try {
 
-        res.status(200).json({
-            msg : "Successfully created the task"
-        });
+      const { taskName, theme, description, deadline, taskId } = req.body;
+      const { projectCode } = req.query;
 
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+      if (!req.session.userId) {
+        return res.status(401).json({ msg: "User not logged in" });
+      }
+  
+      const userId = req.session.userId;
+
+      const fileId = req.file ? req.file.filename : null;
+
+    await tasks.create({
+      taskId,
+      taskName,
+      theme,
+      description,
+      deadline,
+      file: fileId,
+      user: userId,
+      projectCode,
+    });
+
+  
+      res.status(200).json({ msg: "Successfully created the task" });
+    } catch (error) {
+      res.status(500).json({ msg: "Internal server error" });
     }
-}
+  };
 
 const deletetask = async (req, res) => {
     try {

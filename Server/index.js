@@ -7,11 +7,13 @@ const cors = require('cors');
 const app = express();
 const MongoDBStore = require('connect-mongodb-session')(session);
 
+
+
 const URI = process.env.MongoDBURI;
 const connectDB = async () => {
   try {
     await mongoose.connect(URI);
-    console.log('Connected to Database Successfully');
+    console.log("Connected to Database Successfully");
   } catch (error) {
     console.log(error);
     process.exit(0);
@@ -20,35 +22,43 @@ const connectDB = async () => {
 
 const store = new MongoDBStore({
   uri: process.env.MongoDBURI,
-  collection: 'sessions'
+  collection: "sessions",
 });
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: "http://localhost:5173",
   credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization'
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: store,
-  cookie: {
-    secure: false,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      name: "classsync_session",
+      secure: false,
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
-const router = require('./auth/auth-router');
-app.use('/api/auth/', router);
+const router = require("./auth/auth-router");
+app.use("/api/auth/", router);
+
+
+
+
+
 
 const port = process.env.PORT || 5000;
 

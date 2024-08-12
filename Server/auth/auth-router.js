@@ -1,27 +1,32 @@
-const express  = require("express")
+const express = require('express');
 const router = express.Router();
-const authMiddleware = require("../middlewares/AuthMiddleware");
+const upload = require('../middlewares/storage');
 
-const {home,register,login,updatePassword,forgotpassword,resetpassword,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack} = require("../controller/auth-controller");
-router.route("/").get(home)
-router.route("/register").post(register)
-router.route("/login").post(login);
-router.route("/updatePassword").post(updatePassword);
-router.route("/forgotpassword").post(forgotpassword)
-router.route("/resetpassword").post(resetpassword)
-router.route("/userinfo").get(userinfo)
-router.route("/projects").post(projects);
-router.route("/deleteproject").delete(deleteproject);
-router.route("/userProjects").get(userProjects);
-router.route("/studentprojects").post(studentprojects);
-router.route("/studentsrepo").get(studentsrepo);
-router.route("/assigntasks").post(assigntasks);
-router.route("/deletetask").delete(deletetask);
-router.route("/edittask").put(edittask);
-router.route("/assignedDetails").get(assignedDetails);
-router.route("/diaryentry").post(diaryentry);
-router.route("/diaryrepo").get(diaryrepo);
-router.route("/studentdiaryrepo").get(studentdiaryrepo);
-router.route("/submitFeedBack").post(submitFeedBack);
+const {
+  home, register, login, updatePassword, forgotpassword, resetpassword, userinfo,
+  projects, deleteproject, userProjects, studentprojects, studentsrepo, assigntasks,
+  assignedDetails, deletetask, edittask, diaryentry, diaryrepo, studentdiaryrepo, submitFeedBack
+} = require("../controller/auth-controller");
+
+router.get("/", home);
+router.post("/register", register);
+router.post("/login", login);
+router.post("/updatePassword", updatePassword);
+router.post("/forgotpassword", forgotpassword);
+router.post("/resetpassword", resetpassword);
+router.get("/userinfo", userinfo);
+router.post("/projects", projects);
+router.delete("/deleteproject", deleteproject);
+router.get("/userProjects", userProjects);
+router.post("/studentprojects", studentprojects);
+router.get("/studentsrepo", studentsrepo);
+router.post("/assigntasks", upload.single('file'), assigntasks);
+router.delete("/deletetask", deletetask);
+router.put("/edittask", edittask);
+router.get("/assignedDetails", assignedDetails);
+router.post("/diaryentry", diaryentry);
+router.get("/diaryrepo", diaryrepo);
+router.get("/studentdiaryrepo", studentdiaryrepo);
+router.post("/submitFeedBack", submitFeedBack);
 
 module.exports = router;
