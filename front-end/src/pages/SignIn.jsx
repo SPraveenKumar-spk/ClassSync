@@ -6,8 +6,7 @@ import { useAuth } from "../store/auth";
 import ForgotPassword from "./ForgotPassword";
 
 function SignIn() {
-  const { storeValues } = useAuth();
-  const { baseURL } = useAuth();
+  const { storeValues, baseURL, storeToken } = useAuth();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
@@ -37,6 +36,8 @@ function SignIn() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        storeToken(data.token);
         storeValues(user.role);
         setUser({
           email: "",
@@ -44,7 +45,7 @@ function SignIn() {
           role: "",
         });
         if (user.role === "Teacher") {
-          navigate("/teachersHome");
+          navigate("/teachershome");
         } else {
           navigate("/studentshome");
         }

@@ -31,8 +31,15 @@
     padding: 10px;
 }
 
-.sidebar{
-  transition: transform 0.3s ease-in-out;
+.sidebar {
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  width: 250px;
 }
 
 .sidebar-open {
@@ -42,6 +49,13 @@
 .sidebar-closed {
   transform: translateX(-100%);
 }
+
+/* Ensure the navbar stays on top */
+.navbar {
+  z-index: 1050;
+  /* Higher z-index to stay on top */
+}
+
 
 
 @media only screen and (max-width : 768px ){

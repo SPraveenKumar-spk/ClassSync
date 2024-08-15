@@ -9,10 +9,9 @@ import ErrorPage from "./pages/ErrorPage";
 import TeachersHome from "./Components/TeachersHome";
 import StudentHome from "./Components/StudentHome";
 import StudentSubmissions from "./Components/StudentSubmissions";
-import CreateTasks from "./Components/CreateTasks";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
+import TeacherControll from "./Components/TeacherControl";
 
 function App() {
   return (
@@ -21,10 +20,10 @@ function App() {
         <Routes>
           <Route element={<ProtectedRoutes />}>
             <Route path="/userprofile" element={<UserProfile />} />
-            <Route path="/teachersHome" element={<TeachersHome />} />
+            <Route path="/teachershome" element={<TeachersHome />} />
             <Route path="/studentshome" element={<StudentHome />} />
             <Route path="/submissions" element={<StudentSubmissions />} />
-            <Route path="/createtasks" element={<CreateTasks />} />
+            <Route path="/createtasks" element={<TeacherControll />} />
             <Route path="/logout" element={<Logout />} />
           </Route>
           <Route path="/" element={<Home />} />

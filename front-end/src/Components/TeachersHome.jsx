@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../store/auth";
 
 const TeachersHome = () => {
-  const { baseURL } = useAuth();
+  const { baseURL, LogoutUser } = useAuth();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState([]);
@@ -77,17 +77,14 @@ const TeachersHome = () => {
     };
 
     try {
-      const response = await fetch(
-        `${baseURL}/api/auth/projects`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newProject),
-          credentials: 'include'
-        }
-      );
+      const response = await fetch(`${baseURL}/api/auth/projects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+        credentials: "include",
+      });
       setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
@@ -107,13 +104,10 @@ const TeachersHome = () => {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          `${baseURL}/api/auth/userProjects`,
-          {
-            method: "GET",
-            credentials: 'include'
-          }
-        );
+        const response = await fetch(`${baseURL}/api/auth/userProjects`, {
+          method: "GET",
+          credentials: "include",
+        });
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
@@ -136,7 +130,7 @@ const TeachersHome = () => {
           `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
           {
             method: "DELETE",
-            credentials: 'include'
+            credentials: "include",
           }
         );
         if (response.ok) {
@@ -168,6 +162,7 @@ const TeachersHome = () => {
   };
 
   const handleLogout = () => {
+    LogoutUser();
     navigate("/logout");
   };
 
@@ -195,11 +190,13 @@ const TeachersHome = () => {
         theme="colored"
       />
       <div className="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${styles.mainItems}`}>
+        <div
+          className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${styles.mainItems}`}
+        >
           <div>
-          <h1 className={`navbar-brand fs-1 ${styles.logo}`}>ClassSync</h1>
+            <h1 className={`navbar-brand fs-1 ${styles.logo}`}>ClassSync</h1>
           </div>
-          
+
           <div>
             <input
               type="text"
@@ -212,22 +209,33 @@ const TeachersHome = () => {
             />
           </div>
           <div>
-            <button className="btn btn-primary ms-2 border rounded-sm d-none d-lg-block" onClick={openModal}>
+            <button
+              className="btn btn-primary ms-2 border rounded-sm d-none d-lg-block"
+              onClick={openModal}
+            >
               Create Project
             </button>
           </div>
-          <div className={`profile d-inline position-relative ${styles.mainProfile}`}  onMouseEnter={() => setOptions(true)}
-              onMouseLeave={() => setOptions(false)}>
+          <div
+            className={`profile d-inline position-relative ${styles.mainProfile}`}
+            onMouseEnter={() => setOptions(true)}
+            onMouseLeave={() => setOptions(false)}
+          >
             <img
               src={Image}
               alt="profile"
-              className={`profileImage img-fluid ${styles.profileImage} `} style={{cursor :"pointer"}}
+              className={`profileImage img-fluid ${styles.profileImage} `}
+              style={{ cursor: "pointer" }}
               onMouseEnter={() => setOptions(true)}
-         
             />
             {options && (
-              <div className={`profileOptions position-absolute top-100  bg-light border rounded p-3 h-auto ${styles.menuItems}`} >
-                <ul className="list-unstyled fs-5 " style={{cursor :"pointer"}}>
+              <div
+                className={`profileOptions position-absolute top-100  bg-light border rounded p-3 h-auto ${styles.menuItems}`}
+              >
+                <ul
+                  className="list-unstyled fs-5 "
+                  style={{ cursor: "pointer" }}
+                >
                   <li>
                     <a
                       className="text-decoration-none d-flex align-items-center text-dark pb-1"
@@ -264,14 +272,31 @@ const TeachersHome = () => {
         <div className="container d-flex justify-content-center align-items-center flex-wrap mt-5 ">
           {filteredProjects.length ? (
             filteredProjects.map((project, index) => (
-              <div key={index} className="card m-2" style={{minWidth : "20rem"}}>
+              <div
+                key={index}
+                className="card m-2"
+                style={{ minWidth: "20rem" }}
+              >
                 <div className="card-body rounded bg-secondary">
-                  <h3 className="card-title p-1"><span className="text-info">Project Name: </span>{project.projectName}</h3>
-                  <h3 className="card-text p-1"><span className="text-info">Classroom:</span> {project.classroom}</h3>
-                  <h3 className="card-text p-1"><span className="text-info">No of Students:</span> {project.students}</h3>
+                  <h3 className="card-title p-1">
+                    <span className="text-info">Project Name: </span>
+                    {project.projectName}
+                  </h3>
+                  <h3 className="card-text p-1">
+                    <span className="text-info">Classroom:</span>{" "}
+                    {project.classroom}
+                  </h3>
+                  <h3 className="card-text p-1">
+                    <span className="text-info">No of Students:</span>{" "}
+                    {project.students}
+                  </h3>
                   {project.projectCode ? (
                     <>
-                      <h3 className="card-text"> <span className="text-info">Project ID: </span>{project.projectCode}</h3>
+                      <h3 className="card-text">
+                        {" "}
+                        <span className="text-info">Project ID: </span>
+                        {project.projectCode}
+                      </h3>
                       <div className="d-flex justify-content-between pt-5">
                         <button
                           className="btn btn-primary"
@@ -307,63 +332,75 @@ const TeachersHome = () => {
         className="modal-dialog"
       >
         <div className="container p-5 position-fixed top-50 start-50 translate-middle">
-        <div className=" p-4 modal-content border border  bg-light rounded-4">
-          <div className="modal-header position-relative">
-            <div > 
-              <h1 className="modal-title">Create Project</h1>
+          <div className=" p-4 modal-content border border  bg-light rounded-4">
+            <div className="modal-header position-relative">
+              <div>
+                <h1 className="modal-title">Create Project</h1>
+              </div>
+              <div className="position-absolute top-0 end-0">
+                <button
+                  type="button"
+                  className="btn-close fs-5 text-danger "
+                  onClick={closeModal}
+                ></button>
+              </div>
             </div>
-           <div className="position-absolute top-0 end-0">
-              <button type="button" className="btn-close fs-5 text-danger " onClick={closeModal}>
-              </button>
-            </div>
-            
-          </div>
-          <div className="modal-body">
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label htmlFor="projectname" className="form-label">Project Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="projectname"
-                  name="projectname"
-                  value={projectName}
-                  onChange={handleProject}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="classroom" className="form-label">Classroom</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="classroom"
-                  name="classroom"
-                  value={classroom}
-                  onChange={handleClassroom}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="students" className="form-label">No of Students</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="students"
-                  name="students"
-                  value={students}
-                  onChange={handleStudents}
-                  required
-                />
-              </div>
-              <div className="d-flex justify-content-center align-items-center  ">
-                  <button type="submit" className="btn btn-success mb-3 p-2 fs-5"  onClick={generateCode}>
+            <div className="modal-body">
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="projectname" className="form-label">
+                    Project Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="projectname"
+                    name="projectname"
+                    value={projectName}
+                    onChange={handleProject}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="classroom" className="form-label">
+                    Classroom
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="classroom"
+                    name="classroom"
+                    value={classroom}
+                    onChange={handleClassroom}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="students" className="form-label">
+                    No of Students
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="students"
+                    name="students"
+                    value={students}
+                    onChange={handleStudents}
+                    required
+                  />
+                </div>
+                <div className="d-flex justify-content-center align-items-center  ">
+                  <button
+                    type="submit"
+                    className="btn btn-success mb-3 p-2 fs-5"
+                    onClick={generateCode}
+                  >
                     Create
                   </button>
-                  </div>
-            </form>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
         </div>
       </Modal>
     </>

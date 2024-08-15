@@ -3,7 +3,6 @@ import { useAuth } from "../store/auth";
 
 function ProtectedRoutes() {
   let { isLoggedIn } = useAuth();
-  console.log(isLoggedIn);
   return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
 }
 

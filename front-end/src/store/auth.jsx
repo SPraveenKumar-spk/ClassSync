@@ -11,24 +11,31 @@ export const AuthProvider = ({ children }) => {
     setUserRole(role);
   };
 
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const storeToken = (token) => {
+    localStorage.setItem("token", token);
+    setToken(token);
+  };
   const LogoutUser = () => {
     setUserRole("");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("projectCode");
+    localStorage.removeItem("token");
+    setToken(null);
   };
 
-  function isUserLoggedIn() {
-    const sessionCookie = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("classsync_session="));
-    return sessionCookie !== undefined;
-  }
-
-  const isLoggedIn = isUserLoggedIn();
+  const isLoggedIn = !!token;
 
   return (
     <AuthContext.Provider
-      value={{ userRole, storeValues, LogoutUser, baseURL, isLoggedIn }}
+      value={{
+        userRole,
+        storeValues,
+        storeToken,
+        LogoutUser,
+        baseURL,
+        isLoggedIn,
+      }}
     >
       <ToastProvider>{children}</ToastProvider>
     </AuthContext.Provider>
