@@ -8,6 +8,9 @@ const {
   assignedDetails, deletetask, edittask, diaryentry, diaryrepo, studentdiaryrepo, submitFeedBack
 } = require("../controller/auth-controller");
 
+
+const { fetchClassDetails } = require("../controller/auth2-controller");
+
 router.get("/", home);
 router.post("/register", register);
 router.post("/login", login);
@@ -20,7 +23,7 @@ router.delete("/deleteproject", deleteproject);
 router.get("/userProjects", userProjects);
 router.post("/studentprojects", studentprojects);
 router.get("/studentsrepo", studentsrepo);
-router.post("/assigntasks", upload.single('file'), assigntasks);
+router.post("/assigntasks", upload.single("file"), assigntasks);
 router.delete("/deletetask", deletetask);
 router.put("/edittask", edittask);
 router.get("/assignedDetails", assignedDetails);
@@ -28,5 +31,7 @@ router.post("/diaryentry", diaryentry);
 router.get("/diaryrepo", diaryrepo);
 router.get("/studentdiaryrepo", studentdiaryrepo);
 router.post("/submitFeedBack", submitFeedBack);
+
+router.get("/classdetails", fetchClassDetails);
 
 module.exports = router;

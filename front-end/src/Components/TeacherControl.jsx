@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoMenuSharp } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
 import { FaHome, FaTasks, FaUserGraduate } from "react-icons/fa";
 import { GrTasks } from "react-icons/gr";
+import ClassDetails from "./ClassDetails";
 import AssignTask from "./AssignTask";
 import StudentStatus from "./StudentStatus";
-
 import AssignedTasks from "./AssignedTasks";
 import { useAuth } from "../store/auth";
 
 const TeacherControll = () => {
   const navigate = useNavigate();
   const { LogoutUser } = useAuth();
-  const [isExpanded, setExpand] = useState(true);
-  const [showAssignTask, setShowAssignTask] = useState(false);
-  const [showStudentStatus, setShowStudentStatus] = useState(false);
-  const [showAssignedTasks, setShowAssignedTasks] = useState(false);
+  const [isExpanded, setExpand] = React.useState(true);
+  const [showAssignTask, setShowAssignTask] = React.useState(false);
+  const [showStudentStatus, setShowStudentStatus] = React.useState(false);
+  const [showAssignedTasks, setShowAssignedTasks] = React.useState(false);
 
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
@@ -50,7 +50,7 @@ const TeacherControll = () => {
   };
 
   return (
-    <>
+    <div className="d-flex flex-column h-100">
       <div
         className="position-fixed w-100 navbar navbar-expand-lg navbar-dark bg-info"
         style={{ height: "4rem" }}
@@ -76,7 +76,7 @@ const TeacherControll = () => {
           <li className="pb-3 fs-5">
             <NavLink
               className="text-white text-decoration-none"
-              onClick={handleHomeRoute}
+              to="/teachershome"
             >
               <FaHome className="me-2" size={20} /> Home
             </NavLink>
@@ -106,56 +106,25 @@ const TeacherControll = () => {
             </NavLink>
           </li>
         </ul>
-        <div
-          className="sidebar-footer text-light mt-auto"
-          onClick={handleLogout}
-        >
-          <TbLogout2 /> Logout
+        <div>
+          <button
+            className="btn text-light fs-5"
+            style={{ position: "absolute", bottom: "2rem" }}
+            onClick={handleLogout}
+          >
+            <TbLogout2 className="me-2" size={20} /> Logout
+          </button>
         </div>
       </div>
-
-      {showAssignTask && (
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <AssignTask
-            baseURL="http://localhost:5000"
-            setTasks={setShowAssignTask}
-          />
-        </div>
-      )}
-
-      {showAssignedTasks && (
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <AssignedTasks />
-        </div>
-      )}
-
-      {showStudentStatus && (
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <StudentStatus />
-        </div>
-      )}
-    </>
+      <div className="flex-grow-1 d-flex justify-content-center align-items-center">
+        {showAssignTask && <AssignTask baseURL="http://localhost:5000" />}
+        {showAssignedTasks && <AssignedTasks />}
+        {showStudentStatus && <StudentStatus />}
+        {!showAssignTask && !showAssignedTasks && !showStudentStatus && (
+          <ClassDetails />
+        )}
+      </div>
+    </div>
   );
 };
 

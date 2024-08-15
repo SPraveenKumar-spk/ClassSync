@@ -50,10 +50,9 @@
   transform: translateX(-100%);
 }
 
-/* Ensure the navbar stays on top */
 .navbar {
   z-index: 1050;
-  /* Higher z-index to stay on top */
+
 }
 
 
@@ -102,7 +101,21 @@
 }
 
 
+.spinner{
+  animation: rotateSpin 1s linear infinite;
+}
+
+@keyframes rotateSpin{
+   0%{
+    transform: rotate(0deg);
+   }
+   100%{
+    transform : rotate(360deg);
+   }
+}
 
 
-
-
+.custom-table {
+  max-width: 1000px;
+  margin: 0 auto;  
+}

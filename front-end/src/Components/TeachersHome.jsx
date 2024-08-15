@@ -6,12 +6,12 @@ import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
 import { FaFolderPlus } from "react-icons/fa";
 import Loader from "./Loader";
 import styles from "../Styles/ProjectsHome.module.css";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";
 
 const TeachersHome = () => {
   const { baseURL, LogoutUser } = useAuth();
+  const { toast } = useToast();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState([]);
@@ -177,18 +177,6 @@ const TeachersHome = () => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div
           className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${styles.mainItems}`}

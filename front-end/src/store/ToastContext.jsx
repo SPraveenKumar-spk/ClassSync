@@ -1,13 +1,12 @@
-// ToastContext.js
-import React, { createContext, useContext } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { createContext, useContext } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   return (
-    <ToastContext.Provider value={{}}>
+    <ToastContext.Provider value={{ toast }}>
       {children}
       <ToastContainer
         position="top-right"

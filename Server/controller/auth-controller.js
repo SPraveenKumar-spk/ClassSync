@@ -131,74 +131,72 @@ const updatePassword = async(req,res)=>{
     }
 }
 
-const forgotpassword = async(req,res)=>{
-    try{
-        const { email } = req.body;
-        const user = await user.findOne({ email });
-        if (!user) {
-          return res.status(404).json({ message: 'user not found' });
-        }
-      
-        const token = crypto.randomBytes(32).toString('hex');
-        const expiresAt = Date.now() + 10 * 60 * 1000; 
+const forgotpassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const User = await user.findOne({ email });
+    if (!User) {
+      return res.status(404).json({ message: "user not found" });
+    }
 
-        await PasswordResetToken.create({
-          email,
-          token,
-          expiresAt,
-          used: false
-        });
-        const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = Date.now() + 10 * 60 * 1000;
 
-        await transporter.sendMail({
-          to: email,
-          subject: 'Password Reset Request',
-          html: `
-           <p>Dear ${user.name},</p>
+    await PasswordResetToken.create({
+      email,
+      token,
+      expiresAt,
+      used: false,
+    });
+    const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
+
+    await transporter.sendMail({
+      to: email,
+      subject: "Password Reset Request",
+      html: `
+           <p>Dear ${User.name},</p>
            <p>As you have requested for reset password instructions, here they are, please follow the URL:</p>
           <p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 10 minutes.</p>
           `,
-        });
-      
-        res.status(200).json({ message: 'Reset link sent to your email' });
-    }catch(error){
-        console.log(error);
+    });
+
+    res.status(200).json({ message: "Reset link sent to your email" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const resetpassword = async (req, res) => {
+  try {
+    const { token } = req.query;
+    const { newPassword } = req.body;
+    const passwordResetToken = await PasswordResetToken.findOne({ token });
+
+    if (!passwordResetToken || passwordResetToken.used) {
+      return res.status(400).json({ message: "Invalid or expired link" });
     }
-}
 
-const resetpassword = async(req,res) =>{
-    try{
-        const { token } = req.query;
-        const { newPassword } = req.body;
-        const passwordResetToken = await PasswordResetToken.findOne({ token });
-
-        if (!passwordResetToken || passwordResetToken.used) {
-          return res.status(400).json({ message: 'Invalid or expired link' });
-        }
-    
-        if (passwordResetToken.expiresAt < Date.now()) {
-          return res.status(400).json({ message: 'link has expired' });
-        }
-      
-        const user = await user.findOne({ email: passwordResetToken.email });
-        if (!user) {
-          return res.status(404).json({ message: 'user not found' });
-        }
-        user.password = newPassword; 
-
-        await user.save();
-       
-        passwordResetToken.used = true;
-
-        await passwordResetToken.save();
-
-      
-        res.status(200).json({ message: 'Password reset successfull' });
-      
-    }catch(error){
-        console.log(error);
+    if (passwordResetToken.expiresAt < Date.now()) {
+      return res.status(400).json({ message: "link has expired" });
     }
-}
+
+    const User = await user.findOne({ email: passwordResetToken.email });
+    if (!User) {
+      return res.status(404).json({ message: "user not found" });
+    }
+    User.password = newPassword;
+
+    await User.save();
+
+    passwordResetToken.used = true;
+
+    await passwordResetToken.save();
+
+    res.status(200).json({ message: "Password reset successfull" });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const userinfo = async (req, res) => {
     try {

@@ -1,31 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../store/auth';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../store/auth";
+import { useToast } from "../store/ToastContext";
 
 const AssignedTasks = () => {
   const { baseURL } = useAuth();
+  const { toast } = useToast();
   const [assigned, setAssigned] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(false);
 
   const notifySuccess2 = () => {
-    toast.success('Task deleted successfully');
+    toast.success("Task deleted successfully");
   };
 
   const notifyError = () => {
-    toast.error('Failed to delete task');
+    toast.error("Failed to delete task");
   };
 
   useEffect(() => {
     const fetchAssigned = async () => {
       setLoading(true);
       try {
-        const projectCode = sessionStorage.getItem('projectCode');
-        const response = await fetch(`${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const projectCode = sessionStorage.getItem("projectCode");
+        const response = await fetch(
+          `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           setAssigned(data);
@@ -46,9 +49,9 @@ const AssignedTasks = () => {
   const handleDelete = async (taskId) => {
     try {
       const response = await fetch(`${baseURL}/api/auth/deletetask`, {
-        method: 'DELETE',
+        method: "DELETE",
         body: JSON.stringify({ taskId }),
-        credentials: 'include',
+        credentials: "include",
       });
       if (response.ok) {
         setAssigned((prevAssigned) =>
@@ -64,58 +67,52 @@ const AssignedTasks = () => {
   };
 
   return (
-    <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-      <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)' }}>
-        {!loading && assigned.length ? (
-          assigned.map((task, index) => (
-            <div key={index} className="p-2 rounded bg-secondary fs-5 min-w-50 h-50">
-              <p>
-                <span className="text-dark">Task Name :</span>{' '}
-                <span className="text-white">{task.taskName}</span>
-              </p>
-              <p>
-                <span className="text-dark">Task theme :</span>{' '}
-                <span className="text-white">{task.theme}</span>
-              </p>
-              <p>
-                <span className="text-dark">Description :</span>{' '}
-                <span className="text-white">{task.description}</span>
-              </p>
-              <p>
-                <span className="text-dark">Last Date :</span>{' '}
-                <span className="text-white">{task.deadline}</span>
-              </p>
-              <div className="d-flex justify-content-around mt-3">
-                <div className="me-2">
-                  <button className="btn btn-warning">Edit</button>
-                </div>
-                <div>
-                  <button className="btn btn-danger" onClick={() => handleDelete(task.taskId)}>
-                    Delete
-                  </button>
+    <div className="container mt-5 pt-5">
+      <div className="row justify-content-center ">
+        <div className="col-md-6">
+          {!loading && assigned.length ? (
+            assigned.map((task, index) => (
+              <div key={index} className="mb-4">
+                <div className="card p-3 bg-secondary text-white">
+                  <div className="card-body">
+                    <p className="card-text">
+                      <strong className="text-warning">Task Name : </strong>{" "}
+                      {task.taskName}
+                    </p>
+
+                    <p className="card-text">
+                      <strong className="text-warning">Task theme:</strong>{" "}
+                      {task.theme}
+                    </p>
+                    <p className="card-text">
+                      <strong className="text-warning">Description : </strong>{" "}
+                      {task.description}
+                    </p>
+                    <p className="card-text">
+                      <strong className="text-warning">Last Date : </strong>{" "}
+                      {task.deadline}
+                    </p>
+                    <div className="d-flex justify-content-between mt-5">
+                      <button className="btn btn-light fs-5 pe-3">Edit</button>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDelete(task.taskId)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="alert alert-danger text-center">
+              You haven't created any tasks..
             </div>
-          ))
-        ) : (
-          <div className="fs-3 w-50">
-            <p className="alert alert-danger">You haven't created any tasks..</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
