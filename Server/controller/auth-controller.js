@@ -1,4 +1,4 @@
-const User = require("../models/user")
+const user = require("../models/user")
 const Project = require("../models/projects")
 const student = require("../models/studentProjects")
 const tasks = require("../models/tasks")
@@ -27,11 +27,11 @@ const transporter = nodemailer.createTransport({
 const register = async(req,res)=>{
     try{
         const{name,email,password,role} = req.body;
-        const userExist = await User.findOne({email});
+        const userExist = await user.findOne({email});
         if(userExist){
             return res.status(401).json({msg:"Email already exists"})
         }
-        const userCreated = await User.create({name,email,password,role});
+        const userCreated = await user.create({name,email,password,role});
 
         let mailOptions = {
             from: 'spraveen.961435@gmail.com', 
@@ -86,7 +86,7 @@ const register = async(req,res)=>{
 const login = async (req,res)=>{
     try{
         const{email,password,role} = req.body;
-        const userExisted = await User.findOne({email});
+        const userExisted = await user.findOne({email});
         if(!userExisted){
             return res.status(401).json({message :"Invalid Credendials"})
         }
@@ -94,12 +94,13 @@ const login = async (req,res)=>{
             return res.status(404).json({ message: "Invalid user" });
         }
         const valid = await bcrypt.compare(password,userExisted.password);
-
+        const token = await userExisted.generateToken();
         if(valid)
         {
             req.session.userId = userExisted._id.toString();
             res.status(200).json({
             msg : "Login Successful",
+            token ,
             userId : userExisted._id.toString(),
         });
         }else{
@@ -113,7 +114,7 @@ const login = async (req,res)=>{
 const updatePassword = async(req,res)=>{
     try{
         const user = req.session.userId;
-        const userDetails = await User.findById(user);
+        const userDetails = await user.findById(user);
 
         const {oldPassword,newPassword} = req.body;
 
@@ -133,9 +134,9 @@ const updatePassword = async(req,res)=>{
 const forgotpassword = async(req,res)=>{
     try{
         const { email } = req.body;
-        const user = await User.findOne({ email });
+        const user = await user.findOne({ email });
         if (!user) {
-          return res.status(404).json({ message: 'User not found' });
+          return res.status(404).json({ message: 'user not found' });
         }
       
         const token = crypto.randomBytes(32).toString('hex');
@@ -179,9 +180,9 @@ const resetpassword = async(req,res) =>{
           return res.status(400).json({ message: 'link has expired' });
         }
       
-        const user = await User.findOne({ email: passwordResetToken.email });
+        const user = await user.findOne({ email: passwordResetToken.email });
         if (!user) {
-          return res.status(404).json({ message: 'User not found' });
+          return res.status(404).json({ message: 'user not found' });
         }
         user.password = newPassword; 
 
@@ -202,12 +203,12 @@ const resetpassword = async(req,res) =>{
 const userinfo = async (req, res) => {
     try {
       if (!req.session.userId) {
-        return res.status(401).json({ msg: "User not logged in" });
+        return res.status(401).json({ msg: "user not logged in" });
       }
       const userId = req.session.userId;
-      const userDetails = await User.findById(userId).select({ password: 0 });
+      const userDetails = await user.findById(userId).select({ password: 0 });
       if (!userDetails) {
-        return res.status(404).json({ msg: "User details not found" });
+        return res.status(404).json({ msg: "user details not found" });
       }
       res.status(200).json(userDetails);
     } catch (error) {
@@ -219,7 +220,7 @@ const userinfo = async (req, res) => {
 const projects = async(req,res) =>{
     try{
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
         const userId = req.session.userId;
@@ -245,7 +246,7 @@ const projects = async(req,res) =>{
 const userProjects = async(req,res)=>{
     try{
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
           const userId = req.session.userId;
@@ -264,7 +265,7 @@ const deleteproject = async (req, res) => {
         const projectCode = req.query.projectCode;
         const role = req.query.role;
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
           const userId = req.session.userId;
@@ -289,7 +290,7 @@ const studentprojects = async(req,res)=>{
     try{
         const{projectName,projectCode} = req.body;
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
         const userId = req.session.userId;
@@ -315,7 +316,7 @@ const studentprojects = async(req,res)=>{
 const studentsrepo = async(req,res)=>{
     try{
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
           const userId = req.session.userId;
@@ -335,7 +336,7 @@ const assigntasks = async (req, res) => {
       const { projectCode } = req.query;
 
       if (!req.session.userId) {
-        return res.status(401).json({ msg: "User not logged in" });
+        return res.status(401).json({ msg: "user not logged in" });
       }
   
       const userId = req.session.userId;
@@ -400,7 +401,7 @@ const assignedDetails = async(req,res)=>{
     try{
         const { projectCode } = req.query;
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
     
@@ -415,7 +416,7 @@ const assignedDetails = async(req,res)=>{
 const diaryentry = async(req,res)=>{
     try{
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
         const userId = req.session.userId;
@@ -445,7 +446,7 @@ const diaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
         const userId = req.session.userId;
@@ -465,7 +466,7 @@ const studentdiaryrepo = async(req,res)=>{
     try{
         const {projectCode} = req.query;
         if (!req.session.userId) {
-            return res.status(401).json({ msg: "User not logged in" });
+            return res.status(401).json({ msg: "user not logged in" });
           }
       
         //   const userId = req.session.userId;
