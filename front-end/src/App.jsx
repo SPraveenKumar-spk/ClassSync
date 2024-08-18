@@ -8,7 +8,7 @@ import UserProfile from "./pages/UserProfile";
 import ErrorPage from "./pages/ErrorPage";
 import TeachersHome from "./Components/TeachersHome";
 import StudentHome from "./Components/StudentHome";
-import StudentSubmissions from "./Components/StudentSubmissions";
+import StudentControll from "./Components/StudentControll";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
 import TeacherControll from "./Components/TeacherControl";
@@ -22,7 +22,7 @@ function App() {
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/teachershome" element={<TeachersHome />} />
             <Route path="/studentshome" element={<StudentHome />} />
-            <Route path="/submissions" element={<StudentSubmissions />} />
+            <Route path="/submissions" element={<StudentControll />} />
             <Route path="/createtasks" element={<TeacherControll />} />
             <Route path="/logout" element={<Logout />} />
           </Route>

@@ -284,62 +284,73 @@ const deleteproject = async (req, res) => {
 };
 
   
-const studentprojects = async(req,res)=>{
-    try{
-        const{projectName,projectCode} = req.body;
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-        const userId = req.session.userId;
-        const validCode = await Project.find({projectCode : projectCode})
-        if(validCode.length===0){
-            return res.status(401).json({msg:"Invalid ProjectCode"})
-        }
-        
-        const StudentProject = await student.create({
-            projectName,
-            projectCode,
-            user:userId,
-        });
-        res.status(200).json({
-            msg: "Project saved successfully",
-            data : StudentProject.projectName,
-            
-        })
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+const studentprojects = async (req, res) => {
+  try {
+    const { projectName, projectCode, role, teamName } = req.body;
+    console.log(req.body);
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "User not logged in" });
     }
-}
-const studentsrepo = async(req,res)=>{
-    try{
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-          const userId = req.session.userId;
-       const repo = await student.find({user:userId});
-       res.status(200).json(repo)
-       
 
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+    const userId = req.session.userId;
+    const validCode = await Project.find({ projectCode: projectCode });
+    if (validCode.length === 0) {
+      return res.status(401).json({ msg: "Invalid Project Code" });
     }
-}
+    if (!role) {
+      return res.status(400).json({ msg: "Role is required" });
+    }
+
+    if (role === "Project Lead" && !teamName) {
+      return res
+        .status(400)
+        .json({ msg: "Team name is required for Project Lead" });
+    }
+
+    await student.create({
+      projectName,
+      projectCode,
+      user: userId,
+      role,
+      teamName: role === "Project Lead" ? teamName : null,
+    });
+
+    res.status(200).json({
+      msg: "Project saved successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
+module.exports = studentprojects;
+
+const studentsrepo = async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
+    }
+
+    const userId = req.session.userId;
+    const repo = await student.find({ user: userId });
+    res.status(200).json(repo);
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
 
 const assigntasks = async (req, res) => {
-    try {
+  try {
+    const { taskName, theme, description, deadline, taskId } = req.body;
+    const { projectCode } = req.query;
 
-      const { taskName, theme, description, deadline, taskId } = req.body;
-      const { projectCode } = req.query;
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
+    }
 
-      if (!req.session.userId) {
-        return res.status(401).json({ msg: "user not logged in" });
-      }
-  
-      const userId = req.session.userId;
+    const userId = req.session.userId;
 
-      const fileId = req.file ? req.file.filename : null;
+    const fileId = req.file ? req.file.filename : null;
 
     await tasks.create({
       taskId,
@@ -352,142 +363,76 @@ const assigntasks = async (req, res) => {
       projectCode,
     });
 
-  
-      res.status(200).json({ msg: "Successfully created the task" });
-    } catch (error) {
-      res.status(500).json({ msg: "Internal server error" });
-    }
-  };
-
-const deletetask = async (req, res) => {
-    try {
-        const { taskId } = req.body;
-        const deletedTask = await tasks.findOneAndDelete({ taskId });
-        if (!deletedTask) {
-            return res.status(404).json({ msg: "Task not found" });
-        }
-        res.status(200).json({ msg: "Task deleted successfully" });
-    } catch (error) {
-        res.status(500).send("Internal server error");
-    }
+    res.status(200).json({ msg: "Successfully created the task" });
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
 };
 
-const edittask = async(req,res)=>{
-    try{
-        const {taskId} = req.query;
-        const {taskName, theme, description} = req.body;
-        const exist = await tasks.findOne({taskId});
-        if(!exist){
-            return res.status(404).json({msg:"Task not found"});
-        }
-        exist.taskName = taskName;
-        exist.theme = theme;
-        exist.description = description;
-        const updatedTask = await exist.save();
-        if (updatedTask) {
-            return res.status(200).json({ msg: "Task updated successfully" });
-        } else {
-            return res.status(500).json({ msg: "Failed to update task" });
-        }
-
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+const deletetask = async (req, res) => {
+  try {
+    const { taskId } = req.body;
+    const deletedTask = await tasks.findOneAndDelete({ taskId });
+    if (!deletedTask) {
+      return res.status(404).json({ msg: "Task not found" });
     }
-}
+    res.status(200).json({ msg: "Task deleted successfully" });
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
 
-const assignedDetails = async(req,res)=>{
-    try{
-        const { projectCode } = req.query;
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-    
-       const tasksrepo = await tasks.find({projectCode });
-       res.status(200).json(tasksrepo)
-       
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+const edittask = async (req, res) => {
+  try {
+    const { taskId } = req.query;
+    const { taskName, theme, description } = req.body;
+    const exist = await tasks.findOne({ taskId });
+    if (!exist) {
+      return res.status(404).json({ msg: "Task not found" });
     }
-}
-
-const diaryentry = async(req,res)=>{
-    try{
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-        const userId = req.session.userId;
-        const {projectCode} = req.query;
-        const{data, date,time,dayOfWeek,} = req.body;
-        const validCode = await Project.find({projectCode : projectCode})
-        if(validCode.length===0){
-            return res.status(401).json({msg:"Invalid ProjectCode"})
-        }
-        const uploadDiary = await diary.create({
-            data,
-            projectCode,
-            date,
-            time,
-            dayOfWeek,
-            user:userId,
-        })
-
-        res.status(200).json({msg: "Entry is successful"});
-        
-    }catch(error){
-        res.status(500).json({msg:"Internal server error"});
+    exist.taskName = taskName;
+    exist.theme = theme;
+    exist.description = description;
+    const updatedTask = await exist.save();
+    if (updatedTask) {
+      return res.status(200).json({ msg: "Task updated successfully" });
+    } else {
+      return res.status(500).json({ msg: "Failed to update task" });
     }
-}
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
 
-const diaryrepo = async(req,res)=>{
-    try{
-        const {projectCode} = req.query;
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-        const userId = req.session.userId;
-        const validCode = await Project.find({projectCode})
-        if(validCode.length===0){   
-            return res.status(401).json({msg:"Invalid ProjectCode"})
-        }
-
-        const pastData = await diary.find({user:userId,projectCode:projectCode});
-        res.status(200).json(pastData);
-    }catch(error){  
-        res.status(500).json({msg:"Internal server error"});
+const assignedDetails = async (req, res) => {
+  try {
+    const { projectCode } = req.query;
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
     }
-}
 
-const studentdiaryrepo = async(req,res)=>{
-    try{
-        const {projectCode} = req.query;
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-        //   const userId = req.session.userId;
-        const validCode = await Project.find({projectCode})
-        if(validCode.length===0){   
-            return res.status(401).json({msg:"Invalid ProjectCode"})
-        }
+    const tasksrepo = await tasks.find({ projectCode });
+    res.status(200).json(tasksrepo);
+  } catch (error) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
 
-        const pastData = await diary.find({projectCode:projectCode}).populate('user','email');
-        res.status(200).json(pastData);
-    }catch(error){  
-        res.status(500).json({msg:"Internal server error"});
-    }
-}
-
-const submitFeedBack = async(req,res)=>{
-    try {
-        const { diaryId, comments, marks } = req.body;
-        await diary.findByIdAndUpdate(diaryId, { comments, marks });
-        res.status(200).json({ msg: "Feedback submitted successfully" });
-      } catch (error) {
-        res.status(500).json({ msg: "Server error" });
-      }
-}
-
-module.exports = {home,register,login,updatePassword,forgotpassword,resetpassword,userinfo,projects,deleteproject,userProjects,studentprojects,studentsrepo,assigntasks,assignedDetails,deletetask,edittask,diaryentry,diaryrepo,studentdiaryrepo,submitFeedBack};
+module.exports = {
+  home,
+  register,
+  login,
+  updatePassword,
+  forgotpassword,
+  resetpassword,
+  userinfo,
+  projects,
+  deleteproject,
+  userProjects,
+  studentprojects,
+  studentsrepo,
+  assigntasks,
+  assignedDetails,
+  deletetask,
+  edittask,
+};

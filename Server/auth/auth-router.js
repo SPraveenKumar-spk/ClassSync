@@ -3,13 +3,32 @@ const router = express.Router();
 const upload = require('../middlewares/storage');
 
 const {
-  home, register, login, updatePassword, forgotpassword, resetpassword, userinfo,
-  projects, deleteproject, userProjects, studentprojects, studentsrepo, assigntasks,
-  assignedDetails, deletetask, edittask, diaryentry, diaryrepo, studentdiaryrepo, submitFeedBack
+  home,
+  register,
+  login,
+  updatePassword,
+  forgotpassword,
+  resetpassword,
+  userinfo,
+  projects,
+  deleteproject,
+  userProjects,
+  studentprojects,
+  studentsrepo,
+  assigntasks,
+  assignedDetails,
+  deletetask,
+  edittask,
 } = require("../controller/auth-controller");
 
-
-const { fetchClassDetails } = require("../controller/auth2-controller");
+const {
+  diaryentry,
+  diaryrepo,
+  studentdiaryrepo,
+  submitFeedBack,
+  fetchClassDetails,
+  fetchTeamDetails,
+} = require("../controller/auth2-controller");
 
 router.get("/", home);
 router.post("/register", register);
@@ -33,5 +52,6 @@ router.get("/studentdiaryrepo", studentdiaryrepo);
 router.post("/submitFeedBack", submitFeedBack);
 
 router.get("/classdetails", fetchClassDetails);
+router.get("/teamDetails", fetchTeamDetails);
 
 module.exports = router;

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "../assets/user.png";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../store/auth";
+import { useToast } from "../store/ToastContext";
 
 export default function UserProfile() {
   const { baseURL, LogoutUser } = useAuth();
+  const { toast } = useToast();
   const [user, setUser] = useState({});
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -87,18 +87,6 @@ export default function UserProfile() {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <section style={{ backgroundColor: "#eee" }}>
         <div className="container py-5">
           <div className="row">
@@ -188,6 +176,48 @@ export default function UserProfile() {
                     </div>
                   </div>
                   <hr />
+                  {user.role === "Student" && (
+                    <>
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Register Number</p>
+                        </div>
+                        <div className="col-sm-9">
+                          <div className="input-group">
+                            <input
+                              id="teamid"
+                              name="teamid"
+                              className="form-control form-control-sm"
+                              placeholder="update your register number "
+                              // value={teamid}
+                              // onChange={(e) => {
+                              //   setOldPassword(e.target.value);
+                              // }}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                    </>
+                  )}
+                  {user.role === "Student" && (
+                    <>
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Team Id</p>
+                        </div>
+                        <div className="col-sm-9">
+                          <div className="col-sm-9">
+                            <p className=" mb-0 text-info">
+                              {user.teamName || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                    </>
+                  )}
                   <form onSubmit={handlePasswordUpdate}>
                     {password && (
                       <div>
