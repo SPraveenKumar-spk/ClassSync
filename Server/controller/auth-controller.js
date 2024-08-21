@@ -147,7 +147,7 @@ const forgotpassword = async (req, res) => {
       expiresAt,
       used: false,
     });
-    const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
+    const resetLink = `https://class-sync-rouge.vercel.app/resetpassword?token=${token}`;
 
     await transporter.sendMail({
       to: email,
