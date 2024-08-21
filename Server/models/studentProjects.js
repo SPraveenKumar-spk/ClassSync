@@ -21,9 +21,11 @@ const studentSchema = new mongoose.Schema({
   },
   teamName: {
     type: String,
-    required: function () {
-      return this.role === "Project Lead";
-    },
+    // required: function () {
+    //   return this.role === "Project Lead";
+    // },
+
+    required: true,
   },
 });
 

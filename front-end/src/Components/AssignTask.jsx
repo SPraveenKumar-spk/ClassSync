@@ -11,15 +11,17 @@ function AssignTask({ baseURL }) {
     description: "",
     deadline: "",
   });
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null); // Fixed initial state
+
   const notifySuccess = () => {
     toast.success("Task assigned successfully");
   };
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
     try {
       const projectCode = sessionStorage.getItem("projectCode");
       const taskId = uuidv4();
@@ -29,7 +31,9 @@ function AssignTask({ baseURL }) {
       formData.append("theme", values.theme);
       formData.append("description", values.description);
       formData.append("deadline", values.deadline);
-      formData.append("file", file);
+      if (file) {
+        formData.append("file", file);
+      }
 
       const response = await fetch(
         `${baseURL}/api/auth/assigntasks?projectCode=${projectCode}`,
@@ -46,13 +50,16 @@ function AssignTask({ baseURL }) {
           theme: "",
           description: "",
           deadline: "",
-          files: "",
         });
+        setFile(null);
         notifySuccess();
-        setLoading(false);
+      } else {
+        console.error("Failed to assign task");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,14 +132,14 @@ function AssignTask({ baseURL }) {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="files" className="form-label">
+                <label htmlFor="file" className="form-label">
                   Any Files :
                 </label>
                 <input
                   type="file"
                   className="form-control"
-                  id="files"
-                  name="files"
+                  id="file"
+                  name="file"
                   accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
                   onChange={(e) => {
                     setFile(e.target.files[0]);

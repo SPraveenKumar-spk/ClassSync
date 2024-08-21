@@ -11,6 +11,7 @@ export default function UserProfile() {
   const [user, setUser] = useState({});
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
   const [showPassword, setShowPassword] = useState({
     oldpassword: false,
     newpassword: false,
@@ -23,6 +24,14 @@ export default function UserProfile() {
   const notify500 = () => toast.error("Internal server error");
   const notify401 = () => toast.error("Invalid password");
   const notifyError = () => toast.error("Failed to change your password");
+  const notifyDeleteError = () =>
+    toast.error("Something went wrong, please try again later.");
+  const notifyDeleteSuccess = () =>
+    toast.success("Successfully deleted your account");
+  const notifyRegistrationSuccess = () =>
+    toast.success("Registration number updated successfully");
+  const notifyRegistrationError = () =>
+    toast.error("Failed to update registration number");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,6 +43,7 @@ export default function UserProfile() {
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
+          setRegistrationNumber(userData.registrationNumber || ""); // Set initial value
         } else {
           console.log("Failed to fetch user data");
         }
@@ -42,7 +52,7 @@ export default function UserProfile() {
       }
     };
     fetchUser();
-  }, []);
+  }, [baseURL]);
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
@@ -68,12 +78,39 @@ export default function UserProfile() {
       console.log(error);
     }
   };
+
+  const handleRegisterNumber = async (e) => {
+    try {
+      const response = await fetch(`${baseURL}/api/auth/updateregno`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ registrationNumber }),
+      });
+      if (response.ok) {
+        notifyRegistrationSuccess();
+      } else if (response.status === 403) {
+        toast.error(
+          "Unauthorized: Only students can update the registration number"
+        );
+      } else {
+        notifyRegistrationError();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handlePassowrd = () => {
     setPassword((prev) => !prev);
   };
+
   const handleRoute = () => {
     navigate(-1);
   };
+
   const togglePassword = (field) => {
     setShowPassword((prevState) => ({
       ...prevState,
@@ -83,6 +120,27 @@ export default function UserProfile() {
 
   const handleLogout = () => {
     LogoutUser();
+  };
+
+  const handleDelete = async () => {
+    const role = sessionStorage.getItem("userRole");
+    try {
+      const response = await fetch(
+        `${baseURL}/api/auth/deleteaccount?role=${role}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        notifyDeleteError();
+      } else {
+        notifyDeleteSuccess();
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -126,17 +184,29 @@ export default function UserProfile() {
                     <span className="text-dark">Designation : </span>
                     {user.role}
                   </p>
-                  <div className="mt-3">
-                    <button
-                      className="btn p-1 border border-secondary fs-5 rounded"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
+                  <div className="d-flex justify-content-around">
+                    <div className="mt-3">
+                      <button
+                        className="btn btn-outline-primary p-1 border border-secondary fs-5 rounded"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </div>
+
+                    <div className="mt-3">
+                      <button
+                        className="btn btn-outline-danger p-1 border border-secondary fs-5 rounded"
+                        onClick={handleDelete}
+                      >
+                        Delete account
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
             <div className="col-lg-8">
               <div className="card mb-4">
                 <div className="card-body">
@@ -185,14 +255,14 @@ export default function UserProfile() {
                         <div className="col-sm-9">
                           <div className="input-group">
                             <input
-                              id="teamid"
-                              name="teamid"
+                              id="registrationNumber"
+                              name="registrationNumber"
                               className="form-control form-control-sm"
-                              placeholder="update your register number "
-                              // value={teamid}
-                              // onChange={(e) => {
-                              //   setOldPassword(e.target.value);
-                              // }}
+                              placeholder="Update your registration number"
+                              value={registrationNumber}
+                              onChange={(e) => {
+                                setRegistrationNumber(e.target.value);
+                              }}
                               required
                             />
                           </div>
@@ -201,23 +271,7 @@ export default function UserProfile() {
                       <hr />
                     </>
                   )}
-                  {user.role === "Student" && (
-                    <>
-                      <div className="row">
-                        <div className="col-sm-3">
-                          <p className="mb-0">Team Id</p>
-                        </div>
-                        <div className="col-sm-9">
-                          <div className="col-sm-9">
-                            <p className=" mb-0 text-info">
-                              {user.teamName || "N/A"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <hr />
-                    </>
-                  )}
+
                   <form onSubmit={handlePasswordUpdate}>
                     {password && (
                       <div>
@@ -241,7 +295,6 @@ export default function UserProfile() {
                                 }}
                                 required
                               />
-
                               <button
                                 type="button"
                                 className="btn btn-outline-secondary"
@@ -294,7 +347,6 @@ export default function UserProfile() {
                         <hr />
                       </div>
                     )}
-
                     <div className="d-flex justify-content-start mb-2">
                       <button
                         type="button"
@@ -303,9 +355,11 @@ export default function UserProfile() {
                       >
                         Change Password
                       </button>
+
                       <button
                         type="submit"
                         className="btn btn-outline-primary ms-1"
+                        onClick={handleRegisterNumber}
                       >
                         Update Profile
                       </button>
@@ -326,98 +380,6 @@ export default function UserProfile() {
                     </div>
                   </div>
                 </div>
-                {/* <div className="col-md-6">
-                  <div className="card mb-4">
-                    <div className="card-body">
-                      <p className="mb-4">
-                        <span className="text-primary font-italic me-1">
-                          assignment
-                        </span>{" "}
-                        Project Status
-                      </p>
-                      <p className="mb-1" style={{ fontSize: ".77rem" }}>
-                        Web Design
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar bg-primary"
-                          role="progressbar"
-                          style={{ width: "80%" }}
-                          aria-valuenow="80"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Website Markup
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar bg-primary"
-                          role="progressbar"
-                          style={{ width: "72%" }}
-                          aria-valuenow="72"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        One Page
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar bg-primary"
-                          role="progressbar"
-                          style={{ width: "89%" }}
-                          aria-valuenow="89"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Mobile Template
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar bg-primary"
-                          role="progressbar"
-                          style={{ width: "55%" }}
-                          aria-valuenow="55"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Backend API
-                      </p>
-                      <div
-                        className="progress rounded mb-2"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar bg-primary"
-                          role="progressbar"
-                          style={{ width: "66%" }}
-                          aria-valuenow="66"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>

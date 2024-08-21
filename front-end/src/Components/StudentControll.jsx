@@ -5,6 +5,7 @@ import { TbLogout2 } from "react-icons/tb";
 import { FaHome, FaTasks } from "react-icons/fa";
 import { GrTasks } from "react-icons/gr";
 import { RiAddCircleFill, RiHistoryFill } from "react-icons/ri";
+import { SlPeople } from "react-icons/sl";
 import NewDiaryEntry from "./StudentNewDiary";
 import TeamDetails from "./TeamDetails";
 import AssignedTasks from "./AssignedTasks";
@@ -48,7 +49,12 @@ const StudentControll = () => {
     setshowNewDiary(false);
     setShowAssignedTasks(false);
   };
-
+  const handleContributors = () => {
+    setContributors(true);
+    setShowPastEntries(true);
+    setshowNewDiary(false);
+    setShowAssignedTasks(false);
+  };
   const handleLogout = () => {
     LogoutUser();
     navigate("/login");
@@ -84,6 +90,14 @@ const StudentControll = () => {
               to="/studentshome"
             >
               <FaHome className="me-2" size={20} /> Home
+            </NavLink>
+          </li>
+          <li className="pb-3 fs-5">
+            <NavLink
+              className="text-white text-decoration-none"
+              onClick={handleContributors}
+            >
+              <SlPeople className="me-2" size={20} /> Contributors
             </NavLink>
           </li>
           <li className="pb-3 fs-5">

@@ -83,53 +83,52 @@ const register = async(req,res)=>{
     }
 }
 
-const login = async (req,res)=>{
-    try{
-        const{email,password,role} = req.body;
-        const userExisted = await user.findOne({email});
-        if(!userExisted){
-            return res.status(401).json({message :"Invalid Credendials"})
-        }
-        if (role && userExisted.role !== role) {
-            return res.status(404).json({ message: "Invalid user" });
-        }
-        const valid = await bcrypt.compare(password,userExisted.password);
-        const token = await userExisted.generateToken();
-        if(valid)
-        {
-            req.session.userId = userExisted._id.toString();
-            res.status(200).json({
-            msg : "Login Successful",
-            token ,
-            userId : userExisted._id.toString(),
-        });
-        }else{
-            res.status(401).json({msg:"Invalid email or password"});
-        }
-    }catch(error){
-        res.status(401).send("Internal server error");
+const login = async (req, res) => {
+  try {
+    const { email, password, role } = req.body;
+    const userExisted = await user.findOne({ email });
+    if (!userExisted) {
+      return res.status(401).json({ message: "Invalid Credendials" });
     }
-}
-
-const updatePassword = async(req,res)=>{
-    try{
-        const user = req.session.userId;
-        const userDetails = await user.findById(user);
-
-        const {oldPassword,newPassword} = req.body;
-
-        const  isMatch =await bcrypt.compare(oldPassword,userDetails.password);
-        if(!isMatch){
-           return res.status(401).json({msg:"Invalid Password"});
-        }
-        userDetails.password = newPassword;
-
-        await userDetails.save();
-       return res.status(200).json({ msg: 'Password updated successfully' });
-    }catch(error){
-       return  res.status(500).json({msg:"Internal server error"});
+    if (role && userExisted.role !== role) {
+      return res.status(404).json({ message: "Invalid user" });
     }
-}
+    const valid = await bcrypt.compare(password, userExisted.password);
+    const token = await userExisted.generateToken();
+    if (valid) {
+      req.session.userId = userExisted._id.toString();
+      res.status(200).json({
+        msg: "Login Successful",
+        token,
+        userId: userExisted._id.toString(),
+      });
+    } else {
+      res.status(401).json({ msg: "Invalid email or password" });
+    }
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
+
+const updatePassword = async (req, res) => {
+  try {
+    const user = req.session.userId;
+    const userDetails = await user.findById(user);
+
+    const { oldPassword, newPassword } = req.body;
+
+    const isMatch = await bcrypt.compare(oldPassword, userDetails.password);
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Invalid Password" });
+    }
+    userDetails.password = newPassword;
+
+    await userDetails.save();
+    return res.status(200).json({ msg: "Password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal server error" });
+  }
+};
 
 const forgotpassword = async (req, res) => {
   try {
@@ -199,112 +198,167 @@ const resetpassword = async (req, res) => {
 };
 
 const userinfo = async (req, res) => {
-    try {
-      if (!req.session.userId) {
-        return res.status(401).json({ msg: "user not logged in" });
-      }
-      const userId = req.session.userId;
-      const userDetails = await user.findById(userId).select({ password: 0 });
-      if (!userDetails) {
-        return res.status(404).json({ msg: "user details not found" });
-      }
-      res.status(200).json(userDetails);
-    } catch (error) {
-     return res.status(500).json({ msg: "Internal server error" });
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
     }
-  };
-  
+    const userId = req.session.userId;
 
-const projects = async(req,res) =>{
-    try{
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-        const userId = req.session.userId;
-        const {projectName,classroom,students,projectCode} = req.body;
-        const projectCreated = await Project.create({
-            projectName,
-            classroom,
-            students,
-            projectCode,
-            user : userId
-        });
-        res.status(200).json({
-            data : projectCreated.projectName,
-            msg : "project saved",
-
-        });
-
-    }catch(error){
-        res.status(401).json({msg : "Unauthorized user"})
+    const userDetails = await user.findById(userId).select({ password: 0 });
+    if (!userDetails) {
+      return res.status(404).json({ msg: "user details not found" });
     }
-}
-
-const userProjects = async(req,res)=>{
-    try{
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-          const userId = req.session.userId;
-        const projectsData = await Project.find({user:userId});
-        res.status(200).json(projectsData);
-
-    }catch(error){
-        res.status(401).json({msg: "Unauthorized user"});
-    }
-}
-
-
-
-const deleteproject = async (req, res) => {
-    try {
-        const projectCode = req.query.projectCode;
-        const role = req.query.role;
-        if (!req.session.userId) {
-            return res.status(401).json({ msg: "user not logged in" });
-          }
-      
-          const userId = req.session.userId;
-
-        if (role === "Teacher") {
-            await Project.findOneAndDelete({ projectCode, user: userId });
-            await student.deleteMany({ projectCode });
-            return res.status(200).json({ msg: "Project deleted successfully" });
-        } else if (role === "Student") {
-            await student.findOneAndDelete({ projectCode, user: userId });
-            return res.status(200).json({ msg: "Project deleted successfully" });
-        } else {
-            return res.status(400).json({ msg: "Invalid role" });
-        }
-    } catch (error) {
-        return res.status(500).json({ msg: "Server Error" });
-    }
+    res.status(200).json(userDetails);
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal server error" });
+  }
 };
 
-  
+const deleteaccount = async (req, res) => {
+  try {
+    const { role } = req.query;
+
+    const userId = req.session.userId;
+
+    if (role === "Teacher") {
+      await Project.deleteMany({ userId });
+      await tasks.deleteMany({ userId });
+    } else if (role === "Student") {
+      await student.deleteMany({ userId });
+      await diary.deleteMany({ userId });
+    } else {
+      return res.status(400).json({ msg: "Invalid role" });
+    }
+
+    const deletedUser = await user.deleteOne({ _id: userId });
+    if (deletedUser.deletedCount === 0) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ msg: "Failed to clear session" });
+      }
+      res.status(200).json({ msg: "Account deleted successfully" });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateRegNumber = async (req, res) => {
+  try {
+    const { registrationNumber } = req.body;
+    console.log(req.body);
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "User not logged in" });
+    }
+    const userId = req.session.userId;
+    const User = await user.findById(userId);
+
+    if (!User) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    User.registrationNumber = registrationNumber;
+    await User.save();
+
+    res.status(200).json({ msg: "Registration number updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
+const projects = async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
+    }
+
+    const userId = req.session.userId;
+    const { projectName, classroom, students, projectCode } = req.body;
+    const projectCreated = await Project.create({
+      projectName,
+      classroom,
+      students,
+      projectCode,
+      user: userId,
+    });
+    res.status(200).json({
+      data: projectCreated.projectName,
+      msg: "project saved",
+    });
+  } catch (error) {
+    res.status(401).json({ msg: "Unauthorized user" });
+  }
+};
+
+const userProjects = async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
+    }
+
+    const userId = req.session.userId;
+    const projectsData = await Project.find({ user: userId });
+    res.status(200).json(projectsData);
+  } catch (error) {
+    res.status(401).json({ msg: "Unauthorized user" });
+  }
+};
+
+const deleteproject = async (req, res) => {
+  try {
+    const projectCode = req.query.projectCode;
+    const role = req.query.role;
+    if (!req.session.userId) {
+      return res.status(401).json({ msg: "user not logged in" });
+    }
+
+    const userId = req.session.userId;
+
+    if (role === "Teacher") {
+      await Project.findOneAndDelete({ projectCode, user: userId });
+      await student.deleteMany({ projectCode });
+      return res.status(200).json({ msg: "Project deleted successfully" });
+    } else if (role === "Student") {
+      await student.findOneAndDelete({ projectCode, user: userId });
+      return res.status(200).json({ msg: "Project deleted successfully" });
+    } else {
+      return res.status(400).json({ msg: "Invalid role" });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
 const studentprojects = async (req, res) => {
   try {
     const { projectName, projectCode, role, teamName } = req.body;
-    console.log(req.body);
+
     if (!req.session.userId) {
       return res.status(401).json({ msg: "User not logged in" });
     }
 
     const userId = req.session.userId;
-    const validCode = await Project.find({ projectCode: projectCode });
-    if (validCode.length === 0) {
+
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
       return res.status(401).json({ msg: "Invalid Project Code" });
     }
-    if (!role) {
-      return res.status(400).json({ msg: "Role is required" });
-    }
 
-    if (role === "Project Lead" && !teamName) {
-      return res
-        .status(400)
-        .json({ msg: "Team name is required for Project Lead" });
+    if (role === "Project Lead") {
+      if (!teamName) {
+        return res
+          .status(402)
+          .json({ msg: "Team name is required for Project Lead" });
+      }
+
+      const findTeam = await student.findOne({ teamName });
+      if (findTeam) {
+        return res.status(400).json({ msg: "Team name is already in use" });
+      }
     }
 
     await student.create({
@@ -312,18 +366,15 @@ const studentprojects = async (req, res) => {
       projectCode,
       user: userId,
       role,
-      teamName: role === "Project Lead" ? teamName : null,
+      teamName,
     });
 
-    res.status(200).json({
-      msg: "Project saved successfully",
-    });
+    res.status(200).json({ msg: "Project saved successfully" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: "Internal server error" });
   }
 };
-
-module.exports = studentprojects;
 
 const studentsrepo = async (req, res) => {
   try {
@@ -344,27 +395,33 @@ const assigntasks = async (req, res) => {
     const { taskName, theme, description, deadline, taskId } = req.body;
     const { projectCode } = req.query;
 
+    console.log(req.body);
     if (!req.session.userId) {
-      return res.status(401).json({ msg: "user not logged in" });
+      return res.status(401).json({ msg: "User not logged in" });
     }
 
     const userId = req.session.userId;
 
+    // Check if a file was uploaded
     const fileId = req.file ? req.file.filename : null;
 
-    await tasks.create({
+    // Create a new task
+    const newTask = new Task({
       taskId,
       taskName,
       theme,
       description,
       deadline,
-      file: fileId,
+      file: fileId, // Store the file ID or filename here
       user: userId,
       projectCode,
     });
 
+    await newTask.save(); // Save the task to the database
+
     res.status(200).json({ msg: "Successfully created the task" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: "Internal server error" });
   }
 };
@@ -426,6 +483,8 @@ module.exports = {
   forgotpassword,
   resetpassword,
   userinfo,
+  deleteaccount,
+  updateRegNumber,
   projects,
   deleteproject,
   userProjects,

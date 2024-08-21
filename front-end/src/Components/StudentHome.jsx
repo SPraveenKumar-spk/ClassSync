@@ -19,8 +19,8 @@ const StudentHome = () => {
   const [searchItem, setSearchItem] = useState("");
   const [options, setOptions] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("Project Member"); // New state for role
-  const [teamName, setTeamName] = useState(""); // New state for team name
+  const [role, setRole] = useState("Project Member");
+  const [teamName, setTeamName] = useState("");
   const navigate = useNavigate();
 
   const notifySuccess = () =>
@@ -34,6 +34,13 @@ const StudentHome = () => {
     toast.error("Invalid Project Code");
   };
 
+  const notifyInvalidTeam = () => {
+    toast.error("The team name is already taken try other");
+  };
+
+  const notifyTeamLeadError = () => {
+    toast.error("Team name is required for Project Lead");
+  };
   const handleProject = (e) => {
     const { value } = e.target;
     setProjectName(value);
@@ -59,8 +66,8 @@ const StudentHome = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setRole("Project Member"); // Reset role when closing the modal
-    setTeamName(""); // Reset team name when closing the modal
+    setRole("Project Member");
+    setTeamName("");
   };
 
   const handleSubmit = async (e) => {
@@ -85,6 +92,10 @@ const StudentHome = () => {
         setProjectCode("");
       } else if (response.status === 401) {
         notifyInvalidCode();
+      } else if (response.status === 400) {
+        notifyInvalidTeam();
+      } else if (response.status === 402) {
+        notifyTeamLeadError();
       }
     } catch (error) {
       console.error(error);
@@ -396,7 +407,7 @@ const StudentHome = () => {
                     </div>
                   </div>
                 </div>
-                {role === "Project Lead" && (
+
                   <div className="mb-3">
                     <label htmlFor="teamName" className="form-label">
                       Team Name
@@ -411,7 +422,7 @@ const StudentHome = () => {
                       required={role === "Project Lead"}
                     />
                   </div>
-                )}
+
                 <div className="d-flex justify-content-center">
                   <button
                     type="submit"

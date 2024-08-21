@@ -7,6 +7,7 @@ const TeamDetails = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sortCriteria, setSortCriteria] = useState("none");
 
   const fetchTeamDetails = async () => {
     setLoading(true);
@@ -25,16 +26,14 @@ const TeamDetails = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (response.ok) {
+        const result = await response.json();
+        setData(result);
+      } else if (response.status === 404) {
+        setError("Students not joined in the project");
       }
-
-      const result = await response.json();
-      console.log("TeamDetails", result);
-      setData(result);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch team details.");
     } finally {
       setLoading(false);
     }
@@ -44,9 +43,48 @@ const TeamDetails = () => {
     fetchTeamDetails();
   }, []);
 
+  useEffect(() => {
+    if (sortCriteria === "none") return;
+
+    let sortedData = [...data];
+    switch (sortCriteria) {
+      case "name":
+        sortedData.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "regNo":
+        sortedData.sort((a, b) => a.regNo.localeCompare(b.regNo));
+        break;
+      default:
+        return;
+    }
+    setData(sortedData);
+  }, [sortCriteria, data]);
+
+  const handleSortChange = (event) => {
+    setSortCriteria(event.target.value);
+  };
+
+  console.log(data);
   return (
     <div className="container mt-5 pt-5">
-      <h2 className="mb-4 text-center text-primary">Team Details</h2>
+      {!error && (
+        <>
+          <h2 className="mb-4 text-center text-primary">Team Details</h2>
+          <div className="row mb-3">
+            <div className="col-12 d-flex justify-content-end">
+              <select
+                className="form-select w-auto"
+                value={sortCriteria}
+                onChange={handleSortChange}
+              >
+                <option value="none">Sort by</option>
+                <option value="name">Sort by Name</option>
+                <option value="regNo">Sort by Reg No</option>
+              </select>
+            </div>
+          </div>
+        </>
+      )}
       <div className="row justify-content-center">
         <div className="col-12">
           {loading ? (
@@ -68,6 +106,7 @@ const TeamDetails = () => {
                   <th scope="col">S.No</th>
                   <th scope="col">Name</th>
                   <th scope="col">Reg No</th>
+                  <th scope="col">Role</th>
                   <th scope="col">Team Name</th>
                   <th scope="col">Email Address</th>
                 </tr>
@@ -77,7 +116,8 @@ const TeamDetails = () => {
                   <tr key={item.sno || index}>
                     <td>{index + 1}</td>
                     <td>{item.name}</td>
-                    <td>{item.regNo}</td>
+                    <td>{item.registrationNumber}</td>
+                    <td>{item.role}</td>
                     <td>{item.teamName}</td>
                     <td>{item.email}</td>
                   </tr>

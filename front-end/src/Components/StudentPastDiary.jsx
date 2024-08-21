@@ -8,43 +8,39 @@ const PastDiaryEntries = () => {
   const { toast } = useToast();
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [projectCode, setProjectCode] = useState(
-    sessionStorage.getItem("projectCode")
-  );
-  const [fetchError, setFetchError] = useState(null);
+  
+ 
+const projectCode = sessionStorage.getItem("projectCode");
+const notifyFetchPastError = () => {
+  toast.error("Unable to fetch your past entries right now.");
+};
 
-  const notifyFetchPastError = () => {
-    toast.error("Unable to fetch your past entries right now.");
+useEffect(() => {
+  const fetchPastEntries = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setAllData(data);
+      }
+    } catch (error) {
+      console.log(error);
+      notifyFetchPastError();
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    const fetchPastEntries = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setAllData(data);
-        } else {
-          notifyFetchPastError();
-        }
-      } catch (error) {
-        console.log(error);
-        notifyFetchPastError();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPastEntries();
-  }, [baseURL, projectCode, toast]);
+  fetchPastEntries();
+}, [baseURL, projectCode, toast]);
 
   return (
     <div className="container ps-5 mt-5">

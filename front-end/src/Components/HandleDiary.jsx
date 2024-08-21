@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Loader from "./Loader";
 import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";

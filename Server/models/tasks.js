@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
   taskId: {
@@ -23,12 +23,11 @@ const taskSchema = new mongoose.Schema({
     required: true,
   },
   file: {
-    type: String,
-    ref: 'uploads.files',
+    type: String, // Store the filename or file ID here
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   projectCode: {
@@ -37,6 +36,6 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-const Task = mongoose.model('Task', taskSchema);
+const Task = mongoose.model("Task", taskSchema);
 
 module.exports = Task;

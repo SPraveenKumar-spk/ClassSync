@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middlewares/storage');
+const upload = require("../middlewares/storage").upload;
 
 const {
   home,
@@ -10,6 +10,8 @@ const {
   forgotpassword,
   resetpassword,
   userinfo,
+  deleteaccount,
+  updateRegNumber,
   projects,
   deleteproject,
   userProjects,
@@ -37,6 +39,8 @@ router.post("/updatePassword", updatePassword);
 router.post("/forgotpassword", forgotpassword);
 router.post("/resetpassword", resetpassword);
 router.get("/userinfo", userinfo);
+router.delete("/deleteaccount", deleteaccount);
+router.patch("/updateregno", updateRegNumber);
 router.post("/projects", projects);
 router.delete("/deleteproject", deleteproject);
 router.get("/userProjects", userProjects);

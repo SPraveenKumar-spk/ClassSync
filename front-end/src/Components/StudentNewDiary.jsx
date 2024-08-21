@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useToast } from "../store/ToastContext";
 import { ImSpinner9 } from "react-icons/im";
+
+
+
 const NewDiaryEntry = () => {
   const { toast } = useToast();
   const [textData, setTextData] = useState("");

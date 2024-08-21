@@ -1,8 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoMenuSharp } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
 import { FaHome, FaTasks, FaUserGraduate } from "react-icons/fa";
+import { SlPeople } from "react-icons/sl";
 import { GrTasks } from "react-icons/gr";
 import ClassDetails from "./ClassDetails";
 import AssignTask from "./AssignTask";
@@ -13,37 +14,43 @@ import { useAuth } from "../store/auth";
 const TeacherControll = () => {
   const navigate = useNavigate();
   const { LogoutUser } = useAuth();
-  const [isExpanded, setExpand] = React.useState(true);
-  const [showAssignTask, setShowAssignTask] = React.useState(false);
-  const [showStudentStatus, setShowStudentStatus] = React.useState(false);
-  const [showAssignedTasks, setShowAssignedTasks] = React.useState(false);
+  const [isExpanded, setExpand] = useState(true);
+  const [showAssignTask, setShowAssignTask] = useState(false);
+  const [showStudentStatus, setShowStudentStatus] = useState(false);
+  const [showAssignedTasks, setShowAssignedTasks] = useState(false);
+  const [contributors, setContributors] = useState(true);
 
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
-  };
-
-  const handleHomeRoute = () => {
-    navigate("/teachershome");
   };
 
   const handleAssigned = () => {
     setShowAssignedTasks(true);
     setShowAssignTask(false);
     setShowStudentStatus(false);
+    setContributors(false);
   };
 
   const handleTasks = () => {
     setShowAssignTask(true);
     setShowStudentStatus(false);
     setShowAssignedTasks(false);
+    setContributors(false);
   };
 
   const handleStudentStatus = () => {
     setShowStudentStatus(true);
     setShowAssignTask(false);
     setShowAssignedTasks(false);
+    setContributors(false);
   };
 
+  const handleContributors = () => {
+    setContributors(true);
+    setShowStudentStatus(false);
+    setShowAssignTask(false);
+    setShowAssignedTasks(false);
+  };
   const handleLogout = () => {
     LogoutUser();
     navigate("/login");
@@ -79,6 +86,14 @@ const TeacherControll = () => {
               to="/teachershome"
             >
               <FaHome className="me-2" size={20} /> Home
+            </NavLink>
+          </li>
+          <li className="pb-3 fs-5">
+            <NavLink
+              className="text-white text-decoration-none"
+              onClick={handleContributors}
+            >
+              <SlPeople className="me-2" size={20} /> Contributors
             </NavLink>
           </li>
           <li className="pb-3 fs-5">
@@ -120,9 +135,7 @@ const TeacherControll = () => {
         {showAssignTask && <AssignTask baseURL="http://localhost:5000" />}
         {showAssignedTasks && <AssignedTasks />}
         {showStudentStatus && <StudentStatus />}
-        {!showAssignTask && !showAssignedTasks && !showStudentStatus && (
-          <ClassDetails />
-        )}
+        {contributors && <ClassDetails />}
       </div>
     </div>
   );

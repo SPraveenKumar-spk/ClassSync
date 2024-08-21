@@ -26,15 +26,14 @@ const ClassDetails = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (response.ok) {
+        const result = await response.json();
+        setData(result);
+      } else if (response.status === 404) {
+        setError("Students not joined in the Project");
       }
-
-      const result = await response.json();
-      setData(result);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch class details.");
     } finally {
       setLoading(false);
     }
@@ -67,22 +66,26 @@ const ClassDetails = () => {
 
   return (
     <div className="container mt-5 pt-5">
-      <h2 className="mb-4 text-center text-primary">Class Details</h2>
-      <div className="row mb-3">
-        <div className="col-12 d-flex justify-content-end">
-          <select
-            value={sortField}
-            onChange={handleSortChange}
-            className="form-select w-auto"
-            aria-label="Sort by"
-            style={{ maxWidth: "200px" }}
-          >
-            <option value="name">Sort by Name</option>
-            <option value="regNo">Sort by Reg No.</option>
-            <option value="role">Sort by Role</option>
-          </select>
-        </div>
-      </div>
+      {!error && (
+        <>
+          <h2 className="mb-4 text-center text-primary">Class Details</h2>
+          <div className="row mb-3">
+            <div className="col-12 d-flex justify-content-end">
+              <select
+                value={sortField}
+                onChange={handleSortChange}
+                className="form-select w-auto"
+                aria-label="Sort by"
+                style={{ maxWidth: "200px" }}
+              >
+                <option value="name">Sort by Name</option>
+                <option value="regNo">Sort by Reg No.</option>
+                <option value="role">Sort by Role</option>
+              </select>
+            </div>
+          </div>
+        </>
+      )}
       <div className="row justify-content-center">
         <div className="col-12">
           {loading ? (
@@ -114,7 +117,7 @@ const ClassDetails = () => {
                   <tr key={item._id || index}>
                     <td>{index + 1}</td>
                     <td>{item.name || "N/A"}</td>
-                    <td>{item.regNo || "N/A"}</td>
+                    <td>{item.registrationNumber || "N/A"}</td>
                     <td>{item.teamName || "N/A"}</td>
                     <td>{item.role || "N/A"}</td>
                     <td>{item.email || "N/A"}</td>

@@ -59,7 +59,6 @@ const studentdiaryrepo = async (req, res) => {
       return res.status(401).json({ msg: "user not logged in" });
     }
 
-    //   const userId = req.session.userId;
     const validCode = await Project.find({ projectCode });
     if (validCode.length === 0) {
       return res.status(401).json({ msg: "Invalid ProjectCode" });
@@ -100,6 +99,7 @@ const fetchClassDetails = async (req, res) => {
     const response = students.map((student) => ({
       name: student.user.name,
       email: student.user.email,
+      registrationNumber: student.user.registrationNumber,
       role: student.role,
       teamName: student.teamName || "N/A",
     }));
@@ -114,15 +114,12 @@ const fetchClassDetails = async (req, res) => {
 const fetchTeamDetails = async (req, res) => {
   try {
     const { projectCode, teamName } = req.query;
-
-    // Ensure both projectCode and teamName are provided
     if (!projectCode || !teamName) {
       return res
         .status(400)
         .json({ msg: "Project code and team name are required" });
     }
 
-    // Find students matching the provided projectCode and teamName
     const students = await studentProjects
       .find({
         projectCode,
@@ -139,10 +136,10 @@ const fetchTeamDetails = async (req, res) => {
       });
     }
 
-    // Format the response
     const response = students.map((student) => ({
       name: student.user.name,
       email: student.user.email,
+      registrationNumber: student.user.registrationNumber,
       role: student.role,
       teamName: student.teamName || "N/A",
     }));

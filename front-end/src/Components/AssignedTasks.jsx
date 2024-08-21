@@ -51,6 +51,9 @@ const AssignedTasks = () => {
       const response = await fetch(`${baseURL}/api/auth/deletetask`, {
         method: "DELETE",
         body: JSON.stringify({ taskId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
       });
       if (response.ok) {
@@ -66,9 +69,14 @@ const AssignedTasks = () => {
     }
   };
 
+  const handleDownload = (filename) => {
+    const url = `${baseURL}/file/${filename}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="container mt-5 pt-5">
-      <div className="row justify-content-center ">
+      <div className="row justify-content-center">
         <div className="col-md-6">
           {!loading && assigned.length ? (
             assigned.map((task, index) => (
@@ -76,22 +84,36 @@ const AssignedTasks = () => {
                 <div className="card p-3 bg-secondary text-white">
                   <div className="card-body">
                     <p className="card-text">
-                      <strong className="text-warning">Task Name : </strong>{" "}
+                      <strong className="text-warning">Task Name: </strong>{" "}
                       {task.taskName}
                     </p>
 
                     <p className="card-text">
-                      <strong className="text-warning">Task theme:</strong>{" "}
+                      <strong className="text-warning">Task Theme:</strong>{" "}
                       {task.theme}
                     </p>
                     <p className="card-text">
-                      <strong className="text-warning">Description : </strong>{" "}
+                      <strong className="text-warning">Description: </strong>{" "}
                       {task.description}
                     </p>
                     <p className="card-text">
-                      <strong className="text-warning">Last Date : </strong>{" "}
+                      <strong className="text-warning">Last Date: </strong>{" "}
                       {task.deadline}
                     </p>
+
+                    {task.file && (
+                      <div className="mb-3">
+                        <strong className="text-warning">Attached File:</strong>
+                        <a
+                          href="#"
+                          onClick={() => handleDownload(task.file)}
+                          className="d-block text-light"
+                        >
+                          {task.file}
+                        </a>
+                      </div>
+                    )}
+
                     <div className="d-flex justify-content-between mt-5">
                       <button className="btn btn-light fs-5 pe-3">Edit</button>
                       <button

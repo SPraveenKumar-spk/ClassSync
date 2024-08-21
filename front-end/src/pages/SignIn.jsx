@@ -4,10 +4,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import { useAuth } from "../store/auth";
 import ForgotPassword from "./ForgotPassword";
+import { useToast } from "../store/ToastContext";
 
 function SignIn() {
   const { storeValues, baseURL, storeToken } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
+
+  const notifyLoginError = () => toast.error("Something went wrong. Try again");
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -51,10 +55,10 @@ function SignIn() {
         }
       } else if (response.status === 401) {
         setLoginError(true);
-        setInvalidUser(false);
-      } else {
+      } else if (response.status === 404) {
         setInvalidUser(true);
-        setLoginError(false);
+      } else {
+        notifyLoginError();
       }
     } catch (error) {
       setLoginError(true);
