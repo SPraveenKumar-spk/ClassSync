@@ -31,8 +31,15 @@
     padding: 10px;
 }
 
-.sidebar{
-  transition: transform 0.3s ease-in-out;
+.sidebar {
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  width: 250px;
 }
 
 .sidebar-open {
@@ -42,6 +49,13 @@
 .sidebar-closed {
   transform: translateX(-100%);
 }
+
+.navbar {
+  z-index: 1050;
+
+}
+
+
 
 @media only screen and (max-width : 768px ){
   .logo h1{
@@ -87,4 +101,21 @@
 }
 
 
+.spinner{
+  animation: rotateSpin 1s linear infinite;
+}
 
+@keyframes rotateSpin{
+   0%{
+    transform: rotate(0deg);
+   }
+   100%{
+    transform : rotate(360deg);
+   }
+}
+
+
+.custom-table {
+  max-width: 1000px;
+  margin: 0 auto;  
+}

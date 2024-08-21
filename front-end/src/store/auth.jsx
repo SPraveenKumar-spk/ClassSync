@@ -1,27 +1,43 @@
 import { createContext, useContext, useState } from "react";
-
+import { ToastProvider } from "./ToastContext";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(sessionStorage.getItem("userRole"));
-  // const baseURL = "https://class-sync-geht.vercel.app";
-  const baseURL = "https://class-sync-2hir.vercel.app";
+  const baseURL = "http://localhost:5000";
 
   const storeValues = (role) => {
     sessionStorage.setItem("userRole", role);
     setUserRole(role);
   };
 
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const storeToken = (token) => {
+    localStorage.setItem("token", token);
+    setToken(token);
+  };
   const LogoutUser = () => {
-    setUserRole('');
+    setUserRole("");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("projectCode");
+    localStorage.removeItem("token");
+    setToken(null);
   };
 
+  const isLoggedIn = !!token;
 
   return (
-    <AuthContext.Provider value={{ userRole, storeValues, LogoutUser,baseURL }}>
-      {children}
+    <AuthContext.Provider
+      value={{
+        userRole,
+        storeValues,
+        storeToken,
+        LogoutUser,
+        baseURL,
+        isLoggedIn,
+      }}
+    >
+      <ToastProvider>{children}</ToastProvider>
     </AuthContext.Provider>
   );
 };

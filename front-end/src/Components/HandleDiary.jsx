@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Loader from "./Loader";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";
 
 function HandleDiary() {
+  const { toast } = useToast();
   const { baseURL } = useAuth();
   const [entry, setEntry] = useState(false);
   const [past, setPast] = useState(false);
@@ -92,18 +92,6 @@ function HandleDiary() {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className="position-absolute top-30 start-50 transform-middle">
         <div className="d-flex justify-content-between">
           <div className="col-md-6">

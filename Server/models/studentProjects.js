@@ -1,20 +1,34 @@
-const mongoose = require('mongoose')
-const User = require("../models/user")
-const studentSchema = new mongoose.Schema({
-    projectName :{
-        type:String,
-        required:true
-    },
-    projectCode :{
-        type :String,
-        required :true,
-    },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-      }
-})
+const mongoose = require("mongoose");
 
-const studentProjects = new mongoose.model("studentprojects",studentSchema);
+const studentSchema = new mongoose.Schema({
+  projectName: {
+    type: String,
+    required: true,
+  },
+  projectCode: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ["Project Member", "Project Lead"],
+    required: true,
+  },
+  teamName: {
+    type: String,
+    // required: function () {
+    //   return this.role === "Project Lead";
+    // },
+
+    required: true,
+  },
+});
+
+const studentProjects = new mongoose.model("studentprojects", studentSchema);
+
 module.exports = studentProjects;
