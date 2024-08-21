@@ -26,7 +26,7 @@ const store = new MongoDBStore({
 });
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://class-sync-rouge.vercel.app",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
@@ -45,7 +45,7 @@ app.use(
     store: store,
     cookie: {
       name: "classsync_session",
-      secure: false,
+      secure: true,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
