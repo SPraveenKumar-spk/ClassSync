@@ -8,6 +8,7 @@ const app = express();
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 const URI = process.env.MongoDBURI;
+
 const connectDB = async () => {
   try {
     await mongoose.connect(URI);
@@ -30,9 +31,7 @@ const corsOptions = {
   allowedHeaders: "Content-Type,Authorization",
 };
 
-app.use(cors(corsOptions));
-
-
+app.use(cors(corsOptions)); 
 
 app.use(cookieParser());
 app.use(express.json());
@@ -44,7 +43,7 @@ app.use(
     store: store,
     cookie: {
       name: "classsync_session",
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
