@@ -1,13 +1,11 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const cors = require("cors");
 const app = express();
-const MongoDBStore = require('connect-mongodb-session')(session);
-
-
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const URI = process.env.MongoDBURI;
 const connectDB = async () => {
@@ -26,14 +24,14 @@ const store = new MongoDBStore({
 });
 
 const corsOptions = {
-  origin: "https://class-sync-rouge.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -46,7 +44,7 @@ app.use(
     cookie: {
       name: "classsync_session",
       secure: true,
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
@@ -54,11 +52,6 @@ app.use(
 
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
-
-
-
-
-
 
 const port = process.env.PORT || 5000;
 

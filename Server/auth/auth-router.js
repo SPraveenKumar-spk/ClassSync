@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require("../middlewares/storage").upload;
+// const upload = require("../middlewares/storage").upload;
 
 const {
   home,
@@ -46,7 +46,7 @@ router.delete("/deleteproject", deleteproject);
 router.get("/userProjects", userProjects);
 router.post("/studentprojects", studentprojects);
 router.get("/studentsrepo", studentsrepo);
-router.post("/assigntasks", upload.single("file"), assigntasks);
+// router.post("/assigntasks", upload.single("file"), assigntasks);
 router.delete("/deletetask", deletetask);
 router.put("/edittask", edittask);
 router.get("/assignedDetails", assignedDetails);
