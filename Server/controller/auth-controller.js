@@ -1,43 +1,42 @@
-const user = require("../models/user")
-const Project = require("../models/projects")
-const student = require("../models/studentProjects")
-const tasks = require("../models/tasks")
-const diary = require("../models/diary")
-const bcrypt = require("bcryptjs")
-const nodemailer = require('nodemailer');
-const PasswordResetToken = require('../models/passwordReset');
-const crypto = require("crypto")
-const home = (req,res)=>{
-    try{
-        res.status(200).send("from home");  
-    }catch(error){
-        consolr.log(error);
-    }
-}
+const user = require("../models/user");
+const Project = require("../models/projects");
+const student = require("../models/studentProjects");
+const tasks = require("../models/tasks");
+const diary = require("../models/diary");
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const PasswordResetToken = require("../models/passwordReset");
+const crypto = require("crypto");
+const home = (req, res) => {
+  try {
+    res.status(200).send("from home");
+  } catch (error) {
+    consolr.log(error);
+  }
+};
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'spraveen.961435@gmail.com', 
-        pass: 'ljyvtcwmeqouveur' 
-    }
+  service: "gmail",
+  auth: {
+    user: "spraveen.961435@gmail.com",
+    pass: "ljyvtcwmeqouveur",
+  },
 });
 
+const register = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+    const userExist = await user.findOne({ email });
+    if (userExist) {
+      return res.status(401).json({ msg: "Email already exists" });
+    }
+    const userCreated = await user.create({ name, email, password, role });
 
-const register = async(req,res)=>{
-    try{
-        const{name,email,password,role} = req.body;
-        const userExist = await user.findOne({email});
-        if(userExist){
-            return res.status(401).json({msg:"Email already exists"})
-        }
-        const userCreated = await user.create({name,email,password,role});
-
-        let mailOptions = {
-            from: 'spraveen.961435@gmail.com', 
-            to: email, 
-            subject: 'Welcome to ClassSync',
-            html: `
+    let mailOptions = {
+      from: "spraveen.961435@gmail.com",
+      to: email,
+      subject: "Welcome to ClassSync",
+      html: `
                 <p>Dear ${name},</p>
                 <p>We are thrilled to welcome you to ClassSync! Your account registration has been successfully completed, and you are now part of our dynamic platform designed to streamline classroom management and enhance collaboration between teachers and students.</p>
                 
@@ -63,25 +62,24 @@ const register = async(req,res)=>{
                 <p>S. Praveen Kumar,</p>
                 <p>(founder of ClassSync ) </p>
                 <p>ClassSync.</p>
-            `
-        };
+            `,
+    };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-           
-        });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+    });
 
-        req.session.userId = userCreated._id.toString();
-        res.status(200).json({
-            msg : "user created",
-            userId : userCreated._id.toString(),
-        });
-    }catch(error){
-        res.status(500).send("Internal server error");
-    }
-}
+    req.session.userId = userCreated._id.toString();
+    res.status(200).json({
+      msg: "user created",
+      userId: userCreated._id.toString(),
+    });
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -147,7 +145,7 @@ const forgotpassword = async (req, res) => {
       expiresAt,
       used: false,
     });
-    const resetLink = `https://class-sync-rouge.vercel.app/resetpassword?token=${token}`;
+    const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
 
     await transporter.sendMail({
       to: email,

@@ -1,5 +1,3 @@
-# Node modules
-node_modules/
 
-# Environment variables
-.env
+Server/node_modules
+Server/.env
