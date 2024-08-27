@@ -43,7 +43,6 @@ app.use(
     store: store,
     cookie: {
       name: "classsync_session",
-      secure: false,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
