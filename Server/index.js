@@ -45,7 +45,7 @@ app.use(
     cookie: {
       name: "classsync_session",
       secure: true,
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
