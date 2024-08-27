@@ -23,16 +23,16 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 
-// const corsOptions = {
-//   origin: "http://localhost:5173",
-//   credentials: true,
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-//   allowedHeaders: "Content-Type,Authorization",
-// };
+const corsOptions = {
+  origin: "https://classsync-sooty.vercel.app", 
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+};
 
-// app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions));
-app.use(cors());
+app.use(cors(corsOptions));
+
+
 
 app.use(cookieParser());
 app.use(express.json());
