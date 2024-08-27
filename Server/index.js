@@ -42,7 +42,6 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      name: "classsync_session",
       secure:true,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
@@ -50,10 +49,7 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log('req.session:', req.session);
-  next();
-});
+
 
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
