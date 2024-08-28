@@ -32,7 +32,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions)); 
-
+app.set('trust proxy', 1); 
 app.use(cookieParser());
 app.use(express.json());
 app.use(
@@ -42,7 +42,7 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      secure:true,
+      secure:false,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'none',
