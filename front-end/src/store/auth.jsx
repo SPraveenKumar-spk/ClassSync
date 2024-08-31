@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
         LogoutUser,
         baseURL,
         isLoggedIn,
+        token,
       }}
     >
       <ToastProvider>{children}</ToastProvider>

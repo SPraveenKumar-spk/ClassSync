@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../store/auth";
 import { useToast } from "../store/ToastContext";
+import { FaEye } from "react-icons/fa";
 
 const AssignedTasks = () => {
-  const { baseURL } = useAuth();
+  const { baseURL, token } = useAuth(); // Retrieve baseURL and token
   const { toast } = useToast();
   const [assigned, setAssigned] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,8 +14,8 @@ const AssignedTasks = () => {
     toast.success("Task deleted successfully");
   };
 
-  const notifyError = () => {
-    toast.error("Failed to delete task");
+  const notifyError = (message) => {
+    toast.error(message || "Failed to perform the operation.");
   };
 
   useEffect(() => {
@@ -22,20 +23,30 @@ const AssignedTasks = () => {
       setLoading(true);
       try {
         const projectCode = sessionStorage.getItem("projectCode");
+        if (!projectCode) {
+          notifyError("Project code is missing.");
+          return;
+        }
+
         const response = await fetch(
           `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
             method: "GET",
-            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         if (response.ok) {
           const data = await response.json();
           setAssigned(data);
           setStatus(true);
+        } else {
+          notifyError("Failed to fetch tasks.");
         }
       } catch (error) {
         console.log(error);
+        notifyError("An error occurred while fetching tasks.");
       } finally {
         setLoading(false);
       }
@@ -44,7 +55,7 @@ const AssignedTasks = () => {
     if (!status) {
       fetchAssigned();
     }
-  }, [status, baseURL]);
+  }, [status, baseURL, token]);
 
   const handleDelete = async (taskId) => {
     try {
@@ -53,8 +64,8 @@ const AssignedTasks = () => {
         body: JSON.stringify({ taskId }),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        credentials: "include",
       });
       if (response.ok) {
         setAssigned((prevAssigned) =>
@@ -62,23 +73,50 @@ const AssignedTasks = () => {
         );
         notifySuccess2();
       } else {
-        notifyError();
+        notifyError("Failed to delete task.");
       }
     } catch (error) {
       console.log(error);
+      notifyError("An error occurred while deleting the task.");
     }
   };
 
-  const handleDownload = (filename) => {
-    const url = `${baseURL}/file/${filename}`;
-    window.open(url, "_blank");
+  const downloadFile = async (filename) => {
+    try {
+      const response = await fetch(`${baseURL}/api/auth/file/${filename}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to download file");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      notifyError("Failed to download file.");
+    }
   };
 
   return (
     <div className="container mt-5 pt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
-          {!loading && assigned.length ? (
+          {loading ? (
+            <div className="text-center">
+              <p>Loading tasks...</p>
+            </div>
+          ) : assigned.length ? (
             assigned.map((task, index) => (
               <div key={index} className="mb-4">
                 <div className="card p-3 bg-secondary text-white">
@@ -87,7 +125,6 @@ const AssignedTasks = () => {
                       <strong className="text-warning">Task Name: </strong>{" "}
                       {task.taskName}
                     </p>
-
                     <p className="card-text">
                       <strong className="text-warning">Task Theme:</strong>{" "}
                       {task.theme}
@@ -106,14 +143,13 @@ const AssignedTasks = () => {
                         <strong className="text-warning">Attached File:</strong>
                         <a
                           href="#"
-                          onClick={() => handleDownload(task.file)}
+                          onClick={() => downloadFile(task.file)}
                           className="d-block text-light"
                         >
                           {task.file}
                         </a>
                       </div>
                     )}
-
                     <div className="d-flex justify-content-between mt-5">
                       <button className="btn btn-light fs-5 pe-3">Edit</button>
                       <button
@@ -128,9 +164,7 @@ const AssignedTasks = () => {
               </div>
             ))
           ) : (
-            <div className="alert alert-danger text-center">
-              You haven't created any tasks..
-            </div>
+            <div className="alert alert-danger text-center">No tasks ..</div>
           )}
         </div>
       </div>
