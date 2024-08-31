@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 
@@ -19,9 +17,7 @@ const connectDB = async () => {
 };
 
 const corsOptions = {
-
   origin: "https://classsync-sooty.vercel.app",
-
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
@@ -29,18 +25,7 @@ const corsOptions = {
 
 
 app.use(cors());
-
-app.use(cookieParser());
 app.use(express.json());
-
-app.use(cors(corsOptions)); 
-app.set('trust proxy', 1); 
-app.use(cookieParser());
-app.use(express.json());
-
-
-
-
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
 
