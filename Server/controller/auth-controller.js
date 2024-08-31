@@ -13,11 +13,14 @@ conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
 });
+
 const home = (req, res) => {
   try {
     res.status(200).send("from home");
   } catch (error) {
-
+    console.error(error);
+  }
+};
 
 const projects = async (req, res) => {
   try {
@@ -194,7 +197,6 @@ const assignedDetails = async (req, res) => {
 
     console.log("Fetched tasks:", tasksrepo);
 
-    // Create an array to hold task details with file information
     const taskDetails = await Promise.all(
       tasksrepo.map(async (task) => {
         if (task.file) {
