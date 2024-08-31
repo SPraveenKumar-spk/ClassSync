@@ -17,9 +17,7 @@ const home = (req, res) => {
   try {
     res.status(200).send("from home");
   } catch (error) {
-    console.error(error);
-  }
-};
+
 
 const projects = async (req, res) => {
   try {

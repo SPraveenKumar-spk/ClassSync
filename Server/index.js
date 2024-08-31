@@ -7,6 +7,7 @@ const cors = require("cors");
 const app = express();
 
 const URI = process.env.MongoDBURI;
+
 const connectDB = async () => {
   try {
     await mongoose.connect(URI);
@@ -18,16 +19,27 @@ const connectDB = async () => {
 };
 
 const corsOptions = {
+
   origin: "https://classsync-sooty.vercel.app",
+
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
 };
 
+
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(cors(corsOptions)); 
+app.set('trust proxy', 1); 
+app.use(cookieParser());
+app.use(express.json());
+
+
+
 
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
