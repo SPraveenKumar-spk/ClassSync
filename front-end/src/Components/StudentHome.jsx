@@ -11,7 +11,7 @@ import { useAuth } from "../store/auth";
 
 const StudentHome = () => {
   const { toast } = useToast();
-  const { baseURL } = useAuth();
+  const { token, baseURL } = useAuth();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projectCode, setProjectCode] = useState("");
@@ -76,14 +76,17 @@ const StudentHome = () => {
     const newProject = { projectName, projectCode, role, teamName };
 
     try {
-      const response = await fetch(`${baseURL}/api/auth/studentprojects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProject),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${baseURL}/api/auth/studentprojects?token=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newProject),
+        }
+      );
       setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
@@ -107,10 +110,15 @@ const StudentHome = () => {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${baseURL}/api/auth/studentsrepo`, {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${baseURL}/api/auth/studentsrepo?token=${token}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
@@ -130,10 +138,12 @@ const StudentHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
+          `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}&token=${token}`,
           {
             method: "DELETE",
-            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         if (response.ok) {

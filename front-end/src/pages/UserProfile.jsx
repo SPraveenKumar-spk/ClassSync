@@ -33,17 +33,25 @@ export default function UserProfile() {
   const notifyRegistrationError = () =>
     toast.error("Failed to update registration number");
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${baseURL}/api/auth/userinfo`, {
-          method: "GET",
-          credentials: "include",
-        });
+        console.log(token);
+        const response = await fetch(
+          `${baseURL}/api/auth/userinfo?token=${token}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
-          setRegistrationNumber(userData.registrationNumber || ""); // Set initial value
+          setRegistrationNumber(userData.registrationNumber || "");
         } else {
           console.log("Failed to fetch user data");
         }
@@ -57,14 +65,18 @@ export default function UserProfile() {
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${baseURL}/api/auth/updatePassword`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ oldPassword, newPassword }),
-      });
+      const response = await fetch(
+        `${baseURL}/api/auth/updatePassword?token=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({ oldPassword, newPassword }),
+        }
+      );
       if (response.ok) {
         notifySuccess();
       } else if (response.status === 401) {
@@ -81,14 +93,18 @@ export default function UserProfile() {
 
   const handleRegisterNumber = async (e) => {
     try {
-      const response = await fetch(`${baseURL}/api/auth/updateregno`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ registrationNumber }),
-      });
+      const response = await fetch(
+        `${baseURL}/api/auth/updateregno?token=${token}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({ registrationNumber }),
+        }
+      );
       if (response.ok) {
         notifyRegistrationSuccess();
       } else if (response.status === 403) {
@@ -129,7 +145,6 @@ export default function UserProfile() {
         `${baseURL}/api/auth/deleteaccount?role=${role}`,
         {
           method: "DELETE",
-          credentials: "include",
         }
       );
       if (!response.ok) {

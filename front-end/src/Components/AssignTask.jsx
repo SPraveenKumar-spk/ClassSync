@@ -2,16 +2,18 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ImSpinner9 } from "react-icons/im";
 import { useToast } from "../store/ToastContext";
+import { useAuth } from "../store/auth";
 
 function AssignTask({ baseURL }) {
   const { toast } = useToast();
+  const { token } = useAuth();
   const [values, setValues] = useState({
     taskName: "",
     theme: "",
     description: "",
     deadline: "",
   });
-  const [file, setFile] = useState(null); // Fixed initial state
+  const [file, setFile] = useState(null);
 
   const notifySuccess = () => {
     toast.success("Task assigned successfully");
@@ -34,13 +36,18 @@ function AssignTask({ baseURL }) {
       if (file) {
         formData.append("file", file);
       }
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
       const response = await fetch(
         `${baseURL}/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
           body: formData,
-          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

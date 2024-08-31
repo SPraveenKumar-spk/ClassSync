@@ -4,7 +4,7 @@ import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";
 
 export default function StudentStatus() {
-  const { baseURL } = useAuth();
+  const { baseURL, token } = useAuth();
   const { toast } = useToast();
   const [taskbtn, setTaskbtn] = useState(false);
   const [diarybtn, setDiarybtn] = useState(false);
@@ -40,9 +40,9 @@ export default function StudentStatus() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ diaryId, comments, marks }),
-        credentials: "include",
       });
       if (response.ok) {
         notifySuccess();
@@ -66,7 +66,9 @@ export default function StudentStatus() {
           `${baseURL}/api/auth/studentdiaryrepo?projectCode=${projectCode}`,
           {
             method: "GET",
-            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         if (response.ok) {
@@ -103,39 +105,42 @@ export default function StudentStatus() {
         <Loader />
       ) : (
         diarybtn && (
-          <div>
-            {diaryData.length ? (
-              diaryData.map((info, index) => (
-                <div
-                  key={index}
-                  className="mb-3 border border-secondary border-3 rounded p-3"
-                >
-                  <div className="row">
-                    <div className="col-md-6">
-                      <h3>Email: {info.user.email}</h3>
+          <div className="d-flex justify-content-center">
+            <div className="col-md-8">
+              {diaryData.length ? (
+                diaryData.map((info, index) => (
+                  <div
+                    key={index}
+                    className="mb-4 border border-secondary border-2 rounded p-4 bg-light"
+                  >
+                    {" "}
+                    <div className="row mb-3">
+                      <div className="col-md-6">
+                        <h5>Email: {info.user.email}</h5>
+                      </div>
+                      <div className="col-md-6 text-end">
+                        <h5>
+                          Date: {new Date(info.date).toLocaleDateString()}
+                        </h5>
+                        <h5>Time: {info.time}</h5>
+                        <h5>Day: {info.dayOfWeek}</h5>
+                      </div>
                     </div>
-                    <div className="col-md-6">
-                      <h3>Date: {new Date(info.date).toLocaleDateString()}</h3>
-                      <h3>Time: {info.time}</h3>
-                      <h3>Day: {info.dayOfWeek}</h3>
+                    <textarea
+                      className="form-control mb-3"
+                      rows="8"
+                      value={info.data}
+                      readOnly
+                      style={{ resize: "none" }}
+                    />
+                    <div className="text-end">
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleFeed(index)}
+                      >
+                        Give Feedback
+                      </button>
                     </div>
-                  </div>
-                  <textarea
-                    style={{ borderWidth: "5px" }}
-                    name="data"
-                    id="data"
-                    className="form-control mt-3"
-                    rows="8"
-                    value={info.data}
-                    readOnly
-                  />
-                  <div className="mt-3">
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleFeed(index)}
-                    >
-                      Give Feedback
-                    </button>
                     {feed === index && (
                       <div className="mt-3">
                         <div className="form-group">
@@ -156,24 +161,26 @@ export default function StudentStatus() {
                             onChange={(e) => setMarks(e.target.value)}
                           />
                         </div>
-                        <button
-                          className="mt-4 btn btn-primary"
-                          onClick={() => handleFeedbackSubmit(info._id)}
-                        >
-                          Submit Feedback
-                        </button>
+                        <div className="text-end">
+                          <button
+                            className="mt-3 btn btn-primary"
+                            onClick={() => handleFeedbackSubmit(info._id)}
+                          >
+                            Submit Feedback
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
+                ))
+              ) : (
+                <div className="mx-auto w-75 mt-5">
+                  <p className="alert alert-danger text-center">
+                    No diary entries
+                  </p>
                 </div>
-              ))
-            ) : (
-              <div className="mx-auto w-50 mt-5">
-                <p className="alert alert-danger text-center">
-                  No diary entries
-                </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )
       )}

@@ -10,7 +10,7 @@ import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";
 
 const TeachersHome = () => {
-  const { baseURL, LogoutUser } = useAuth();
+  const { token, baseURL, LogoutUser } = useAuth();
   const { toast } = useToast();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -77,14 +77,17 @@ const TeachersHome = () => {
     };
 
     try {
-      const response = await fetch(`${baseURL}/api/auth/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProject),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${baseURL}/api/auth/projects`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newProject),
+        }
+      );
       setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
@@ -104,10 +107,15 @@ const TeachersHome = () => {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${baseURL}/api/auth/userProjects`, {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${baseURL}/api/auth/userProjects`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
@@ -130,7 +138,9 @@ const TeachersHome = () => {
           `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
           {
             method: "DELETE",
-            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         if (response.ok) {

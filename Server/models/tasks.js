@@ -23,7 +23,7 @@ const taskSchema = new mongoose.Schema({
     required: true,
   },
   file: {
-    type: String, // Store the filename or file ID here
+    type: String,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

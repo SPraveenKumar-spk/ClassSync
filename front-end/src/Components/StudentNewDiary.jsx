@@ -1,11 +1,11 @@
 import  { useState } from "react";
 import { useToast } from "../store/ToastContext";
 import { ImSpinner9 } from "react-icons/im";
-
-
+import { useAuth } from "../store/auth";
 
 const NewDiaryEntry = () => {
   const { toast } = useToast();
+  const { token, baseURL } = useAuth();
   const [textData, setTextData] = useState("");
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (event) => {
@@ -30,6 +30,7 @@ const NewDiaryEntry = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: ` Bearer ${token}`,
           },
           body: JSON.stringify({
             data: textData,
@@ -37,7 +38,6 @@ const NewDiaryEntry = () => {
             time: time,
             dayOfWeek: dayOfWeek,
           }),
-          credentials: "include",
         }
       );
 
@@ -53,6 +53,7 @@ const NewDiaryEntry = () => {
     }
   };
 
+  console.log(textData);
   return (
     <div
       className="row "
