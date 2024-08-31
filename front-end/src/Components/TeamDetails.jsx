@@ -64,7 +64,7 @@ const TeamDetails = () => {
     setSortCriteria(event.target.value);
   };
 
-  console.log(data);
+
   return (
     <div className="container mt-5 pt-5">
       {!error && (

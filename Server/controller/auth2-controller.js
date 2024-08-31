@@ -1,19 +1,19 @@
 const Project = require("../models/projects");
 const studentProjects = require("../models/studentProjects");
+const diary = require("../models/diary");
 
 const diaryentry = async (req, res) => {
   try {
-    if (!req.session.userId) {
-      return res.status(401).json({ msg: "user not logged in" });
-    }
+    const userId = req.user.userId;
 
-    const userId = req.session.userId;
     const { projectCode } = req.query;
     const { data, date, time, dayOfWeek } = req.body;
-    const validCode = await Project.find({ projectCode: projectCode });
-    if (validCode.length === 0) {
-      return res.status(401).json({ msg: "Invalid ProjectCode" });
+
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
+      return res.status(401).json({ msg: "Invalid Project Code" });
     }
+
     await diary.create({
       data,
       projectCode,
@@ -32,14 +32,10 @@ const diaryentry = async (req, res) => {
 const diaryrepo = async (req, res) => {
   try {
     const { projectCode } = req.query;
-    if (!req.session.userId) {
-      return res.status(401).json({ msg: "user not logged in" });
-    }
-
-    const userId = req.session.userId;
-    const validCode = await Project.find({ projectCode });
-    if (validCode.length === 0) {
-      return res.status(401).json({ msg: "Invalid ProjectCode" });
+    const userId = req.user.userId;
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
+      return res.status(401).json({ msg: "Invalid Project Code" });
     }
 
     const pastData = await diary.find({
@@ -55,19 +51,17 @@ const diaryrepo = async (req, res) => {
 const studentdiaryrepo = async (req, res) => {
   try {
     const { projectCode } = req.query;
-    if (!req.session.userId) {
-      return res.status(401).json({ msg: "user not logged in" });
-    }
 
-    const validCode = await Project.find({ projectCode });
-    if (validCode.length === 0) {
-      return res.status(401).json({ msg: "Invalid ProjectCode" });
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
+      return res.status(401).json({ msg: "Invalid Project Code" });
     }
 
     const pastData = await diary
       .find({ projectCode: projectCode })
       .populate("user", "email");
-    res.status(200).json(pastData);
+
+    res.status(200).send(pastData);
   } catch (error) {
     res.status(500).json({ msg: "Internal server error" });
   }
@@ -76,6 +70,7 @@ const studentdiaryrepo = async (req, res) => {
 const submitFeedBack = async (req, res) => {
   try {
     const { diaryId, comments, marks } = req.body;
+
     await diary.findByIdAndUpdate(diaryId, { comments, marks });
     res.status(200).json({ msg: "Feedback submitted successfully" });
   } catch (error) {

@@ -1,32 +1,41 @@
 const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
 const mongoose = require("mongoose");
+const path = require("path");
 const Grid = require("gridfs-stream");
+const crypto = require("crypto");
+const GridFsStorage = require("multer-gridfs-storage").GridFsStorage;
 
-// Create a connection to MongoDB
-const conn = mongoose.createConnection(process.env.MongoDBURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const mongoURI = process.env.MongoDBURI;
+mongoose.connect(mongoURI);
+const conn = mongoose.connection;
 
-// Initialize GridFS
 let gfs;
+
 conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
-  console.log("MongoDB connection established for GridFS");
 });
 
 const storage = new GridFsStorage({
-  db: conn,
+  url: mongoURI,
   file: (req, file) => {
-    return {
-      bucketName: "uploads", // Collection name in MongoDB
-      filename: `${Date.now()}-${file.originalname}`,
-    };
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString("hex") + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: "uploads",
+        };
+        console.log("files", fileInfo);
+        resolve(fileInfo);
+      });
+    });
   },
 });
 
 const upload = multer({ storage });
-
-module.exports = { upload, gfs };
+const getGFS = () => gfs;
+module.exports = { upload, getGFS };

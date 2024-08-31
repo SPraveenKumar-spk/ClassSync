@@ -36,7 +36,7 @@ function HandleDiary() {
         `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
-          credentials: "include",
+      
         }
       );
       if (response.ok) {
@@ -77,7 +77,7 @@ function HandleDiary() {
             time: time,
             dayOfWeek: dayOfWeek,
           }),
-          credentials: "include",
+ 
         }
       );
       if (response.ok) {

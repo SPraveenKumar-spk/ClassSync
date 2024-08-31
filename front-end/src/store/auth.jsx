@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(sessionStorage.getItem("userRole"));
-  const baseURL = "https://class-sync-server.vercel.app";
+  const baseURL = "https://class-sync-nine.vercel.app";
 
   const storeValues = (role) => {
     sessionStorage.setItem("userRole", role);
@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
         LogoutUser,
         baseURL,
         isLoggedIn,
+        token,
       }}
     >
       <ToastProvider>{children}</ToastProvider>
