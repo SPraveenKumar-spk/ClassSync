@@ -22,7 +22,7 @@ const register = async (req, res) => {
     const userCreated = await user.create({ name, email, password, role });
 
     let mailOptions = {
-      from: "spraveen.961435@gmail.com",
+      from: process.env.user,
       to: email,
       subject: "Welcome to ClassSync",
       html: `
@@ -134,7 +134,7 @@ const forgotpassword = async (req, res) => {
       expiresAt,
       used: false,
     });
-    const resetLink = `https://classsync-sooty.vercel.app/resetpassword?token=${token}`;
+    const resetLink = `https://classsync-learn.vercel.app/resetpassword?token=${token}`;
 
     await transporter.sendMail({
       to: email,
