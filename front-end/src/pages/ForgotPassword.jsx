@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../store/auth";
+import { useToast } from "../store/ToastContext";
 
 const ForgotPassword = () => {
   const { baseURL } = useAuth();
+    const { toast } = useToast();
   const[email,setEmail] = useState('');
 
   const handleEmail = async(e) =>{
@@ -17,9 +19,10 @@ const ForgotPassword = () => {
       })
       if(response.ok){
         setEmail("")
+        toast.success("password reset link has been sent successfully");
       }
     }catch(error){
-
+      toast.error("!oops. server error , try again later");
     }
   }
 
