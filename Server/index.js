@@ -17,7 +17,7 @@ const connectDB = async () => {
 };
 
 const corsOptions = {
-  origin: "https://class-sync-65yq.vercel.app",
+  origin: "https://classsync-learn.vercel.app",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
