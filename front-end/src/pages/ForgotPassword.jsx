@@ -20,9 +20,11 @@ const ForgotPassword = () => {
       if(response.ok){
         setEmail("")
         toast.success("password reset link has been sent successfully");
+      }else{
+         toast.error("!oops. server error , try again later");
       }
     }catch(error){
-      toast.error("!oops. server error , try again later");
+     
     }
   }
 
