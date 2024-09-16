@@ -1,14 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const app = express();
 const bodyParser = require("body-parser");
-
 const methodOverride = require("method-override");
 
 const URI = process.env.MongoDBURI;
+const app = express();
+
 const connectDB = async () => {
   try {
     await mongoose.connect(URI);
@@ -31,10 +30,8 @@ app.use(bodyParser.json());
 app.use(methodOverride("_method"));
 app.use(cookieParser());
 app.use(express.json());
-
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
-
 
 const port = 5000;
 
