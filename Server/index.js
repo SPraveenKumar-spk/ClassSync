@@ -28,7 +28,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
-app.use(cookieParser());
 app.use(express.json());
 const router = require("./auth/auth-router");
 app.use("/api/auth/", router);
