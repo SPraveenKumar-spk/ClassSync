@@ -4,6 +4,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { useToast } from "../store/ToastContext";
 import { useAuth } from "../store/auth";
 
+
 function AssignTask({ baseURL }) {
   const { toast } = useToast();
   const { token } = useAuth();
@@ -13,39 +14,34 @@ function AssignTask({ baseURL }) {
     description: "",
     deadline: "",
   });
+  const [filename, setFileName] = useState(null);
+  const [fileOriginal, setfileOriginal] = useState(null);
   const [file, setFile] = useState(null);
+  const [fileUploaded, setFileUploaded] = useState(false);
 
+  const projectCode = sessionStorage.getItem("projectCode");
   const notifySuccess = () => {
     toast.success("Task assigned successfully");
   };
 
   const [loading, setLoading] = useState(false);
+  const [fileLoading, setFileLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     try {
-      const projectCode = sessionStorage.getItem("projectCode");
       const taskId = uuidv4();
-      const formData = new FormData();
-      formData.append("taskId", taskId);
-      formData.append("taskName", values.taskName);
-      formData.append("theme", values.theme);
-      formData.append("description", values.description);
-      formData.append("deadline", values.deadline);
-      if (file) {
-        formData.append("file", file);
-      }
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
-
+      const updatedValues = { ...values, taskId, filename, fileOriginal };
+      console.log(updatedValues);
       const response = await fetch(
         `${baseURL}/api/auth/assigntasks?projectCode=${projectCode}`,
         {
           method: "POST",
-          body: formData,
+          body: JSON.stringify(updatedValues),
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -59,6 +55,7 @@ function AssignTask({ baseURL }) {
           deadline: "",
         });
         setFile(null);
+        setFileUploaded(false);
         notifySuccess();
       } else {
         console.error("Failed to assign task");
@@ -73,6 +70,45 @@ function AssignTask({ baseURL }) {
   const handleInputs = (e) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
+  };
+
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+    const { taskName, theme, description, deadline } = values;
+    if (!taskName || !theme || !description || !deadline) {
+      toast.error(
+        "Please fill out all required fields before uploading a file."
+      );
+      return;
+    }
+    if (!file) {
+      toast.error("Please choose a file first");
+      return;
+    }
+    setFileLoading(true);
+    try {
+      const formData = new FormData();
+      if (file) {
+        formData.append("file", file);
+      }
+      const response = await fetch(`${baseURL}/api/auth/files`, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const fileData = await response.json();
+
+        setFileName(fileData.fileId.filename);
+        setfileOriginal(fileData.fileId.originalname);
+        toast.success("File uploaded successfully");
+        setFileUploaded(true);
+      }
+    } catch (error) {
+      console.error("File upload failed", error);
+      toast.error("File upload failed");
+    } finally {
+      setFileLoading(false);
+    }
   };
 
   return (
@@ -126,7 +162,7 @@ function AssignTask({ baseURL }) {
               </div>
               <div className="mb-3">
                 <label htmlFor="deadline" className="form-label">
-                  Last Date :
+                  Deadline :
                 </label>
                 <input
                   type="date"
@@ -138,23 +174,40 @@ function AssignTask({ baseURL }) {
                   required
                 />
               </div>
-              <div className="mb-3">
+              <div className="mb-3 ">
                 <label htmlFor="file" className="form-label">
                   Any Files :
                 </label>
-                <input
-                  type="file"
-                  className="form-control"
-                  id="file"
-                  name="file"
-                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    setFile(e.target.files[0]);
-                  }}
-                />
+                <div className="d-flex align-items-center">
+                  <input
+                    type="file"
+                    className="form-control mx-2"
+                    id="file"
+                    name="file"
+                    accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                    }}
+                  />
+                  <button
+                    className="btn btn-outline-light"
+                    onClick={handleFileUpload}
+                    disabled={fileLoading}
+                  >
+                    {fileLoading ? (
+                      <ImSpinner9 className="spinner m-2" size={20} />
+                    ) : (
+                      "Upload"
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="text-center">
-                <button type="submit" className="btn btn-primary fs-5">
+                <button
+                  type="submit"
+                  className="btn btn-primary fs-5"
+                  disabled={loading}
+                >
                   {loading && <ImSpinner9 className="spinner m-2" size={20} />}
                   Submit
                 </button>

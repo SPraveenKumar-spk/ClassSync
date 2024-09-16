@@ -1,5 +1,4 @@
 const Project = require("../models/projects");
-const studentProjects = require("../models/studentProjects");
 const diary = require("../models/diary");
 
 const diaryentry = async (req, res) => {
@@ -78,79 +77,4 @@ const submitFeedBack = async (req, res) => {
   }
 };
 
-const fetchClassDetails = async (req, res) => {
-  try {
-    const { projectCode } = req.query;
-
-    const students = await studentProjects.find({ projectCode }).populate({
-      path: "user",
-      select: "-password",
-    });
-
-    if (students.length === 0) {
-      return res.status(404).json({ msg: "Project not found" });
-    }
-
-    const response = students.map((student) => ({
-      name: student.user.name,
-      email: student.user.email,
-      registrationNumber: student.user.registrationNumber,
-      role: student.role,
-      teamName: student.teamName || "N/A",
-    }));
-
-    res.status(200).json(response);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Server error");
-  }
-};
-
-const fetchTeamDetails = async (req, res) => {
-  try {
-    const { projectCode, teamName } = req.query;
-    if (!projectCode || !teamName) {
-      return res
-        .status(400)
-        .json({ msg: "Project code and team name are required" });
-    }
-
-    const students = await studentProjects
-      .find({
-        projectCode,
-        teamName,
-      })
-      .populate({
-        path: "user",
-        select: "-password",
-      });
-
-    if (students.length === 0) {
-      return res.status(404).json({
-        msg: "No students found for the given project code and team name",
-      });
-    }
-
-    const response = students.map((student) => ({
-      name: student.user.name,
-      email: student.user.email,
-      registrationNumber: student.user.registrationNumber,
-      role: student.role,
-      teamName: student.teamName || "N/A",
-    }));
-
-    res.status(200).json(response);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Server error");
-  }
-};
-
-module.exports = {
-  diaryentry,
-  diaryrepo,
-  studentdiaryrepo,
-  submitFeedBack,
-  fetchClassDetails,
-  fetchTeamDetails,
-};
+module.exports = { diaryentry, diaryrepo, studentdiaryrepo, submitFeedBack };

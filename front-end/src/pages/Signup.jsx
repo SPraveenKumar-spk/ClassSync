@@ -54,17 +54,16 @@ function Signup() {
 
   return (
     <>
-      <div
-        className="navbarnavbar navbar-expand-lg navbar-dark bg-primary "
+      <nav
+        className="navbar  navbar-expand-lg navbar-dark bg-primary "
         style={{ height: "4rem" }}
       >
-        <NavLink
-          className="text-light text-decoration-none  fs-1 ms-5 p-5"
-          to="/"
-        >
-          ClassSync
-        </NavLink>
-      </div>
+        <div className="container-fluid">
+          <NavLink className="text-light text-decoration-none  fs-1 " to="/">
+            ClassSync
+          </NavLink>
+        </div>
+      </nav>
       <section className="mt-5">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">

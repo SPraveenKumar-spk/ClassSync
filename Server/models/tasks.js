@@ -22,14 +22,9 @@ const taskSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  file: {
-    type: String,
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  filename: { type: String },
+  fileOriginal: { type: String },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   projectCode: {
     type: String,
     required: true,
