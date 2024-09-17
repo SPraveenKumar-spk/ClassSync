@@ -37,7 +37,7 @@ const {
   diaryrepo,
   studentdiaryrepo,
   submitFeedBack,
-} = require("../controller/diary-controller");
+} = require("../controller/diary-Controller");
 
 const {
   upload,
