@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../store/auth";
-import { useToast } from "../store/ToastContext";
-import Loader from "./Loader";
+import { useAuth } from "../../store/auth";
+import { useToast } from "../../store/ToastContext";
+import Loader from "../Loader";
 
 const AssignedTasks = () => {
   const { baseURL, token } = useAuth();

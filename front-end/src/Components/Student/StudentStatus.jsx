@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import Loader from "./Loader";
-import { useToast } from "../store/ToastContext";
-import { useAuth } from "../store/auth";
+import Loader from "../Loader";
+import { useToast } from "../../store/ToastContext";
+import { useAuth } from "../../store/auth";
 
 export default function StudentStatus() {
   const { baseURL, token } = useAuth();

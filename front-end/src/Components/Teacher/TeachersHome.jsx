@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
-import Image from "../assets/profile.png";
+import Image from "../../assets/profile.png";
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
 import { FaFolderPlus } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import Loader from "./Loader";
-import style from "../Styles/ProjectsHome.module.css";
-import { useToast } from "../store/ToastContext";
-import { useAuth } from "../store/auth";
+import Loader from "../Loader";
+import styles from "../../Styles/ProjectsHome.module.css";
+import { useToast } from "../../store/ToastContext";
+import { useAuth } from "../../store/auth";
 
-const StudentHome = () => {
+const TeachersHome = () => {
+  const { token, baseURL, LogoutUser } = useAuth();
   const { toast } = useToast();
-  const { token, baseURL } = useAuth();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
-  const [projectCode, setProjectCode] = useState("");
   const [projects, setProjects] = useState([]);
+  const [classroom, setClassroom] = useState("");
+  const [students, setStudents] = useState("");
+  const [randomCode, setRandomCode] = useState();
+  const [codeGenerated, setCodeGenerated] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [options, setOptions] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("Project Member");
-  const [teamName, setTeamName] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const notifySuccess = () =>
     toast.success("Your Project has been deleted successfully");
@@ -30,34 +30,31 @@ const StudentHome = () => {
     toast.error("Error in deleting your project");
   };
 
-  const notifyInvalidCode = () => {
-    toast.error("Invalid Project Code");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    setSearchItem(e.target.value);
   };
 
-  const notifyInvalidTeam = () => {
-    toast.error("The team name is already taken try other");
-  };
+  const filteredProjects = searchItem
+    ? projects.filter((project) =>
+        project.projectName.toLowerCase().includes(searchItem.toLowerCase())
+      )
+    : projects;
 
-  const notifyTeamLeadError = () => {
-    toast.error("Team name is required for Project Lead");
-  };
   const handleProject = (e) => {
     const { value } = e.target;
     setProjectName(value);
   };
 
-  const handleProjectCode = (e) => {
+  const handleClassroom = (e) => {
     const { value } = e.target;
-    setProjectCode(value);
+    setClassroom(value);
   };
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-  };
-
-  const handleTeamName = (e) => {
+  const handleStudents = (e) => {
     const { value } = e.target;
-    setTeamName(value);
+    setStudents(value);
   };
 
   const openModal = () => {
@@ -66,43 +63,40 @@ const StudentHome = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setRole("Project Member");
-    setTeamName("");
+    setCodeGenerated(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const newProject = { projectName, projectCode, role, teamName };
+    const newProject = {
+      projectName,
+      classroom,
+      students,
+      projectCode: randomCode,
+    };
 
     try {
-      const response = await fetch(
-        `${baseURL}/api/auth/studentprojects?token=${token}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newProject),
-        }
-      );
+      const response = await fetch(`${baseURL}/api/auth/projects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newProject),
+      });
       setLoading(false);
       if (response.ok) {
         setProjects([...projects, newProject]);
         closeModal();
         setProjectName("");
-        setProjectCode("");
-      } else if (response.status === 401) {
-        notifyInvalidCode();
-      } else if (response.status === 400) {
-        notifyInvalidTeam();
-      } else if (response.status === 402) {
-        notifyTeamLeadError();
+        setClassroom("");
+        setStudents("");
+        setRandomCode("");
+        setCodeGenerated(false);
       }
     } catch (error) {
-      console.error(error);
-      notifyError();
+      console.log(error);
     }
   };
 
@@ -110,27 +104,24 @@ const StudentHome = () => {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          `${baseURL}/api/auth/studentsrepo?token=${token}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${baseURL}/api/auth/userProjects`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
         }
       } catch (error) {
-        console.error(error);
+        console.log(error);
       } finally {
         setLoading(false);
       }
     };
     fetchProjects();
-  }, [baseURL]);
+  }, []);
 
   const handleDelete = async (projectCode) => {
     const role = sessionStorage.getItem("userRole");
@@ -138,7 +129,7 @@ const StudentHome = () => {
     if (confirmation) {
       try {
         const response = await fetch(
-          `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}&token=${token}`,
+          `${baseURL}/api/auth/deleteproject?projectCode=${projectCode}&role=${role}`,
           {
             method: "DELETE",
             headers: {
@@ -157,30 +148,31 @@ const StudentHome = () => {
           notifyError();
         }
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     }
   };
 
-  const handleSearch = (e) => {
-    setSearchItem(e.target.value);
+  const generateCode = (e) => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters[randomIndex];
+    }
+    setRandomCode(code);
+    setCodeGenerated(true);
   };
 
-  const filteredProjects = searchItem
-    ? projects.filter((project) =>
-        project.projectName.toLowerCase().includes(searchItem.toLowerCase())
-      )
-    : projects;
-
   const handleLogout = () => {
+    LogoutUser();
     navigate("/logout");
   };
 
-  const handleCheck = (projectCode, teamName) => {
+  const handleCheck = (projectCode) => {
     sessionStorage.setItem("projectCode", projectCode);
-    sessionStorage.setItem("teamName", teamName);
-
-    navigate("/submissions");
+    navigate("/createtasks");
   };
 
   const handleProfile = () => {
@@ -189,17 +181,18 @@ const StudentHome = () => {
 
   return (
     <>
-      <div className="d-fixed navbar navbar-expand-lg navbar-dark bg-primary">
+      <div className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div
-          className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${style.mainItems}`}
+          className={`container-fluid d-flex justify-content-evenly align-items-center flex-nowrap ${styles.mainItems}`}
         >
           <div>
-            <h1 className={`navbar-brand fs-1 ${style.logo}`}>ClassSync</h1>
+            <h1 className={`navbar-brand fs-1 ${styles.logo}`}>ClassSync</h1>
           </div>
+
           <div>
             <input
               type="text"
-              className={`form-control ${style.searchInput}`}
+              className={`form-control ${styles.searchInput}`}
               id="search"
               name="search"
               placeholder="Search your projects"
@@ -212,25 +205,24 @@ const StudentHome = () => {
               className="btn btn-primary ms-2 border rounded-sm d-none d-lg-block"
               onClick={openModal}
             >
-              Join Project
+              Create Project
             </button>
           </div>
-
           <div
-            className={`profile d-inline position-relative ${style.mainProfile}`}
+            className={`profile d-inline position-relative ${styles.mainProfile}`}
             onMouseEnter={() => setOptions(true)}
             onMouseLeave={() => setOptions(false)}
           >
             <img
               src={Image}
               alt="profile"
-              className={`profileImage img-fluid ${style.profileImage} `}
+              className={`profileImage img-fluid ${styles.profileImage} `}
               style={{ cursor: "pointer" }}
               onMouseEnter={() => setOptions(true)}
             />
             {options && (
               <div
-                className={`profileOptions position-absolute top-100  bg-light border rounded p-3 h-auto ${style.menuItems}`}
+                className={`profileOptions position-absolute top-100  bg-light border rounded p-3 h-auto ${styles.menuItems}`}
               >
                 <ul
                   className="list-unstyled fs-5 "
@@ -249,7 +241,7 @@ const StudentHome = () => {
                       className="text-decoration-none d-flex align-items-center  text-dark pb-1"
                       onClick={openModal}
                     >
-                      <FaFolderPlus className="icons me-2 " /> Join
+                      <FaFolderPlus className="icons me-2 " /> Create
                     </a>
                   </li>
                   <li>
@@ -280,32 +272,27 @@ const StudentHome = () => {
                 <div className="card-body rounded bg-secondary">
                   <h3 className="card-title p-1">
                     <span className="text-info">Project Name: </span>
-                    {project.projectName}
+                    {project.projectName ? project.projectName : "NA"}
                   </h3>
-
+                  <h3 className="card-text p-1">
+                    <span className="text-info">Classroom:</span>{" "}
+                    {project.classroom ? project.classroom : "NA"}
+                  </h3>
+                  <h3 className="card-text p-1">
+                    <span className="text-info">No of Students:</span>{" "}
+                    {project.students ? project.students : "NA"}
+                  </h3>
                   {project.projectCode ? (
                     <>
                       <h3 className="card-text">
                         {" "}
                         <span className="text-info">Project ID: </span>
-                        {project.projectCode}
+                        {project.projectCode ? project.projectCode : "NA"}
                       </h3>
-                      <h3 className="card-text">
-                        <span className="text-info">Role: </span>
-                        {project.role || "Not assigned"}
-                      </h3>
-
-                      <h3 className="card-text">
-                        <span className="text-info">Team Name: </span>
-                        {project.teamName || "Not assigned"}
-                      </h3>
-
                       <div className="d-flex justify-content-between pt-5">
                         <button
                           className="btn btn-primary"
-                          onClick={() =>
-                            handleCheck(project.projectCode, project.teamName)
-                          }
+                          onClick={() => handleCheck(project.projectCode)}
                         >
                           Check In
                         </button>
@@ -325,12 +312,11 @@ const StudentHome = () => {
             ))
           ) : (
             <div className="alert alert-info text-center w-100" role="alert">
-              You don't have any projects. Join Now
+              You haven't created any projects. Create Now
             </div>
           )}
         </div>
       )}
-
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -341,7 +327,7 @@ const StudentHome = () => {
           <div className=" p-4 modal-content border border  bg-light rounded-4">
             <div className="modal-header position-relative">
               <div>
-                <h1 className="modal-title">Join Project</h1>
+                <h1 className="modal-title">Create Project</h1>
               </div>
               <div className="position-absolute top-0 end-0">
                 <button
@@ -368,77 +354,40 @@ const StudentHome = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectcode" className="form-label">
-                    Project Code
+                  <label htmlFor="classroom" className="form-label">
+                    Classroom
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="projectcode"
-                    name="projectcode"
-                    value={projectCode}
-                    onChange={handleProjectCode}
+                    id="classroom"
+                    name="classroom"
+                    value={classroom}
+                    onChange={handleClassroom}
                     required
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Role</label>
-                  <div>
-                    <div className="form-check">
-                      <input
-                        type="radio"
-                        id="projectMember"
-                        name="role"
-                        value="Project Member"
-                        checked={role === "Project Member"}
-                        onChange={handleRoleChange}
-                        className="form-check-input"
-                      />
-                      <label
-                        htmlFor="projectMember"
-                        className="form-check-label"
-                      >
-                        Project Member
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        type="radio"
-                        id="projectLead"
-                        name="role"
-                        value="Project Lead"
-                        checked={role === "Project Lead"}
-                        onChange={handleRoleChange}
-                        className="form-check-input"
-                      />
-                      <label htmlFor="projectLead" className="form-check-label">
-                        Project Lead
-                      </label>
-                    </div>
-                  </div>
+                  <label htmlFor="students" className="form-label">
+                    No of Students
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="students"
+                    name="students"
+                    value={students}
+                    onChange={handleStudents}
+                    required
+                  />
                 </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="teamName" className="form-label">
-                      Team Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="teamName"
-                      name="teamName"
-                      value={teamName}
-                      onChange={handleTeamName}
-                      required={role === "Project Lead"}
-                    />
-                  </div>
-
-                <div className="d-flex justify-content-center">
+                <div className="d-flex justify-content-center align-items-center  ">
                   <button
                     type="submit"
-                    className="btn btn-success mb-3 pe-5 ps-5 fs-4 text-center"
+                    className="btn btn-success mb-3 p-2 fs-5"
+                    onClick={generateCode}
                   >
-                    Join
+                    Create
                   </button>
                 </div>
               </form>
@@ -450,4 +399,4 @@ const StudentHome = () => {
   );
 };
 
-export default StudentHome;
+export default TeachersHome;

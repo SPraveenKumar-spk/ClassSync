@@ -2,59 +2,73 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoMenuSharp } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
-import { FaHome, FaTasks } from "react-icons/fa";
+import { FaHome, FaTasks, FaRocketchat } from "react-icons/fa";
 import { GrTasks } from "react-icons/gr";
 import { RiAddCircleFill, RiHistoryFill } from "react-icons/ri";
 import { SlPeople } from "react-icons/sl";
-import NewDiaryEntry from "./StudentNewDiary";
-import TeamDetails from "./TeamDetails";
-import AssignedTasks from "./AssignedTasks";
-import PastDiaryEntries from "./StudentPastDiary";
-import { useAuth } from "../store/auth";
+import NewDiaryEntry from "../Student/StudentNewDiary";
+import TeamDetails from "../CommonDetails/TeamDetails";
+import AssignedTasks from "../CommonDetails/AssignedTasks";
+import PastDiaryEntries from "../Student/StudentPastDiary";
+import { useAuth } from "../../store/auth";
+import ChatApp from "./Chat/ChatApp";
+
+// Define visibility states
+const VISIBILITY_STATES = {
+  NONE: "NONE",
+  NEW_DIARY: "NEW_DIARY",
+  ASSIGNED_TASKS: "ASSIGNED_TASKS",
+  PAST_ENTRIES: "PAST_ENTRIES",
+  CONTRIBUTORS: "CONTRIBUTORS",
+  CHAT_APP: "CHAT_APP",
+};
 
 const StudentControll = () => {
   const navigate = useNavigate();
   const { LogoutUser } = useAuth();
   const [isExpanded, setExpand] = useState(true);
-  const [showNewDiary, setshowNewDiary] = useState(false);
-  const [showAssignedTasks, setShowAssignedTasks] = useState(false);
-  const [showDiaryDropdown, setShowDiaryDropdown] = useState(false);
-  const [showPastEntries, setShowPastEntries] = useState(false);
+  const [currentView, setCurrentView] = useState(
+    VISIBILITY_STATES.CONTRIBUTORS
+  ); // Show Contributors by default
+  const [isDiaryDropdownOpen, setIsDiaryDropdownOpen] = useState(false);
 
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
   };
 
   const handleAssigned = () => {
-    setShowAssignedTasks(true);
-    setshowNewDiary(false);
-    setShowPastEntries(false);
-    setShowDiaryDropdown(false);
+    setCurrentView(VISIBILITY_STATES.ASSIGNED_TASKS);
+    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
   };
 
   const handleDiaryToggle = () => {
-    setShowDiaryDropdown((prevState) => !prevState);
-    setshowNewDiary(false);
-    setShowAssignedTasks(false);
-    setShowPastEntries(false);
+    setIsDiaryDropdownOpen((prevState) => !prevState);
+    if (!isDiaryDropdownOpen) {
+      // When opening the dropdown, ensure other views are not shown
+      setCurrentView(VISIBILITY_STATES.NONE);
+    }
   };
 
   const handleNewEntry = () => {
-    setshowNewDiary(true);
-    setShowPastEntries(false);
+    setCurrentView(VISIBILITY_STATES.NEW_DIARY);
+    setIsDiaryDropdownOpen(true); // Ensure dropdown remains open
   };
 
   const handlePastEntry = () => {
-    setShowPastEntries(true);
-    setshowNewDiary(false);
-    setShowAssignedTasks(false);
+    setCurrentView(VISIBILITY_STATES.PAST_ENTRIES);
+    setIsDiaryDropdownOpen(true); // Ensure dropdown remains open
   };
+
   const handleContributors = () => {
-    setContributors(true);
-    setShowPastEntries(true);
-    setshowNewDiary(false);
-    setShowAssignedTasks(false);
+    setCurrentView(VISIBILITY_STATES.CONTRIBUTORS);
+    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
   };
+
+  const handleChatApp = () => {
+    setCurrentView(VISIBILITY_STATES.CHAT_APP);
+    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
+  };
+
   const handleLogout = () => {
     LogoutUser();
     navigate("/login");
@@ -110,13 +124,13 @@ const StudentControll = () => {
           </li>
           <li className="pb-3 fs-5">
             <button
-              className=" text-white text-decoration-none "
+              className="text-white text-decoration-none"
               onClick={handleDiaryToggle}
               style={{ background: "transparent", border: "none" }}
             >
               <GrTasks className="me-2" size={20} /> Diary Entry
             </button>
-            {showDiaryDropdown && (
+            {isDiaryDropdownOpen && (
               <ul className="list-unstyled ms-4">
                 <li className="pb-2 fs-6">
                   <button
@@ -137,6 +151,14 @@ const StudentControll = () => {
               </ul>
             )}
           </li>
+          <li className="pb-3 fs-5">
+            <NavLink
+              className="text-white text-decoration-none"
+              onClick={handleChatApp}
+            >
+              <FaRocketchat className="me-2" size={20} /> Collaborate
+            </NavLink>
+          </li>
         </ul>
         <div>
           <button
@@ -149,12 +171,11 @@ const StudentControll = () => {
         </div>
       </div>
       <div className="flex-grow-1 d-flex justify-content-center align-items-center">
-        {showNewDiary && <NewDiaryEntry />}
-        {showAssignedTasks && <AssignedTasks />}
-        {showPastEntries && <PastDiaryEntries />}{" "}
-        {!showNewDiary && !showAssignedTasks && !showPastEntries && (
-          <TeamDetails />
-        )}
+        {currentView === VISIBILITY_STATES.NEW_DIARY && <NewDiaryEntry />}
+        {currentView === VISIBILITY_STATES.ASSIGNED_TASKS && <AssignedTasks />}
+        {currentView === VISIBILITY_STATES.PAST_ENTRIES && <PastDiaryEntries />}
+        {currentView === VISIBILITY_STATES.CHAT_APP && <ChatApp />}
+        {currentView === VISIBILITY_STATES.CONTRIBUTORS && <TeamDetails />}
       </div>
     </div>
   );

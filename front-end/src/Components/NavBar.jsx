@@ -54,7 +54,7 @@ function NavBar() {
                   </NavLink>
                 </li>
               </ul>
-              <ul className="navbar-nav ms-auto d-flex">
+              <ul className="navbar-nav ms-auto d-none d-lg-flex">
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/register">
                     <button className="btn btn-outline-info bg-light fs-5 fw-semibold">
@@ -67,6 +67,24 @@ function NavBar() {
                     <button className="btn btn-outline-info bg-light fs-5 fw-semibold">
                       Sign In
                     </button>
+                  </NavLink>
+                </li>
+              </ul>
+              <ul className="navbar-nav ms-auto d-lg-none">
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link text-info fs-5 fw-semibold"
+                    to="/register"
+                  >
+                    Sign Up
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link text-info fs-5 fw-semibold"
+                    to="/login"
+                  >
+                    Sign In
                   </NavLink>
                 </li>
               </ul>

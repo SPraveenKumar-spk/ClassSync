@@ -6,6 +6,11 @@ export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(sessionStorage.getItem("userRole"));
   const baseURL = "https://class-sync-pi.vercel.app";
 
+  const [email, setEmail] = useState(null);
+  const addEmail = (emailId) => {
+    setEmail(emailId);
+    sessionStorage.setItem("emailId", emailId);
+  };
   const storeValues = (role) => {
     sessionStorage.setItem("userRole", role);
     setUserRole(role);
@@ -20,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     setUserRole("");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("projectCode");
+    sessionStorage.removeItem("emailId");
     localStorage.removeItem("token");
     setToken(null);
   };
@@ -30,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         userRole,
+        email,
+        addEmail,
         storeValues,
         storeToken,
         LogoutUser,

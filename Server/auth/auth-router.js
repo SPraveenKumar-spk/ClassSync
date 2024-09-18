@@ -45,6 +45,8 @@ const {
   fetchTaskFiles,
 } = require("../middlewares/storage.js");
 
+
+
 router.get("/", home);
 router.post("/register", register);
 router.post("/login", login);
@@ -72,6 +74,7 @@ router.get("/teamDetails", fetchTeamDetails);
 
 router.post("/files", upload.single("file"), uploadTaskFiles);
 router.get("/file/:filename", fetchTaskFiles);
+
 
 
 module.exports = router;

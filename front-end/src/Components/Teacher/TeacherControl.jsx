@@ -5,11 +5,11 @@ import { TbLogout2 } from "react-icons/tb";
 import { FaHome, FaTasks, FaUserGraduate } from "react-icons/fa";
 import { SlPeople } from "react-icons/sl";
 import { GrTasks } from "react-icons/gr";
-import ClassDetails from "./ClassDetails";
+import ClassDetails from "../CommonDetails/ClassDetails";
 import AssignTask from "./AssignTask";
-import StudentStatus from "./StudentStatus";
-import AssignedTasks from "./AssignedTasks";
-import { useAuth } from "../store/auth";
+import StudentStatus from "../Student/StudentStatus";
+import AssignedTasks from "../CommonDetails/AssignedTasks";
+import { useAuth } from "../../store/auth";
 
 const TeacherControll = () => {
   const navigate = useNavigate();

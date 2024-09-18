@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../store/auth";
-import Loader from "./Loader";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../store/auth";
+import Loader from "../Loader";
 
-const TeamDetails = () => {
+const ClassDetails = () => {
   const { baseURL } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortCriteria, setSortCriteria] = useState("none");
+  const [sortField, setSortField] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
 
-  const fetchTeamDetails = async () => {
+  const fetchClassDetails = async () => {
     setLoading(true);
     setError(null);
 
     try {
       const projectCode = sessionStorage.getItem("projectCode");
-      const teamName = sessionStorage.getItem("teamName");
       const response = await fetch(
-        `${baseURL}/api/auth/teamDetails?projectCode=${projectCode}&teamName=${teamName}`,
+        `${baseURL}/api/auth/classdetails?projectCode=${projectCode}`,
         {
           method: "GET",
           headers: {
@@ -30,7 +30,7 @@ const TeamDetails = () => {
         const result = await response.json();
         setData(result);
       } else if (response.status === 404) {
-        setError("Students not joined in the project");
+        setError("Students not joined in the Project");
       }
     } catch (err) {
       console.error(err);
@@ -40,46 +40,47 @@ const TeamDetails = () => {
   };
 
   useEffect(() => {
-    fetchTeamDetails();
+    fetchClassDetails();
   }, []);
 
-  useEffect(() => {
-    if (sortCriteria === "none") return;
-
-    let sortedData = [...data];
-    switch (sortCriteria) {
-      case "name":
-        sortedData.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "regNo":
-        sortedData.sort((a, b) => a.regNo.localeCompare(b.regNo));
-        break;
-      default:
-        return;
-    }
-    setData(sortedData);
-  }, [sortCriteria, data]);
-
   const handleSortChange = (event) => {
-    setSortCriteria(event.target.value);
-  };
+    const field = event.target.value;
+    setSortField(field);
+    const sortedData = [...data].sort((a, b) => {
+      if (field === "regNo") {
+        const numA = parseFloat(a[field]) || 0;
+        const numB = parseFloat(b[field]) || 0;
+        return sortOrder === "asc" ? numA - numB : numB - numA;
+      } else {
+        const strA = a[field] || "";
+        const strB = b[field] || "";
+        return sortOrder === "asc"
+          ? strA.localeCompare(strB)
+          : strB.localeCompare(strA);
+      }
+    });
 
+    setData(sortedData);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
 
   return (
     <div className="container mt-5 pt-5">
       {!error && (
         <>
-          <h2 className="mb-4 text-center text-primary">Team Details</h2>
+          <h2 className="mb-4 text-center text-primary">Class Details</h2>
           <div className="row mb-3">
             <div className="col-12 d-flex justify-content-end">
               <select
-                className="form-select w-auto"
-                value={sortCriteria}
+                value={sortField}
                 onChange={handleSortChange}
+                className="form-select w-auto"
+                aria-label="Sort by"
+                style={{ maxWidth: "200px" }}
               >
-                <option value="none">Sort by</option>
                 <option value="name">Sort by Name</option>
-                <option value="regNo">Sort by Reg No</option>
+                <option value="regNo">Sort by Reg No.</option>
+                <option value="role">Sort by Role</option>
               </select>
             </div>
           </div>
@@ -95,8 +96,8 @@ const TeamDetails = () => {
             </div>
           ) : data.length === 0 ? (
             <div className="mx-auto w-50 mt-5">
-              <p className="alert alert-danger text-center">
-                No student in your team.
+              <p className="alert alert-info text-center">
+                No students have joined the class yet.
               </p>
             </div>
           ) : (
@@ -105,21 +106,21 @@ const TeamDetails = () => {
                 <tr>
                   <th scope="col">S.No</th>
                   <th scope="col">Name</th>
-                  <th scope="col">Reg No</th>
-                  <th scope="col">Role</th>
+                  <th scope="col">Reg No.</th>
                   <th scope="col">Team Name</th>
+                  <th scope="col">Role</th>
                   <th scope="col">Email Address</th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((item, index) => (
-                  <tr key={item.sno || index}>
+                  <tr key={item._id || index}>
                     <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td>{item.registrationNumber}</td>
-                    <td>{item.role}</td>
-                    <td>{item.teamName}</td>
-                    <td>{item.email}</td>
+                    <td>{item.name || "N/A"}</td>
+                    <td>{item.registrationNumber || "N/A"}</td>
+                    <td>{item.teamName || "N/A"}</td>
+                    <td>{item.role || "N/A"}</td>
+                    <td>{item.email || "N/A"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -131,4 +132,4 @@ const TeamDetails = () => {
   );
 };
 
-export default TeamDetails;
+export default ClassDetails;

@@ -8,6 +8,7 @@ import { useToast } from "../store/ToastContext";
 function SignIn() {
   const { storeValues, baseURL, storeToken } = useAuth();
   const { toast } = useToast();
+  const { addEmail } = useAuth();
   const navigate = useNavigate();
 
   const notifyLoginError = () => toast.error("Something went wrong. Try again");
@@ -38,6 +39,7 @@ function SignIn() {
       });
 
       if (response.ok) {
+        addEmail(user.email);
         const data = await response.json();
         storeToken(data.token);
         storeValues(user.role);
@@ -79,8 +81,8 @@ function SignIn() {
           </NavLink>
         </div>
       </nav>
-      <section className=" mt-5 ">
-        <div className="container-fluid h-custom">
+      <section className=" mt-5  ">
+        <div className="container h-custom">
           <div
             className="card text-black pb-3"
             style={{ borderRadius: "25px" }}
