@@ -17,6 +17,7 @@ const io = socketIo(server, {
     origin: "https://classsync-learn.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
+    allowedHeaders: "Content-Type,Authorization",
   },
 });
 
