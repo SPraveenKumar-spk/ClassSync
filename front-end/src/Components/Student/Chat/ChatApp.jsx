@@ -3,7 +3,7 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import io from "socket.io-client";
 import Image from "../../../assets/user.png";
 
-const socket = io("https://class-sync-pi.vercel.app");
+const socket = io("https://classsync-q2os.onrender.com");
 
 function ChatApp() {
   const [messages, setMessages] = useState([]);
