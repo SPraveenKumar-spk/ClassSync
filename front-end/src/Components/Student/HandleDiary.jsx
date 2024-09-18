@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Loader from "./Loader";
-import { useToast } from "../store/ToastContext";
-import { useAuth } from "../store/auth";
+import Loader from "../Loader";
+import { useToast } from "../../store/ToastContext";
+import { useAuth } from "../../store/auth";
 
 function HandleDiary() {
   const { toast } = useToast();
@@ -36,7 +36,6 @@ function HandleDiary() {
         `${baseURL}/api/auth/diaryrepo?projectCode=${projectCode}`,
         {
           method: "GET",
-      
         }
       );
       if (response.ok) {
@@ -77,7 +76,6 @@ function HandleDiary() {
             time: time,
             dayOfWeek: dayOfWeek,
           }),
- 
         }
       );
       if (response.ok) {

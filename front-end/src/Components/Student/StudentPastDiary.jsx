@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../store/auth";
-import { useToast } from "../store/ToastContext";
-import Loader from "./Loader";
+import { useAuth } from "../../store/auth";
+import { useToast } from "../../store/ToastContext";
+import Loader from "../Loader";
 
 const PastDiaryEntries = () => {
   const { baseURL, token } = useAuth();

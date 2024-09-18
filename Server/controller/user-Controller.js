@@ -7,8 +7,8 @@ const crypto = require("crypto");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "spraveen.961435@gmail.com",
-    pass: "ljyvtcwmeqouveur",
+    user: process.env.user,
+    pass: process.env.pass,
   },
 });
 
@@ -22,7 +22,7 @@ const register = async (req, res) => {
     const userCreated = await user.create({ name, email, password, role });
 
     let mailOptions = {
-      from: "spraveen.961435@gmail.com",
+      from: process.env.user,
       to: email,
       subject: "Welcome to ClassSync",
       html: `

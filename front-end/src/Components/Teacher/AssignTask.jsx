@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ImSpinner9 } from "react-icons/im";
-import { useToast } from "../store/ToastContext";
-import { useAuth } from "../store/auth";
-
+import { useToast } from "../../store/ToastContext";
+import { useAuth } from "../../store/auth";
 
 function AssignTask({ baseURL }) {
   const { toast } = useToast();
