@@ -16,7 +16,7 @@ function ChatApp() {
     const projectCode = sessionStorage.getItem("projectCode");
     const teamName = sessionStorage.getItem("teamName");
     const name = sessionStorage.getItem("name");
-    setUserName(name || "User");
+    setUserName(name || "user");
 
     if (projectCode && teamName) {
       setGroup({ projectCode, teamName });

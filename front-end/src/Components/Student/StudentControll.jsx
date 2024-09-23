@@ -13,7 +13,7 @@ import PastDiaryEntries from "../Student/StudentPastDiary";
 import { useAuth } from "../../store/auth";
 import ChatApp from "./Chat/ChatApp";
 
-// Define visibility states
+
 const VISIBILITY_STATES = {
   NONE: "NONE",
   NEW_DIARY: "NEW_DIARY",
@@ -29,7 +29,7 @@ const StudentControll = () => {
   const [isExpanded, setExpand] = useState(true);
   const [currentView, setCurrentView] = useState(
     VISIBILITY_STATES.CONTRIBUTORS
-  ); // Show Contributors by default
+  );
   const [isDiaryDropdownOpen, setIsDiaryDropdownOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -38,7 +38,7 @@ const StudentControll = () => {
 
   const handleAssigned = () => {
     setCurrentView(VISIBILITY_STATES.ASSIGNED_TASKS);
-    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
+    setIsDiaryDropdownOpen(false);
   };
 
   const handleDiaryToggle = () => {
