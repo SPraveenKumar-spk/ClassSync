@@ -48,7 +48,6 @@ app.use("/api/auth/", router);
 
 io.on("connection", (socket) => {
   console.log("User connected");
-
   socket.on("joinChatGroup", async ({ projectCode, teamName }) => {
     const groupName = `${projectCode}_${teamName}`;
     socket.join(groupName);

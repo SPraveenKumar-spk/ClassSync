@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaUser, FaEnvelope, FaLock, FaKey } from "react-icons/fa";
 import { useAuth } from "../store/auth";
+import { ImSpinner9 } from "react-icons/im";
 
 function Signup() {
   const { baseURL } = useAuth();
@@ -15,6 +16,8 @@ function Signup() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -23,6 +26,7 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${baseURL}/api/auth/register`, {
         method: "POST",
@@ -45,6 +49,8 @@ function Signup() {
     } catch (error) {
       console.log(error);
       setLoginError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,6 +176,9 @@ function Signup() {
                           type="submit"
                           className="btn btn-primary btn-lg"
                         >
+                          {loading && (
+                            <ImSpinner9 className="spinner m-2" size={20} />
+                          )}
                           Register
                         </button>
                       </div>

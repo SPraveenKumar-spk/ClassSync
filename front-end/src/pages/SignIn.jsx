@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../store/auth";
 import ForgotPassword from "./ForgotPassword";
 import { useToast } from "../store/ToastContext";
+import { ImSpinner9 } from "react-icons/im";
 
 function SignIn() {
   const { storeValues, baseURL, storeToken } = useAuth();
   const { toast } = useToast();
   const { addEmail } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const notifyLoginError = () => toast.error("Something went wrong. Try again");
   const [user, setUser] = useState({
@@ -20,6 +23,7 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [InvalidUser, setInvalidUser] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -28,7 +32,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const response = await fetch(`${baseURL}/api/auth/login`, {
         method: "POST",
@@ -62,6 +66,8 @@ function SignIn() {
       }
     } catch (error) {
       setLoginError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -167,6 +173,9 @@ function SignIn() {
                       className="btn btn-primary btn-lg"
                       style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
                     >
+                      {loading && (
+                        <ImSpinner9 className="spinner m-2" size={20} />
+                      )}
                       Login
                     </button>
                     <NavLink

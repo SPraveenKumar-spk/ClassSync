@@ -3,7 +3,7 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import io from "socket.io-client";
 import Image from "../../../assets/user.png";
 
-const socket = io("https://class-sync-pi.vercel.app");
+const socket = io("https://classsync-q2os.onrender.com");
 
 function ChatApp() {
   const [messages, setMessages] = useState([]);
@@ -16,7 +16,7 @@ function ChatApp() {
     const projectCode = sessionStorage.getItem("projectCode");
     const teamName = sessionStorage.getItem("teamName");
     const name = sessionStorage.getItem("name");
-    setUserName(name || "User");
+    setUserName(name || "user");
 
     if (projectCode && teamName) {
       setGroup({ projectCode, teamName });
