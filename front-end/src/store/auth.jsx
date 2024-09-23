@@ -13,16 +13,22 @@ export const AuthProvider = ({ children }) => {
     };
 
     const [token, setToken] = useState(localStorage.getItem("token"));
+    const [userName, setName] = useState(localStorage.getItem("name"));
     const storeToken = (token) => {
       sessionStorage.setItem("token", token);
       setToken(token);
+    };
+
+    const storeName = (name) => {
+      sessionStorage.setItem("name", name);
+      setName(name);
     };
     const LogoutUser = () => {
       setUserRole("");
       sessionStorage.removeItem("userRole");
       sessionStorage.removeItem("projectCode");
-
       sessionStorage.removeItem("token");
+      sessionStorage.removeItem("name");
       setToken(null);
     };
 
@@ -32,6 +38,8 @@ export const AuthProvider = ({ children }) => {
       <AuthContext.Provider
         value={{
           userRole,
+          userName,
+          storeName,
           storeValues,
           storeToken,
           LogoutUser,

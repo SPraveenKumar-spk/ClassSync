@@ -78,6 +78,8 @@ const login = async (req, res) => {
     if (!userExisted) {
       return res.status(401).json({ message: "Invalid Credendials" });
     }
+
+    const userName = userExisted.name;
     if (role && userExisted.role !== role) {
       return res.status(404).json({ message: "Invalid user" });
     }
@@ -87,6 +89,7 @@ const login = async (req, res) => {
       res.status(200).json({
         msg: "Login Successful",
         token,
+        userName,
         userId: userExisted._id.toString(),
       });
     } else {

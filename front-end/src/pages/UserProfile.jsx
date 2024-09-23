@@ -32,35 +32,33 @@ export default function UserProfile() {
     toast.success("Registration number updated successfully");
   const notifyRegistrationError = () =>
     toast.error("Failed to update registration number");
-
   const token = sessionStorage.getItem("token");
-  sessionStorage.setItem("name", user.name);
-useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      console.log(token);
-      const response = await fetch(
-        `${baseURL}/api/auth/userinfo?token=${token}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          `${baseURL}/api/auth/userinfo?token=${token}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+          setRegistrationNumber(userData.registrationNumber || "");
+        } else {
+          console.log("Failed to fetch user data");
         }
-      );
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        setRegistrationNumber(userData.registrationNumber || "");
-      } else {
-        console.log("Failed to fetch user data");
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchUser();
-}, [baseURL]);
+    };
+    fetchUser();
+  }, [baseURL]);
 
 const handlePasswordUpdate = async (e) => {
   e.preventDefault();

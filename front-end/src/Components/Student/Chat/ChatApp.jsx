@@ -2,21 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import io from "socket.io-client";
 import Image from "../../../assets/user.png";
+import { useAuth } from "../../../store/auth";
 
 const socket = io("https://classsync-q2os.onrender.com");
 
 function ChatApp() {
+  const { userName } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [group, setGroup] = useState({ projectCode: "", teamName: "" });
-  const [userName, setUserName] = useState("");
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const projectCode = sessionStorage.getItem("projectCode");
     const teamName = sessionStorage.getItem("teamName");
-    const name = sessionStorage.getItem("name");
-    setUserName(name || "user");
 
     if (projectCode && teamName) {
       setGroup({ projectCode, teamName });

@@ -7,7 +7,7 @@ import { useToast } from "../store/ToastContext";
 import { ImSpinner9 } from "react-icons/im";
 
 function SignIn() {
-  const { storeValues, baseURL, storeToken } = useAuth();
+  const { storeValues, baseURL, storeToken, storeName } = useAuth();
   const { toast } = useToast();
 
   const navigate = useNavigate();
@@ -46,6 +46,7 @@ function SignIn() {
         const data = await response.json();
         storeToken(data.token);
         storeValues(user.role);
+        storeName(data.userName);
         setUser({
           email: "",
           password: "",
