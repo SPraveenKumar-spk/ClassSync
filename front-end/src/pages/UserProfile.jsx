@@ -33,8 +33,8 @@ export default function UserProfile() {
   const notifyRegistrationError = () =>
     toast.error("Failed to update registration number");
 
-  const token = localStorage.getItem("token");
-sessionStorage.setItem("name", user.name);
+  const token = sessionStorage.getItem("token");
+  sessionStorage.setItem("name", user.name);
 useEffect(() => {
   const fetchUser = async () => {
     try {
