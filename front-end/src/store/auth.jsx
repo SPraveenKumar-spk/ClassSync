@@ -6,14 +6,13 @@ export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(sessionStorage.getItem("userRole"));
     const baseURL = "https://class-sync-pi.vercel.app";
 
-    
     const storeValues = (role) => {
       sessionStorage.setItem("userRole", role);
       setUserRole(role);
     };
 
-    const [token, setToken] = useState(localStorage.getItem("token"));
-    const [userName, setName] = useState(localStorage.getItem("name"));
+    const [token, setToken] = useState(sessionStorage.getItem("token"));
+    const [userName, setName] = useState(sessionStorage.getItem("name"));
     const storeToken = (token) => {
       sessionStorage.setItem("token", token);
       setToken(token);
@@ -29,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.removeItem("projectCode");
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("name");
+      sessionStorage.removeItem("teamName");
       setToken(null);
     };
 

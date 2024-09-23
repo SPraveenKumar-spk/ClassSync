@@ -44,29 +44,28 @@ const StudentControll = () => {
   const handleDiaryToggle = () => {
     setIsDiaryDropdownOpen((prevState) => !prevState);
     if (!isDiaryDropdownOpen) {
-      // When opening the dropdown, ensure other views are not shown
       setCurrentView(VISIBILITY_STATES.NONE);
     }
   };
 
   const handleNewEntry = () => {
     setCurrentView(VISIBILITY_STATES.NEW_DIARY);
-    setIsDiaryDropdownOpen(true); // Ensure dropdown remains open
+    setIsDiaryDropdownOpen(true);
   };
 
   const handlePastEntry = () => {
     setCurrentView(VISIBILITY_STATES.PAST_ENTRIES);
-    setIsDiaryDropdownOpen(true); // Ensure dropdown remains open
+    setIsDiaryDropdownOpen(true);
   };
 
   const handleContributors = () => {
     setCurrentView(VISIBILITY_STATES.CONTRIBUTORS);
-    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
+    setIsDiaryDropdownOpen(false);
   };
 
   const handleChatApp = () => {
     setCurrentView(VISIBILITY_STATES.CHAT_APP);
-    setIsDiaryDropdownOpen(false); // Ensure dropdown is closed
+    setIsDiaryDropdownOpen(false);
   };
 
   const handleLogout = () => {
