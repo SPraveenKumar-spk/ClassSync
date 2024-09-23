@@ -9,7 +9,7 @@ import { ImSpinner9 } from "react-icons/im";
 function SignIn() {
   const { storeValues, baseURL, storeToken } = useAuth();
   const { toast } = useToast();
-  const { addEmail } = useAuth();
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -43,7 +43,6 @@ function SignIn() {
       });
 
       if (response.ok) {
-        addEmail(user.email);
         const data = await response.json();
         storeToken(data.token);
         storeValues(user.role);
