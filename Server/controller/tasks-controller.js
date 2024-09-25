@@ -1,4 +1,6 @@
 const tasks = require("../models/tasks");
+const taskResponse = require("../models/TaskResponses");
+const Project = require("../models/projects");
 
 const assigntasks = async (req, res) => {
   try {
@@ -84,9 +86,62 @@ const assignedDetails = async (req, res) => {
   }
 };
 
+const taskSolutions = async (req, res) => {
+  try {
+    const { taskId, solution } = req.body;
+    const projectCode = req.query.projectCode;
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
+      return res.status(404).json({ msg: "requested project is not found" });
+    }
+    const userId = req.user.userId;
+    const validTaskId = await tasks.findOne({ taskId });
+    if (!validTaskId) {
+      return res.status(404).json({ msg: "requested task is not found" });
+    }
+
+    await taskResponse.create({
+      taskId,
+      projectCode,
+      solution,
+      user: userId,
+    });
+
+    res.status(200).json({
+      msg: "Response saved successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getTaskResponses = async (req, res) => {
+  try {
+    const { projectCode } = req.query;
+    if (!projectCode) {
+      return res.status(400).json({ msg: "Project code is required" });
+    }
+    const validCode = await Project.findOne({ projectCode });
+    if (!validCode) {
+      return res.status(404).json({ msg: "Requested project not found" });
+    }
+
+    const data = await taskResponse
+      .find({ projectCode })
+      .populate("user", "email name");
+
+    res.status(200).json(data);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
 module.exports = {
   assigntasks,
   assignedDetails,
   deletetask,
   edittask,
+  taskSolutions,
+  getTaskResponses,
 };

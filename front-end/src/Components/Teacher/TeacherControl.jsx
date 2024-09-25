@@ -7,7 +7,7 @@ import { SlPeople } from "react-icons/sl";
 import { GrTasks } from "react-icons/gr";
 import ClassDetails from "../CommonDetails/ClassDetails";
 import AssignTask from "./AssignTask";
-import StudentStatus from "../Student/StudentStatus";
+import StudentStatus from "./StudentStatus";
 import AssignedTasks from "../CommonDetails/AssignedTasks";
 import { useAuth } from "../../store/auth";
 

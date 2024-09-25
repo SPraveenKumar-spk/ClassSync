@@ -30,6 +30,8 @@ const {
   assignedDetails,
   deletetask,
   edittask,
+  taskSolutions,
+  getTaskResponses,
 } = require("../controller/tasks-controller");
 
 const {
@@ -44,8 +46,6 @@ const {
   uploadTaskFiles,
   fetchTaskFiles,
 } = require("../middlewares/storage.js");
-
-
 
 router.get("/", home);
 router.post("/register", register);
@@ -64,6 +64,8 @@ router.get("/studentsrepo", AuthMiddleware, studentsrepo);
 router.post("/assigntasks", AuthMiddleware, assigntasks);
 router.delete("/deletetask", deletetask);
 router.put("/edittask", AuthMiddleware, edittask);
+router.post("/taskResponse", AuthMiddleware, taskSolutions);
+router.get("/getTaskResponses", AuthMiddleware, getTaskResponses);
 router.get("/assignedDetails", assignedDetails);
 router.post("/diaryentry", AuthMiddleware, diaryentry);
 router.get("/diaryrepo", AuthMiddleware, diaryrepo);

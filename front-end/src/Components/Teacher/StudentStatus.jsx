@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import Loader from "../Loader";
 import { useToast } from "../../store/ToastContext";
 import { useAuth } from "../../store/auth";
+import TaskResponses from "./TaskResponses";
 
 export default function StudentStatus() {
   const { baseURL, token } = useAuth();
   const { toast } = useToast();
-  const [taskbtn, setTaskbtn] = useState(false);
   const [diarybtn, setDiarybtn] = useState(false);
   const [feed, setFeed] = useState(-1);
   const [diaryData, setDiaryData] = useState([]);
@@ -14,20 +14,19 @@ export default function StudentStatus() {
   const [comments, setComments] = useState("");
   const [marks, setMarks] = useState("");
 
+  const [submissionFlag, setSubmissions] = useState(false);
+
   const notifySuccess = () => toast.success("Feedback submitted successfully");
   const notifyError = () => toast.error("Failed to submit feedback");
-  const notifySubmissionError = () =>
-    toast.error("There is no task submissions till now.. ");
 
   const taskSubmissions = () => {
-    setTaskbtn(true);
     setDiarybtn(false);
-    notifySubmissionError();
+    setSubmissions(true);
   };
 
   const diaryEntries = () => {
     setDiarybtn(true);
-    setTaskbtn(false);
+    setSubmissions(false);
   };
 
   const handleFeed = (index) => {
@@ -100,7 +99,7 @@ export default function StudentStatus() {
           </button>
         </div>
       </div>
-      {taskbtn && <div></div>}
+
       {loading ? (
         <Loader />
       ) : (
@@ -184,6 +183,7 @@ export default function StudentStatus() {
           </div>
         )
       )}
+      {submissionFlag && <TaskResponses flag={submissionFlag} />}
     </div>
   );
 }

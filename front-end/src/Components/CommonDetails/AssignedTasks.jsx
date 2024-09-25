@@ -11,7 +11,7 @@ const AssignedTasks = () => {
   const [status, setStatus] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [solution, setSolution] = useState("");
-  const [showDetails, setShowDetails] = useState(false); // State to toggle task details
+  const [showDetails, setShowDetails] = useState(false);
 
   const notifySuccess2 = () => {
     toast.success("Task deleted successfully");
@@ -20,12 +20,11 @@ const AssignedTasks = () => {
   const notifyError = (message) => {
     toast.error(message || "Failed to perform the operation.");
   };
-
+  const projectCode = sessionStorage.getItem("projectCode");
   useEffect(() => {
     const fetchAssigned = async () => {
       setLoading(true);
       try {
-        const projectCode = sessionStorage.getItem("projectCode");
         const response = await fetch(
           `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
           {
@@ -96,8 +95,8 @@ const AssignedTasks = () => {
 
   const handleOpenModal = (task) => {
     setSelectedTask(task);
-    setSolution(""); // Reset solution
-    setShowDetails(false); // Reset details visibility
+    setSolution("");
+    setShowDetails(false);
     const modal = new window.bootstrap.Modal(
       document.getElementById("submitTaskModal")
     );
@@ -112,7 +111,7 @@ const AssignedTasks = () => {
       modal.hide();
     }
     setSelectedTask(null);
-    setShowDetails(false); // Reset details visibility
+    setShowDetails(false);
   };
 
   const handleSubmitSolution = async (taskId) => {
@@ -120,11 +119,28 @@ const AssignedTasks = () => {
       notifyError("Please enter your solution.");
       return;
     }
-    // Handle the solution submission logic here
-    console.log("Task ID:", taskId);
-    console.log("Submitted Solution:", solution);
-    notifySuccess2();
-    handleCloseModal();
+
+    try {
+      const response = await fetch(
+        `${baseURL}/api/auth/taskResponse?projectCode=${projectCode}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({ taskId, solution }),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        toast.success("Your response has been submitted successfully ..");
+        handleCloseModal();
+      }
+    } catch (err) {
+      toast.error("Server error.please try again later");
+      console.log(err);
+    }
   };
 
   return (
@@ -165,13 +181,13 @@ const AssignedTasks = () => {
                     {userRole === "Teacher" ? (
                       <div className="d-flex justify-content-between mt-5">
                         <button className="btn btn-light fs-5 pe-3">
-                          Edit
+                          Student Responses
                         </button>
                         <button
                           className="btn btn-danger"
                           onClick={() => handleDelete(task.taskId)}
                         >
-                          Delete
+                          Delete Task
                         </button>
                       </div>
                     ) : (
@@ -180,7 +196,7 @@ const AssignedTasks = () => {
                           className="btn btn-outline-info"
                           onClick={() => handleOpenModal(task)}
                         >
-                          Submit Task
+                          Submit Response
                         </button>
                       </div>
                     )}
