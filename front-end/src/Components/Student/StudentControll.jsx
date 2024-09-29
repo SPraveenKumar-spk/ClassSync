@@ -158,16 +158,15 @@ const StudentControll = () => {
               <FaRocketchat className="me-2" size={20} /> Collaborate
             </NavLink>
           </li>
+          <li className="pb-3 fs-5 mt-5">
+            <NavLink
+              className="text-white text-decoration-none"
+              onClick={handleLogout}
+            >
+              <TbLogout2 className="me-2" size={20} /> Logout
+            </NavLink>
+          </li>
         </ul>
-        <div>
-          <button
-            className="btn text-light fs-5"
-            style={{ position: "absolute", bottom: "2rem" }}
-            onClick={handleLogout}
-          >
-            <TbLogout2 className="me-2" size={20} /> Logout
-          </button>
-        </div>
       </div>
       <div className="flex-grow-1 d-flex justify-content-center align-items-center">
         {currentView === VISIBILITY_STATES.NEW_DIARY && <NewDiaryEntry />}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../store/auth";
 import { useToast } from "../../store/ToastContext";
 import Loader from "../Loader";
+import TaskResponses from "../Teacher/StudentResponses";
 
 const AssignedTasks = () => {
   const { baseURL, token, userRole } = useAuth();
@@ -10,17 +11,20 @@ const AssignedTasks = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [solution, setSolution] = useState("");
-  const [showDetails, setShowDetails] = useState(false);
+  const [view, setView] = useState("tasks");
+  const [solution, setSolution] = useState(""); // Added state for solution
+  const [showDetails, setShowDetails] = useState(false); // Added state for showing details
 
-  const notifySuccess2 = () => {
+  const notifySuccess = () => {
     toast.success("Task deleted successfully");
   };
 
   const notifyError = (message) => {
     toast.error(message || "Failed to perform the operation.");
   };
+
   const projectCode = sessionStorage.getItem("projectCode");
+
   useEffect(() => {
     const fetchAssigned = async () => {
       setLoading(true);
@@ -38,6 +42,8 @@ const AssignedTasks = () => {
           const data = await response.json();
           setAssigned(data);
           setStatus(true);
+        } else {
+          notifyError("Failed to fetch tasks.");
         }
       } catch (error) {
         notifyError("Failed to fetch tasks.");
@@ -49,11 +55,10 @@ const AssignedTasks = () => {
     if (!status) {
       fetchAssigned();
     }
-  }, [status, baseURL, token]);
+  }, [status, baseURL, token, projectCode]);
 
   const handleDelete = async (taskId) => {
-    const val = window.confirm("Are you sure to delete the task?");
-    if (val) {
+    if (window.confirm("Are you sure to delete the task?")) {
       try {
         const response = await fetch(`${baseURL}/api/auth/deletetask`, {
           method: "DELETE",
@@ -67,15 +72,23 @@ const AssignedTasks = () => {
           setAssigned((prevAssigned) =>
             prevAssigned.filter((task) => task.taskId !== taskId)
           );
-          notifySuccess2();
+          notifySuccess();
         } else {
           notifyError("Failed to delete task.");
         }
       } catch (error) {
-        console.log(error);
         notifyError("An error occurred while deleting the task.");
       }
     }
+  };
+
+  const handleViewResponses = (taskId) => {
+    setSelectedTask(taskId);
+    setView("responses");
+  };
+
+  const handleBackToTasks = () => {
+    setView("tasks");
   };
 
   const handleViewFile = async (filename) => {
@@ -95,7 +108,7 @@ const AssignedTasks = () => {
 
   const handleOpenModal = (task) => {
     setSelectedTask(task);
-    setSolution("");
+    setSolution(""); // Clear previous solution
     setShowDetails(false);
     const modal = new window.bootstrap.Modal(
       document.getElementById("submitTaskModal")
@@ -127,18 +140,19 @@ const AssignedTasks = () => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            "content-Type": "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ taskId, solution }),
         }
       );
       if (response.ok) {
-        const data = await response.json();
-        toast.success("Your response has been submitted successfully ..");
+        toast.success("Your response has been submitted successfully.");
         handleCloseModal();
+      } else {
+        notifyError("Failed to submit your solution.");
       }
     } catch (err) {
-      toast.error("Server error.please try again later");
+      notifyError("Server error. Please try again later.");
       console.log(err);
     }
   };
@@ -149,67 +163,89 @@ const AssignedTasks = () => {
         <div className="col-md-6">
           {loading ? (
             <Loader />
-          ) : assigned.length ? (
-            assigned.map((task, index) => (
-              <div key={index} className="mb-4">
-                <div className="card p-3 bg-secondary text-white">
-                  <div className="card-body">
-                    <p className="card-text">
-                      <strong className="text-warning">Task Name:</strong>{" "}
-                      {task.taskName}
-                    </p>
-                    <p className="card-text">
-                      <strong className="text-warning">Task Theme:</strong>{" "}
-                      {task.theme}
-                    </p>
-                    <p className="card-text">
-                      <strong className="text-warning">Last Date:</strong>{" "}
-                      {task.deadline}
-                    </p>
-                    {task.filename && (
-                      <div className="mb-3">
-                        <strong className="text-warning">Attached File:</strong>
-                        <a
-                          href="#"
-                          onClick={() => handleViewFile(task.filename)}
-                          className="text-light"
-                        >
-                          {task.fileOriginal}
-                        </a>
-                      </div>
-                    )}
-                    {userRole === "Teacher" ? (
-                      <div className="d-flex justify-content-between mt-5">
-                        <button className="btn btn-light fs-5 pe-3">
-                          Student Responses
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(task.taskId)}
-                        >
-                          Delete Task
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <button
-                          className="btn btn-outline-info"
-                          onClick={() => handleOpenModal(task)}
-                        >
-                          Submit Response
-                        </button>
-                      </div>
-                    )}
+          ) : view === "tasks" ? (
+            assigned.length ? (
+              assigned.map((task, index) => (
+                <div key={index} className="mb-4">
+                  <div className="card p-3 bg-secondary text-white">
+                    <div className="card-body">
+                      <p className="card-text">
+                        <strong className="text-warning">Task Name : </strong>
+                        {task.taskName}
+                      </p>
+                      <p className="card-text">
+                        <strong className="text-warning">Task Theme : </strong>
+                        {task.theme}
+                      </p>
+                      <p className="card-text">
+                        <strong className="text-warning">Description : </strong>
+                        {task.description}
+                      </p>
+                      <p className="card-text">
+                        <strong className="text-warning">Last Date : </strong>
+                        {task.deadline}
+                      </p>
+                      {task.filename && (
+                        <div className="mb-3">
+                          <strong className="text-warning">
+                            Attached File :{" "}
+                          </strong>
+                          <a
+                            href="#"
+                            onClick={() => handleViewFile(task.filename)}
+                            className="text-light"
+                          >
+                            {task.fileOriginal}
+                          </a>
+                        </div>
+                      )}
+                      {userRole === "Teacher" ? (
+                        <div className="d-flex justify-content-between mt-5">
+                          <button
+                            className="btn btn-light fs-5 pe-3"
+                            onClick={() => handleViewResponses(task.taskId)}
+                          >
+                            Student Responses
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(task.taskId)}
+                          >
+                            Delete Task
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <button
+                            className="btn btn-outline-info"
+                            onClick={() => handleOpenModal(task)}
+                          >
+                            Submit Response
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
+            ) : (
+              <div className="alert alert-danger text-center">No tasks ..</div>
+            )
           ) : (
-            <div className="alert alert-danger text-center">No tasks ..</div>
+            <>
+              <button
+                className="btn btn-secondary mb-4"
+                onClick={handleBackToTasks}
+              >
+                Back to Tasks
+              </button>
+              <TaskResponses taskId={selectedTask} flag={status} />
+            </>
           )}
         </div>
       </div>
 
+      {/* Modal for submitting task response */}
       <div
         className="modal fade"
         id="submitTaskModal"
@@ -220,7 +256,7 @@ const AssignedTasks = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title " id="submitTaskModalLabel">
+              <h5 className="modal-title" id="submitTaskModalLabel">
                 <strong className="text-emphasis">Submit Task: </strong>
                 <strong className="text-info">
                   {selectedTask ? selectedTask.taskName : ""}
@@ -243,7 +279,7 @@ const AssignedTasks = () => {
                 >
                   {showDetails ? "Hide Task Details" : "View Task Details"}
                 </button>
-                {showDetails && (
+                {showDetails && selectedTask && (
                   <div className="mt-2">
                     <p>
                       <strong style={{ color: "purple" }}>Task Name: </strong>
@@ -258,44 +294,35 @@ const AssignedTasks = () => {
                       {selectedTask.description}
                     </p>
                     <p>
-                      <strong style={{ color: "purple" }}>Deadline: </strong>
+                      <strong style={{ color: "purple" }}>Last Date: </strong>
                       {selectedTask.deadline}
                     </p>
-                    {selectedTask.filename && (
-                      <p>
-                        <strong style={{ color: "purple" }}>
-                          Attached File:{" "}
-                        </strong>
-                        <a
-                          href="#"
-                          onClick={() => handleViewFile(selectedTask.filename)}
-                        >
-                          {selectedTask.fileOriginal}
-                        </a>
-                      </p>
-                    )}
                   </div>
                 )}
               </div>
-              {selectedTask && (
-                <textarea
-                  className="form-control"
-                  rows="5"
-                  value={solution}
-                  onChange={(e) => setSolution(e.target.value)}
-                  placeholder="Enter your solution here..."
-                ></textarea>
-              )}
+
+              <textarea
+                className="form-control mb-3"
+                rows="5"
+                value={solution}
+                onChange={(e) => setSolution(e.target.value)}
+                placeholder="Enter your solution here..."
+              ></textarea>
             </div>
             <div className="modal-footer">
               <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+              <button
+                type="button"
                 className="btn btn-primary"
-                onClick={() => handleSubmitSolution(selectedTask.taskId)}
+                onClick={() => handleSubmitSolution(selectedTask?.taskId)}
               >
                 Submit
-              </button>
-              <button className="btn btn-secondary" onClick={handleCloseModal}>
-                Close
               </button>
             </div>
           </div>

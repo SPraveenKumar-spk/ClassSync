@@ -117,17 +117,17 @@ const taskSolutions = async (req, res) => {
 
 const getTaskResponses = async (req, res) => {
   try {
-    const { projectCode } = req.query;
-    if (!projectCode) {
+    const { taskId } = req.query;
+    if (!taskId) {
       return res.status(400).json({ msg: "Project code is required" });
     }
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await taskResponse.findOne({ taskId });
     if (!validCode) {
       return res.status(404).json({ msg: "Requested project not found" });
     }
 
     const data = await taskResponse
-      .find({ projectCode })
+      .find({ taskId })
       .populate("user", "email name");
 
     res.status(200).json(data);
@@ -137,9 +137,23 @@ const getTaskResponses = async (req, res) => {
   }
 };
 
+const fetchTasks = async (req, res) => {
+  try {
+    const { taskId } = req.query;
+    const tasksRepo = await tasks
+      .find({ taskId })
+      .populate("taskName theme description deadline filename fileOriginal");
+    res.status(200).json(tasksRepo);
+  } catch (error) {
+    console.error("Error fetching assigned details:", error);
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
 module.exports = {
   assigntasks,
   assignedDetails,
+  fetchTasks,
   deletetask,
   edittask,
   taskSolutions,

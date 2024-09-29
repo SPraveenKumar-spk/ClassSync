@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoMenuSharp } from "react-icons/io5";
+import { MdTask } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
 import { FaHome, FaTasks, FaUserGraduate } from "react-icons/fa";
 import { SlPeople } from "react-icons/sl";
 import { GrTasks } from "react-icons/gr";
 import ClassDetails from "../CommonDetails/ClassDetails";
 import AssignTask from "./AssignTask";
-import StudentStatus from "./StudentStatus";
+import StudentStatus from "./StudentDiaryEntries";
 import AssignedTasks from "../CommonDetails/AssignedTasks";
 import { useAuth } from "../../store/auth";
 
@@ -117,19 +118,18 @@ const TeacherControll = () => {
               className="text-white text-decoration-none"
               onClick={handleStudentStatus}
             >
-              <FaUserGraduate className="me-2" size={20} /> Student Status
+              <MdTask className="me-2" size={20} /> Diary Entries
+            </NavLink>
+          </li>
+          <li className="pb-3 fs-5 mt-5">
+            <NavLink
+              className="text-white text-decoration-none"
+              onClick={handleLogout}
+            >
+              <TbLogout2 className="me-2" size={20} /> Logout
             </NavLink>
           </li>
         </ul>
-        <div>
-          <button
-            className="btn text-light fs-5"
-            style={{ position: "absolute", bottom: "2rem" }}
-            onClick={handleLogout}
-          >
-            <TbLogout2 className="me-2" size={20} /> Logout
-          </button>
-        </div>
       </div>
       <div className="flex-grow-1 d-flex justify-content-center align-items-center">
         {showAssignTask && <AssignTask baseURL="http://localhost:5000" />}

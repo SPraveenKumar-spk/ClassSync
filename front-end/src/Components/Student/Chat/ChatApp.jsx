@@ -61,7 +61,7 @@ function ChatApp() {
       <div className="container mt-5 pt-5">
         <div className="row d-flex justify-content-center">
           <div className="col-md-12 col-lg-12 col-xl-12">
-            <div className="card w-100" id="chat2">
+            <div className="card " id="chat2">
               <div className="card-header d-flex justify-content-between align-items-center p-3">
                 <h5 className="mb-0 fs-3" style={{ color: "purple" }}>
                   Let's Collaborate

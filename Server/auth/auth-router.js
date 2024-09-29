@@ -28,6 +28,7 @@ const {
 const {
   assigntasks,
   assignedDetails,
+  fetchTasks,
   deletetask,
   edittask,
   taskSolutions,
@@ -67,6 +68,7 @@ router.put("/edittask", AuthMiddleware, edittask);
 router.post("/taskResponse", AuthMiddleware, taskSolutions);
 router.get("/getTaskResponses", AuthMiddleware, getTaskResponses);
 router.get("/assignedDetails", assignedDetails);
+router.get("/fetchtasks", fetchTasks);
 router.post("/diaryentry", AuthMiddleware, diaryentry);
 router.get("/diaryrepo", AuthMiddleware, diaryrepo);
 router.get("/studentdiaryrepo", studentdiaryrepo);
