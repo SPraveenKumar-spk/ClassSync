@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../store/auth";
 import ForgotPassword from "./ForgotPassword";
@@ -7,22 +7,16 @@ import { useToast } from "../store/ToastContext";
 import { ImSpinner9 } from "react-icons/im";
 
 function SignIn() {
-  const { storeValues, baseURL, storeToken, storeName } = useAuth();
+  const { baseURL, storeToken, storeName } = useAuth();
   const { toast } = useToast();
-
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
   const notifyLoginError = () => toast.error("Something went wrong. Try again");
   const [user, setUser] = useState({
     email: "",
     password: "",
-    role: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
-  const [InvalidUser, setInvalidUser] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleInput = (e) => {
@@ -45,27 +39,21 @@ function SignIn() {
       if (response.ok) {
         const data = await response.json();
         storeToken(data.token);
-        storeValues(user.role);
         storeName(data.userName);
         setUser({
           email: "",
           password: "",
-          role: "",
         });
-        if (user.role === "Teacher") {
-          navigate("/teachershome");
-        } else {
-          navigate("/studentshome");
-        }
+        navigate("/userhome");
       } else if (response.status === 401) {
         setLoginError(true);
       } else if (response.status === 404) {
         setInvalidUser(true);
       } else {
-        notifyLoginError();
       }
     } catch (error) {
       setLoginError(true);
+      notifyLoginError();
     } finally {
       setLoading(false);
     }
@@ -77,18 +65,15 @@ function SignIn() {
 
   return (
     <>
-      <nav
-        className="navbar  navbar-expand-lg navbar-dark bg-primary "
-        style={{ height: "4rem" }}
-      >
+      <nav className="navbar  navbar-expand-lg navbar-dark bg-primary ">
         <div className="container-fluid">
           <NavLink className="text-light text-decoration-none  fs-1 " to="/">
             ClassSync
           </NavLink>
         </div>
       </nav>
-      <section className=" mt-5  ">
-        <div className="container h-custom">
+      <section className=" mt-5  pt-5">
+        <div className="container ">
           <div
             className="card text-black pb-3"
             style={{ borderRadius: "25px" }}
@@ -141,29 +126,9 @@ function SignIn() {
                     </div>
                   </div>
 
-                  <div className="form-outline mb-3">
-                    <select
-                      id="role"
-                      name="role"
-                      className="form-select form-select-lg"
-                      value={user.role}
-                      onChange={handleInput}
-                      required
-                    >
-                      <option value="">Select your role</option>
-                      <option value="Teacher">Teacher</option>
-                      <option value="Student">Student</option>
-                    </select>
-                  </div>
-
                   {loginError && (
                     <div className="alert alert-danger" role="alert">
                       Invalid email or password.
-                    </div>
-                  )}
-                  {InvalidUser && (
-                    <div className="alert alert-danger" role="alert">
-                      Invalid user.
                     </div>
                   )}
 

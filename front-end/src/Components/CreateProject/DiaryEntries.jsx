@@ -145,8 +145,8 @@ export default function StudentStatus() {
                 </div>
               ))
             ) : (
-              <div className="mx-auto w-75 mt-5">
-                <p className="alert alert-danger text-center">
+              <div className="mx-auto w-100 mt-5">
+                <p className="alert alert-danger text-center ">
                   No diary entries
                 </p>
               </div>

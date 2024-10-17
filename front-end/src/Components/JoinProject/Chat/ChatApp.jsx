@@ -117,9 +117,11 @@ function ChatApp() {
                             : ""
                         }`}
                       >
-                        {new Date(message.createdAt)
-                          .toLocaleTimeString()
-                          .slice(0, -3)}
+                        {new Date(message.createdAt).toLocaleDateString()}{" "}
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                     {message.sender === userName && (

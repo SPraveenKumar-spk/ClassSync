@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const projectSchema = new mongoose.Schema({
+const createSchema = new mongoose.Schema({
   projectName: {
     type: String,
     required: true,
   },
   classroom: {
+    type: String,
+    required: true,
+  },
+  section: {
     type: String,
     required: true,
   },
@@ -15,11 +19,11 @@ const projectSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: true,
   },
 });
 
-const Project = mongoose.model("Project", projectSchema);
+const createProject = mongoose.model("createProject", createSchema);
 
-module.exports = Project;
+module.exports = createProject;

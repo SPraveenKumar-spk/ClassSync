@@ -83,10 +83,8 @@ const PastDiaryEntries = () => {
             </div>
           ))
         ) : (
-          <div className="container mt-5 fs-4 text-center w-50">
-            <p className="alert alert-info">
-              There are no past diary entries available
-            </p>
+          <div className="container mt-5 fs-4 text-center w-75 ">
+            <p className="alert alert-info">No diary entries available.</p>
           </div>
         )}
       </div>

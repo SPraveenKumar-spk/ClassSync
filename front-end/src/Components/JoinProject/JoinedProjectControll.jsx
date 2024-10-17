@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { IoMenuSharp } from "react-icons/io5";
+import { BiMenu } from "react-icons/bi";
 import { TbLogout2 } from "react-icons/tb";
-import { FaHome, FaTasks, FaRocketchat } from "react-icons/fa";
+import { FaTasks, FaRocketchat } from "react-icons/fa";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { GrTasks } from "react-icons/gr";
 import { RiAddCircleFill, RiHistoryFill } from "react-icons/ri";
 import { SlPeople } from "react-icons/sl";
-import NewDiaryEntry from "../Student/StudentNewDiary";
+import NewDiaryEntry from "../JoinProject/NewDiary";
 import TeamDetails from "../CommonDetails/TeamDetails";
 import AssignedTasks from "../CommonDetails/AssignedTasks";
-import PastDiaryEntries from "../Student/StudentPastDiary";
+import PastDiaryEntries from "../JoinProject/PastDiary";
 import { useAuth } from "../../store/auth";
 import ChatApp from "./Chat/ChatApp";
-
 
 const VISIBILITY_STATES = {
   NONE: "NONE",
@@ -23,7 +23,7 @@ const VISIBILITY_STATES = {
   CHAT_APP: "CHAT_APP",
 };
 
-const StudentControll = () => {
+const JoinedProjectControll = () => {
   const navigate = useNavigate();
   const { LogoutUser } = useAuth();
   const [isExpanded, setExpand] = useState(true);
@@ -74,35 +74,37 @@ const StudentControll = () => {
   };
 
   return (
-    <div className="d-flex flex-column h-100">
-      <div
-        className="position-fixed w-100 navbar navbar-expand-lg navbar-dark bg-info"
-        style={{ height: "4rem" }}
-      >
-        <div className="container d-flex justify-content-start">
+    <>
+      <nav className="navbar navbar-expand-lg bg-primary position-fixed top-0 w-100">
+        <div className="container ">
           <button
             className="navbar-toggler-lg bg-info text-white fs-5 border-0"
             onClick={toggleSidebar}
           >
-            <IoMenuSharp size={40} />
+            <BiMenu size={40} className="bg-primary " />
           </button>
-          <a className="navbar-brand ms-5">
-            <h1 className="fs-1 ms-3 p-2">ClassSync</h1>
-          </a>
+          <NavLink className="navbar-brand text-light  mx-auto ms-5  fs-2 fw-bold">
+            ClassSync
+          </NavLink>
         </div>
-      </div>
+        <div className="mx-auto ms-5 me-5">
+          <h3 className="text-nowrap text-warning ">
+            ProjectName : {sessionStorage.getItem("projectName")}
+          </h3>
+        </div>
+      </nav>
       <div
         className={`sidebar w-auto bg-dark ${
           isExpanded ? "sidebar-open" : "sidebar-closed"
         } p-4`}
       >
-        <ul className="sidebar-nav list-unstyled">
+        <ul className="sidebar-nav list-unstyled pt-5 mt-5">
           <li className="pb-3 fs-5">
             <NavLink
               className="text-white text-decoration-none"
-              to="/studentshome"
+              onClick={() => navigate(-1)}
             >
-              <FaHome className="me-2" size={20} /> Home
+              <IoArrowBackCircleSharp className="me-2" size={30} /> Back
             </NavLink>
           </li>
           <li className="pb-3 fs-5">
@@ -175,8 +177,8 @@ const StudentControll = () => {
         {currentView === VISIBILITY_STATES.CHAT_APP && <ChatApp />}
         {currentView === VISIBILITY_STATES.CONTRIBUTORS && <TeamDetails />}
       </div>
-    </div>
+    </>
   );
 };
 
-export default StudentControll;
+export default JoinedProjectControll;
