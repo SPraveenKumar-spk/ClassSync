@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://classync.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: "Content-Type,Authorization",
@@ -32,7 +32,7 @@ const connectDB = async () => {
 };
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://classync.vercel.app",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",

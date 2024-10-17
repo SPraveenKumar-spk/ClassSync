@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Image from "../../../assets/user.png";
 import { useAuth } from "../../../store/auth";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://classsync-q2os.onrender.com");
 
 function ChatApp() {
   const { userName } = useAuth();

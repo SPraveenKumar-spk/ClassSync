@@ -135,7 +135,7 @@ const forgotpassword = async (req, res) => {
       expiresAt,
       used: false,
     });
-    const resetLink = `https://classsync-learn.vercel.app/resetpassword?token=${token}`;
+    const resetLink = `https://classync.vercel.app/resetpassword?token=${token}`;
 
     await transporter.sendMail({
       to: email,
