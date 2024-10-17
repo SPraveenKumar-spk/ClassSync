@@ -3,12 +3,12 @@
 "ClassSync is a comprehensive platform designed to streamline classroom project management and collaboration. With features tailored to the unique needs of educators and students, ClassSync enables seamless coordination between teachers and student teams. Teachers can effortlessly distribute assignments, provide feedback, and track progress, while students can collaborate on projects, share updates, and receive guidance from their instructors. With intuitive tools for task management, document collaboration, and progress tracking, ClassSync empowers educators to foster teamwork, creativity, and academic success within their classrooms."
 
 # Checkout
-Checkout the application https://classsync-learn.vercel.app/
+Checkout the application https://classync.vercel.app/
 
 # Key Features 
 1. Classroom project management
 2. Collaboration platform
-3. Coordination between teachers and students
+3. Coordination between team mates
 4. Assignment distribution
 5. Feedback provision
 6. Progress tracking
@@ -19,21 +19,26 @@ Checkout the application https://classsync-learn.vercel.app/
 
 # Screenshots 
 
-Home Page:
-![Screenshot 2024-05-11 215223](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/7521a830-aa2f-4cc1-9d8e-c5d0725d6625)
+Home Page 
+![image](https://github.com/user-attachments/assets/d1f1864b-9ebc-4719-bc8c-20224305ad63)
 
-Teacher Login :
+UserHome
+![image](https://github.com/user-attachments/assets/f7e374a7-9607-4cbc-a221-03c70cfd36c4)
 
-![image](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/12f85b59-b8f5-442f-ad88-b8a39415b61c)
+ProjectHome
+![image](https://github.com/user-attachments/assets/34fe440d-d052-47b8-9595-6751b65bfd59)
 
-Task Assignment :
-![image](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/c684f5c3-7b92-43b4-8b77-12dc6b212625)
+Team Collaboration
+![image](https://github.com/user-attachments/assets/27c15b4c-ef1f-4f1f-9373-39982989186f)
 
-Student Login :
-![image](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/74b969f5-2425-4515-89b2-594bba126aac)
+Task Assigning
+![image](https://github.com/user-attachments/assets/c8ac467c-7300-402b-8a14-957e53b881b1)
 
-Student Work Submission :
-![image](https://github.com/SPraveenKumar-spk/ClassSync/assets/109852619/4aaac932-0d6c-401b-b55e-4f73cff0de2e)
+FeedBack Provision
+![image](https://github.com/user-attachments/assets/9184158c-df83-4189-9e8b-237d72a25596)
+
+
+
 
 
 
