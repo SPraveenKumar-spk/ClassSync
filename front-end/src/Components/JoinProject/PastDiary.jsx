@@ -44,7 +44,7 @@ const PastDiaryEntries = () => {
   }, [baseURL, projectCode, toast]);
 
   return (
-    <div className="container mt-5">
+    <div className="container" style={{ marginTop: "5rem" }}>
       <div className="row justify-content-center mt-5">
         {loading ? (
           <Loader />

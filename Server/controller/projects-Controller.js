@@ -63,7 +63,8 @@ const joinProjects = async (req, res) => {
     }
 
     const alreadyJoined = await joinProject.findOne({ projectCode });
-    if (alreadyJoined) {
+    const alreadyCreated = await createProject.findOne({ projectCode });
+    if (alreadyJoined || alreadyCreated) {
       return res.status(400).json({ msg: "already joined" });
     }
     await joinProject.create({

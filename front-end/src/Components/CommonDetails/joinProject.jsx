@@ -42,7 +42,7 @@ const JoinProject = ({ OpenJoin, closeJoin }) => {
     };
 
     fetchJoinedProjects();
-  }, [baseURL, token, toast]);
+  }, []);
 
   const handleProjectInputs = (e) => {
     const { name, value } = e.target;
@@ -57,15 +57,6 @@ const JoinProject = ({ OpenJoin, closeJoin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      joinedProjects
-        .map((code) => code.toLowerCase())
-        .includes(joinProjects.projectCode.toLowerCase())
-    ) {
-      toast.error("You have already joined this project.");
-      return;
-    }
-
     const newProject = {
       projectName: joinProjects.projectName,
       projectCode: joinProjects.projectCode,
@@ -76,7 +67,7 @@ const JoinProject = ({ OpenJoin, closeJoin }) => {
 
     try {
       const response = await fetch(
-        `${baseURL}/api/auth/studentprojects?token=${token}`,
+        `${baseURL}/api/auth/joinprojects?token=${token}`,
         {
           method: "POST",
           headers: {

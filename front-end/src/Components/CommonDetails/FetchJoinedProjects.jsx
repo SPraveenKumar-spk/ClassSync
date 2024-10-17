@@ -25,7 +25,6 @@ function FetchJoinedProjects() {
         );
         if (response.ok) {
           const data = await response.json();
-          console.log("data", data);
           setProjects(data);
         }
       } catch (error) {

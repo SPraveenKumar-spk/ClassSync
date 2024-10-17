@@ -44,6 +44,7 @@ function CreateProject({ Open, close }) {
         body: JSON.stringify(project),
       });
       if (response.ok) {
+        sessionStorage.setItem("flag", true);
         setProject({
           projectName: "",
           randomCode: "",
@@ -68,12 +69,12 @@ function CreateProject({ Open, close }) {
         <div className="p-4 modal-content border border bg-light rounded-4">
           <div className="modal-header position-relative">
             <div>
-              <h1 className="modal-title">Create Project</h1>
+              <h1 className="modal-title p-1">Create Project</h1>
             </div>
             <div className="position-absolute top-0 end-0">
               <button
                 type="button"
-                className="btn-close fs-5 text-danger"
+                className="btn-close fs-5"
                 onClick={close}
               ></button>
             </div>

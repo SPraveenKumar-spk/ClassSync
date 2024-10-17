@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GrProjects } from "react-icons/gr";
 import { GoProjectSymlink } from "react-icons/go";
 import { IoCreateOutline } from "react-icons/io5";
@@ -23,7 +23,20 @@ function UserHome() {
   const [OpenJoinModal, setJoinModal] = useState(false);
   const [fetchCreated, setCreated] = useState(true);
   const [fetchJoined, setJoined] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
@@ -31,6 +44,9 @@ function UserHome() {
 
   const openCreateModal = () => {
     setCreateModalIsOpen(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const closeCreateModal = () => {
@@ -40,6 +56,9 @@ function UserHome() {
 
   const openJoinModal = () => {
     setJoinModal(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const closeJoinModal = () => {
@@ -58,10 +77,16 @@ function UserHome() {
   const handleYourProjects = () => {
     setCreated(true);
     setJoined(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
   const handleEnrolled = () => {
     setCreated(false);
     setJoined(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   return (

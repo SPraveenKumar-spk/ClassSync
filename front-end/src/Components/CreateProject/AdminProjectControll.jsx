@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { MdTask } from "react-icons/md";
@@ -10,7 +10,6 @@ import { GrTasks } from "react-icons/gr";
 import ClassDetails from "../CommonDetails/ClassDetails";
 import AssignTask from "./AssignTask";
 import StudentStatus from "./DiaryEntries";
-import AssignedTasks from "../CommonDetails/AssignedTasks";
 import { useAuth } from "../../store/auth";
 import AdminAssignedTasks from "../CommonDetails/adminAssignedTasks";
 
@@ -22,6 +21,19 @@ const AdminProjectControll = () => {
   const [showStudentStatus, setShowStudentStatus] = useState(false);
   const [showAssignedTasks, setShowAssignedTasks] = useState(false);
   const [contributors, setContributors] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
@@ -29,6 +41,9 @@ const AdminProjectControll = () => {
 
   const handleAssigned = () => {
     setShowAssignedTasks(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
     setShowAssignTask(false);
     setShowStudentStatus(false);
     setContributors(false);
@@ -36,6 +51,9 @@ const AdminProjectControll = () => {
 
   const handleTasks = () => {
     setShowAssignTask(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
     setShowStudentStatus(false);
     setShowAssignedTasks(false);
     setContributors(false);
@@ -44,6 +62,9 @@ const AdminProjectControll = () => {
   const handleStudentStatus = () => {
     setShowStudentStatus(true);
     setShowAssignTask(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
     setShowAssignedTasks(false);
     setContributors(false);
   };
@@ -51,6 +72,9 @@ const AdminProjectControll = () => {
   const handleContributors = () => {
     setContributors(true);
     setShowStudentStatus(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
     setShowAssignTask(false);
     setShowAssignedTasks(false);
   };
@@ -61,7 +85,7 @@ const AdminProjectControll = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-primary position-fixed top-0 w-100">
+      <nav className="navbar navbar-expand-lg bg-primary position-fixed top-0 w-100 ">
         <div className="container-fluid ">
           <button
             className="navbar-toggler-lg bg-info text-white fs-5 border-0"
@@ -136,7 +160,7 @@ const AdminProjectControll = () => {
         </ul>
       </div>
       <div className="flex-grow-1 d-flex justify-content-center align-items-center">
-        {showAssignTask && <AssignTask baseURL="http://localhost:5000" />}
+        {showAssignTask && <AssignTask />}
         {showAssignedTasks && <AdminAssignedTasks />}
         {showStudentStatus && <StudentStatus />}
         {contributors && <ClassDetails />}

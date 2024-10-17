@@ -10,6 +10,8 @@ function FetchProjects() {
 
   const navigate = useNavigate();
 
+  
+  
   useEffect(() => {
     const fetchProjects = async () => {
       setLoading(true);
@@ -25,7 +27,6 @@ function FetchProjects() {
         );
         if (response.ok) {
           const data = await response.json();
-          console.log("data", data);
           setProjects(data);
         }
       } catch (error) {
@@ -35,7 +36,7 @@ function FetchProjects() {
       }
     };
     fetchProjects();
-  }, [baseURL, token]);
+  }, [baseURL]); 
 
   const handleDelete = async (projectCode) => {
     const confirmation = window.confirm("Are you sure to delete the project?");

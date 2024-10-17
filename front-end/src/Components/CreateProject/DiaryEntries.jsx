@@ -74,7 +74,7 @@ export default function StudentStatus() {
   }, [baseURL, token]);
 
   return (
-    <div className="container pt-5 mt-5">
+    <div className="container pt-5 " style={{ marginTop: "5rem" }}>
       {loading ? (
         <Loader />
       ) : (

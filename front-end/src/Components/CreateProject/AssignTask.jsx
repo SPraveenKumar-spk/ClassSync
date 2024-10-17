@@ -4,9 +4,9 @@ import { ImSpinner9 } from "react-icons/im";
 import { useToast } from "../../store/ToastContext";
 import { useAuth } from "../../store/auth";
 
-function AssignTask({ baseURL }) {
+function AssignTask() {
   const { toast } = useToast();
-  const { token } = useAuth();
+  const { baseURL, token } = useAuth();
   const [values, setValues] = useState({
     taskName: "",
     theme: "",
@@ -110,7 +110,7 @@ function AssignTask({ baseURL }) {
   };
 
   return (
-    <div className="container pt-5 mt-5">
+    <div className="container pt-5" style={{ marginTop: "5rem" }}>
       <div className="row justify-content-center">
         <div className="col-md-8">
           <div className="card p-4 bg-secondary">

@@ -59,7 +59,7 @@ router.patch("/updateregno", AuthMiddleware, updateRegNumber);
 router.post("/createprojects", AuthMiddleware, createProjects);
 router.delete("/deleteCreatedProject", AuthMiddleware, deleteCreatedProject);
 router.get("/fetchCreatedProjects", AuthMiddleware, fetchCreatedProjects);
-router.post("/studentprojects", AuthMiddleware, joinProjects);
+router.post("/joinprojects", AuthMiddleware, joinProjects);
 router.get("/fetchJoinedProjects", AuthMiddleware, fetchJoinedProjects);
 router.post("/assigntasks", AuthMiddleware, assigntasks);
 router.delete("/deletetask", deletetask);

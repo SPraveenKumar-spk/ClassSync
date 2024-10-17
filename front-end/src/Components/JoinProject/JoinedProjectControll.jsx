@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { TbLogout2 } from "react-icons/tb";
@@ -32,6 +32,20 @@ const JoinedProjectControll = () => {
   );
   const [isDiaryDropdownOpen, setIsDiaryDropdownOpen] = useState(false);
 
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const toggleSidebar = () => {
     setExpand((prevState) => !prevState);
   };
@@ -39,6 +53,9 @@ const JoinedProjectControll = () => {
   const handleAssigned = () => {
     setCurrentView(VISIBILITY_STATES.ASSIGNED_TASKS);
     setIsDiaryDropdownOpen(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const handleDiaryToggle = () => {
@@ -51,21 +68,33 @@ const JoinedProjectControll = () => {
   const handleNewEntry = () => {
     setCurrentView(VISIBILITY_STATES.NEW_DIARY);
     setIsDiaryDropdownOpen(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const handlePastEntry = () => {
     setCurrentView(VISIBILITY_STATES.PAST_ENTRIES);
     setIsDiaryDropdownOpen(true);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const handleContributors = () => {
     setCurrentView(VISIBILITY_STATES.CONTRIBUTORS);
     setIsDiaryDropdownOpen(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const handleChatApp = () => {
     setCurrentView(VISIBILITY_STATES.CHAT_APP);
     setIsDiaryDropdownOpen(false);
+    if (isSmallScreen) {
+      setExpand((prevState) => !prevState);
+    }
   };
 
   const handleLogout = () => {

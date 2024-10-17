@@ -58,7 +58,7 @@ function ChatApp() {
 
   return (
     <section>
-      <div className="container mt-5 pt-5">
+      <div className="container pt-5" style={{ marginTop: "5rem" }}>
         <div className="row d-flex justify-content-center">
           <div className="col-md-12 col-lg-12 col-xl-12">
             <div className="card " id="chat2">

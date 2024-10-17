@@ -8,6 +8,7 @@ const NewDiaryEntry = () => {
   const { token, baseURL } = useAuth();
   const [textData, setTextData] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (event) => {
     setLoading(true);
     event.preventDefault();
@@ -30,7 +31,7 @@ const NewDiaryEntry = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: ` Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             data: textData,
@@ -53,35 +54,29 @@ const NewDiaryEntry = () => {
     }
   };
 
-  console.log(textData);
   return (
-    <div
-      className="row "
-      style={{
-        position: "absolute",
-        top: "50%",
-        left: "55%",
-        transform: "translate(-50%,-50%)",
-      }}
-    >
-      <form onSubmit={handleSubmit}>
-        <textarea
-          className="form-control border-3 border-secondary rounded-4"
-          name="data"
-          id="data"
-          cols="85"
-          rows="15"
-          value={textData}
-          onChange={(e) => setTextData(e.target.value)}
-          placeholder="Your diary entry.."
-        />
-        <div className="text-center mt-3">
-          <button className="btn btn-primary fs-5">
-            {" "}
-            {loading && <ImSpinner9 className="spinner m-2" size={20} />}Submit
-          </button>
+    <div className="container pt-5" style={{ marginTop: "5rem" }}>
+      <div className="row justify-content-center">
+        <div className="col-lg-8 col-md-10 col-sm-12">
+          <form onSubmit={handleSubmit}>
+            <textarea
+              className="form-control border-3 border-secondary rounded-4"
+              name="data"
+              id="data"
+              rows="12"
+              value={textData}
+              onChange={(e) => setTextData(e.target.value)}
+              placeholder="Your diary entry.."
+            />
+            <div className="text-center mt-3">
+              <button className="btn btn-primary fs-5" type="submit">
+                {loading && <ImSpinner9 className="spinner m-2" size={20} />}
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
