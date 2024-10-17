@@ -139,14 +139,10 @@ const handleLogout = () => {
 const handleDelete = async () => {
   const decision = window.confirm("Are you sure to delete account ?");
   if (decision) {
-    const role = sessionStorage.getItem("userRole");
     try {
-      const response = await fetch(
-        `${baseURL}/api/auth/deleteaccount?role=${role}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${baseURL}/api/auth/deleteaccount`, {
+        method: "DELETE",
+      });
       if (!response.ok) {
         notifyDeleteError();
       } else {
@@ -175,7 +171,7 @@ return (
                   onClick={handleRoute}
                   style={{ cursor: "pointer" }}
                 >
-                  <a>Home</a>
+                  <a onClick={() => navigate(-1)}>Home</a>
                 </li>
                 <li className="breadcrumb-item active" aria-current="page">
                   User Profile
@@ -196,10 +192,7 @@ return (
                   style={{ width: "150px" }}
                 />
                 <h5 className="my-3">{user.name}</h5>
-                <p className="text-muted mb-1">
-                  <span className="text-dark">Designation : </span>
-                  {user.role}
-                </p>
+
                 <div className="d-flex justify-content-around">
                   <div className="mt-3">
                     <button
@@ -253,40 +246,30 @@ return (
                   </div>
                 </div>
                 <hr />
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Designation</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className=" mb-0 text-info">{user.role}</p>
-                  </div>
-                </div>
-                <hr />
-                {user.role === "Student" && (
-                  <>
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Register Number</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <div className="input-group">
-                          <input
-                            id="registrationNumber"
-                            name="registrationNumber"
-                            className="form-control form-control-sm"
-                            placeholder="Update your registration number"
-                            value={registrationNumber}
-                            onChange={(e) => {
-                              setRegistrationNumber(e.target.value);
-                            }}
-                            required
-                          />
-                        </div>
+
+                <>
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p className="mb-0">Register Number</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <div className="input-group">
+                        <input
+                          id="registrationNumber"
+                          name="registrationNumber"
+                          className="form-control form-control-sm"
+                          placeholder="Update your registration number"
+                          value={registrationNumber}
+                          onChange={(e) => {
+                            setRegistrationNumber(e.target.value);
+                          }}
+                          required
+                        />
                       </div>
                     </div>
-                    <hr />
-                  </>
-                )}
+                  </div>
+                  <hr />
+                </>
 
                 <form onSubmit={handlePasswordUpdate}>
                   {password && (

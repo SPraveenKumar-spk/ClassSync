@@ -2,32 +2,20 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../store/auth";
 import { useToast } from "../../store/ToastContext";
 import Loader from "../Loader";
-import TaskResponses from "../Teacher/StudentResponses";
 
 const AssignedTasks = () => {
-  const { baseURL, token, userRole } = useAuth();
+  const { baseURL, token } = useAuth();
   const { toast } = useToast();
   const [assigned, setAssigned] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [view, setView] = useState("tasks");
-  const [solution, setSolution] = useState(""); // Added state for solution
-  const [showDetails, setShowDetails] = useState(false); // Added state for showing details
-
-  const notifySuccess = () => {
-    toast.success("Task deleted successfully");
-  };
-
-  const notifyError = (message) => {
-    toast.error(message || "Failed to perform the operation.");
-  };
+  const [solution, setSolution] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
 
   const projectCode = sessionStorage.getItem("projectCode");
 
   useEffect(() => {
     const fetchAssigned = async () => {
-      setLoading(true);
       try {
         const response = await fetch(
           `${baseURL}/api/auth/assignedDetails?projectCode=${projectCode}`,
@@ -38,77 +26,26 @@ const AssignedTasks = () => {
             },
           }
         );
-        if (response.ok) {
-          const data = await response.json();
-          setAssigned(data);
-          setStatus(true);
-        } else {
-          notifyError("Failed to fetch tasks.");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch tasks.");
         }
+
+        const data = await response.json();
+        setAssigned(data);
       } catch (error) {
-        notifyError("Failed to fetch tasks.");
+        toast.error(error.message || "Failed to fetch tasks.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (!status) {
-      fetchAssigned();
-    }
-  }, [status, baseURL, token, projectCode]);
-
-  const handleDelete = async (taskId) => {
-    if (window.confirm("Are you sure to delete the task?")) {
-      try {
-        const response = await fetch(`${baseURL}/api/auth/deletetask`, {
-          method: "DELETE",
-          body: JSON.stringify({ taskId }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          setAssigned((prevAssigned) =>
-            prevAssigned.filter((task) => task.taskId !== taskId)
-          );
-          notifySuccess();
-        } else {
-          notifyError("Failed to delete task.");
-        }
-      } catch (error) {
-        notifyError("An error occurred while deleting the task.");
-      }
-    }
-  };
-
-  const handleViewResponses = (taskId) => {
-    setSelectedTask(taskId);
-    setView("responses");
-  };
-
-  const handleBackToTasks = () => {
-    setView("tasks");
-  };
-
-  const handleViewFile = async (filename) => {
-    try {
-      const response = await fetch(`${baseURL}/api/auth/file/${filename}`);
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
-      } else {
-        console.error("Failed to retrieve file");
-      }
-    } catch (error) {
-      console.error("Error viewing file:", error);
-    }
-  };
+    fetchAssigned();
+  }, [baseURL, token, projectCode, toast]);
 
   const handleOpenModal = (task) => {
     setSelectedTask(task);
-    setSolution(""); // Clear previous solution
+    setSolution("");
     setShowDetails(false);
     const modal = new window.bootstrap.Modal(
       document.getElementById("submitTaskModal")
@@ -127,9 +64,9 @@ const AssignedTasks = () => {
     setShowDetails(false);
   };
 
-  const handleSubmitSolution = async (taskId) => {
+  const handleSubmitSolution = async () => {
     if (!solution) {
-      notifyError("Please enter your solution.");
+      toast.error("Please enter your solution.");
       return;
     }
 
@@ -142,18 +79,34 @@ const AssignedTasks = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ taskId, solution }),
+          body: JSON.stringify({ taskId: selectedTask.taskId, solution }),
         }
       );
-      if (response.ok) {
-        toast.success("Your response has been submitted successfully.");
-        handleCloseModal();
-      } else {
-        notifyError("Failed to submit your solution.");
+
+      if (!response.ok) {
+        throw new Error("Failed to submit your solution.");
       }
-    } catch (err) {
-      notifyError("Server error. Please try again later.");
-      console.log(err);
+
+      toast.success("Your response has been submitted successfully.");
+      handleCloseModal();
+    } catch (error) {
+      toast.error(error.message || "Server error. Please try again later.");
+    }
+  };
+
+  const handleViewFile = async (filename) => {
+    try {
+      const response = await fetch(`${baseURL}/api/auth/file/${filename}`);
+      if (!response.ok) {
+        throw new Error("Failed to retrieve file.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url);
+    } catch (error) {
+      console.error("Error viewing file:", error);
+      toast.error(error.message || "Error viewing file.");
     }
   };
 
@@ -163,89 +116,61 @@ const AssignedTasks = () => {
         <div className="col-md-6">
           {loading ? (
             <Loader />
-          ) : view === "tasks" ? (
-            assigned.length ? (
-              assigned.map((task, index) => (
-                <div key={index} className="mb-4">
-                  <div className="card p-3 bg-secondary text-white">
-                    <div className="card-body">
-                      <p className="card-text">
-                        <strong className="text-warning">Task Name : </strong>
-                        {task.taskName}
-                      </p>
-                      <p className="card-text">
-                        <strong className="text-warning">Task Theme : </strong>
-                        {task.theme}
-                      </p>
-                      <p className="card-text">
-                        <strong className="text-warning">Description : </strong>
-                        {task.description}
-                      </p>
-                      <p className="card-text">
-                        <strong className="text-warning">Last Date : </strong>
-                        {task.deadline}
-                      </p>
-                      {task.filename && (
-                        <div className="mb-3">
-                          <strong className="text-warning">
-                            Attached File :{" "}
-                          </strong>
-                          <a
-                            href="#"
-                            onClick={() => handleViewFile(task.filename)}
-                            className="text-light"
-                          >
-                            {task.fileOriginal}
-                          </a>
-                        </div>
-                      )}
-                      {userRole === "Teacher" ? (
-                        <div className="d-flex justify-content-between mt-5">
-                          <button
-                            className="btn btn-light fs-5 pe-3"
-                            onClick={() => handleViewResponses(task.taskId)}
-                          >
-                            Student Responses
-                          </button>
-                          <button
-                            className="btn btn-danger"
-                            onClick={() => handleDelete(task.taskId)}
-                          >
-                            Delete Task
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="text-center">
-                          <button
-                            className="btn btn-outline-info"
-                            onClick={() => handleOpenModal(task)}
-                          >
-                            Submit Response
-                          </button>
-                        </div>
-                      )}
+          ) : assigned.length ? (
+            assigned.map((task) => (
+              <div key={task.taskId} className="mb-4">
+                <div className="card p-3 bg-secondary text-white">
+                  <div className="card-body">
+                    <p className="card-text">
+                      <strong className="text-warning">Task Name: </strong>
+                      {task.taskName}
+                    </p>
+                    <p className="card-text">
+                      <strong className="text-warning">Task Theme: </strong>
+                      {task.theme}
+                    </p>
+                    <p className="card-text">
+                      <strong className="text-warning">Description: </strong>
+                      {task.description}
+                    </p>
+                    <p className="card-text">
+                      <strong className="text-warning">Last Date: </strong>
+                      {task.deadline}
+                    </p>
+                    {task.filename && (
+                      <div className="mb-3">
+                        <strong className="text-warning">
+                          Attached File:{" "}
+                        </strong>
+                        <a
+                          href="#"
+                          onClick={() => handleViewFile(task.filename)}
+                          className="text-light"
+                        >
+                          {task.fileOriginal}
+                        </a>
+                      </div>
+                    )}
+                    <div className="text-center">
+                      <button
+                        className="btn btn-outline-info"
+                        onClick={() => handleOpenModal(task)}
+                      >
+                        Submit Response
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="alert alert-danger text-center">No tasks ..</div>
-            )
+              </div>
+            ))
           ) : (
-            <>
-              <button
-                className="btn btn-secondary mb-4"
-                onClick={handleBackToTasks}
-              >
-                Back to Tasks
-              </button>
-              <TaskResponses taskId={selectedTask} flag={status} />
-            </>
+            <div className="alert alert-danger text-center">
+              No tasks available.
+            </div>
           )}
         </div>
       </div>
 
-      {/* Modal for submitting task response */}
       <div
         className="modal fade"
         id="submitTaskModal"
@@ -274,7 +199,7 @@ const AssignedTasks = () => {
                 <button
                   className="btn btn-secondary dropdown-toggle"
                   type="button"
-                  onClick={() => setShowDetails(!showDetails)}
+                  onClick={() => setShowDetails((prev) => !prev)}
                   aria-expanded={showDetails}
                 >
                   {showDetails ? "Hide Task Details" : "View Task Details"}
@@ -320,7 +245,7 @@ const AssignedTasks = () => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => handleSubmitSolution(selectedTask?.taskId)}
+                onClick={handleSubmitSolution}
               >
                 Submit
               </button>

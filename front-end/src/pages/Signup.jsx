@@ -11,7 +11,7 @@ function Signup() {
     name: "",
     email: "",
     password: "",
-    role: "",
+    // role: "",
   });
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +40,7 @@ function Signup() {
           name: "",
           email: "",
           password: "",
-          role: "",
+          // role: "",
         });
         navigate("/login");
       } else if (response.status === 401) {
@@ -60,17 +60,14 @@ function Signup() {
 
   return (
     <>
-      <nav
-        className="navbar  navbar-expand-lg navbar-dark bg-primary "
-        style={{ height: "4rem" }}
-      >
+      <nav className="navbar  navbar-expand-lg navbar-dark bg-primary ">
         <div className="container-fluid">
           <NavLink className="text-light text-decoration-none  fs-1 " to="/">
             ClassSync
           </NavLink>
         </div>
       </nav>
-      <section className="mt-5">
+      <section className="mt-5 pt-5">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-12 col-xl-11">
@@ -146,7 +143,7 @@ function Signup() {
                         </div>
                       </div>
 
-                      <div className=" mb-4">
+                      {/* <div className=" mb-4">
                         <div className="input-group">
                           <span className="input-group-text">
                             <FaKey className="fa-lg me-3" />
@@ -164,7 +161,7 @@ function Signup() {
                             <option value="Student">Student</option>
                           </select>
                         </div>
-                      </div>
+                      </div> */}
                       {loginError && (
                         <div className="alert alert-danger" role="alert">
                           Email already exists.

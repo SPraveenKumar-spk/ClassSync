@@ -1,26 +1,19 @@
-const Project = require("../models/projects");
-const student = require("../models/studentProjects");
-const studentProjects = require("../models/studentProjects");
-
-const home = (req, res) => {
-  try {
-    res.status(200).send("from ClassSync");
-  } catch (error) {
-    console.error(error);
-  }
-};
+const createProject = require("../models/create");
+const joinProject = require("../models/join");
 
 const createProjects = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { projectName, classroom, students, projectCode } = req.body;
-    const projectCreated = await Project.create({
+    const { projectName, classroom, section, projectCode } = req.body;
+    const projectCreated = await createProject.create({
       projectName,
       classroom,
-      students,
+      section,
       projectCode,
       user: userId,
     });
+
+    console.log("created", projectCreated);
     res.status(200).json({
       data: projectCreated.projectName,
       msg: "project saved",
@@ -30,43 +23,33 @@ const createProjects = async (req, res) => {
   }
 };
 
-const userProjects = async (req, res) => {
+const fetchCreatedProjects = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const projectsData = await Project.find({ user: userId });
+    const projectsData = await createProject.find({ user: userId });
     res.status(200).json(projectsData);
   } catch (error) {
     res.status(401).json({ msg: "Unauthorized user" });
   }
 };
 
-const deleteproject = async (req, res) => {
+const deleteCreatedProject = async (req, res) => {
   try {
     const projectCode = req.query.projectCode;
-    const role = req.query.role;
     const userId = req.user.userId;
-
-    if (role === "Teacher") {
-      await Project.findOneAndDelete({ projectCode, user: userId });
-      await student.deleteMany({ projectCode });
-      return res.status(200).json({ msg: "Project deleted successfully" });
-    } else if (role === "Student") {
-      await student.findOneAndDelete({ projectCode, user: userId });
-      return res.status(200).json({ msg: "Project deleted successfully" });
-    } else {
-      return res.status(400).json({ msg: "Invalid role" });
-    }
+    await createProject.findOneAndDelete({ projectCode, user: userId });
+    await joinProject.deleteMany({ projectCode });
+    return res.status(200).json({ msg: "Project deleted successfully" });
   } catch (error) {
     return res.status(500).json({ msg: "Server Error" });
   }
 };
 
-const studentprojects = async (req, res) => {
+const joinProjects = async (req, res) => {
   try {
-    const { projectName, projectCode, role, teamName } = req.body;
+    const { projectName, projectCode, joinType, teamName, role } = req.body;
     const userId = req.user.userId;
-
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await createProject.findOne({ projectCode });
     if (!validCode) {
       return res.status(401).json({ msg: "Invalid Project Code" });
     }
@@ -77,19 +60,19 @@ const studentprojects = async (req, res) => {
           .status(402)
           .json({ msg: "Team name is required for Project Lead" });
       }
-
-      const findTeam = await student.findOne({ teamName });
-      if (findTeam) {
-        return res.status(400).json({ msg: "Team name is already in use" });
-      }
     }
 
-    await student.create({
+    const alreadyJoined = await joinProject.findOne({ projectCode });
+    if (alreadyJoined) {
+      return res.status(400).json({ msg: "already joined" });
+    }
+    await joinProject.create({
       projectName,
       projectCode,
-      user: userId,
+      joinType,
       role,
       teamName,
+      user: userId,
     });
 
     res.status(200).json({ msg: "Project saved successfully" });
@@ -99,11 +82,10 @@ const studentprojects = async (req, res) => {
   }
 };
 
-const studentsrepo = async (req, res) => {
+const fetchJoinedProjects = async (req, res) => {
   try {
     const userId = req.user.userId;
-
-    const repo = await student.find({ user: userId });
+    const repo = await joinProject.find({ user: userId });
     res.status(200).json(repo);
   } catch (error) {
     res.status(500).json({ msg: "Internal server error" });
@@ -113,8 +95,7 @@ const studentsrepo = async (req, res) => {
 const fetchClassDetails = async (req, res) => {
   try {
     const { projectCode } = req.query;
-
-    const students = await studentProjects.find({ projectCode }).populate({
+    const students = await joinProject.find({ projectCode }).populate({
       path: "user",
       select: "-password",
     });
@@ -141,13 +122,14 @@ const fetchClassDetails = async (req, res) => {
 const fetchTeamDetails = async (req, res) => {
   try {
     const { projectCode, teamName } = req.query;
+
     if (!projectCode || !teamName) {
       return res
         .status(400)
         .json({ msg: "Project code and team name are required" });
     }
 
-    const students = await studentProjects
+    const students = await joinProject
       .find({
         projectCode,
         teamName,
@@ -179,12 +161,11 @@ const fetchTeamDetails = async (req, res) => {
 };
 
 module.exports = {
-  home,
   createProjects,
-  deleteproject,
-  userProjects,
-  studentprojects,
-  studentsrepo,
+  deleteCreatedProject,
+  fetchCreatedProjects,
+  joinProjects,
+  fetchJoinedProjects,
   fetchClassDetails,
   fetchTeamDetails,
 };

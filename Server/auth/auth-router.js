@@ -15,12 +15,11 @@ const {
 } = require("../controller/user-Controller");
 
 const {
-  home,
   createProjects,
-  deleteproject,
-  userProjects,
-  studentprojects,
-  studentsrepo,
+  deleteCreatedProject,
+  fetchCreatedProjects,
+  joinProjects,
+  fetchJoinedProjects,
   fetchClassDetails,
   fetchTeamDetails,
 } = require("../controller/projects-Controller");
@@ -48,7 +47,6 @@ const {
   fetchTaskFiles,
 } = require("../middlewares/storage.js");
 
-router.get("/", home);
 router.post("/register", register);
 router.post("/login", login);
 router.post("/updatePassword", AuthMiddleware, updatePassword);
@@ -57,11 +55,12 @@ router.post("/resetpassword", resetpassword);
 router.get("/userinfo", AuthMiddleware, userinfo);
 router.delete("/deleteaccount", AuthMiddleware, deleteaccount);
 router.patch("/updateregno", AuthMiddleware, updateRegNumber);
-router.post("/projects", AuthMiddleware, createProjects);
-router.delete("/deleteproject", AuthMiddleware, deleteproject);
-router.get("/userProjects", AuthMiddleware, userProjects);
-router.post("/studentprojects", AuthMiddleware, studentprojects);
-router.get("/studentsrepo", AuthMiddleware, studentsrepo);
+
+router.post("/createprojects", AuthMiddleware, createProjects);
+router.delete("/deleteCreatedProject", AuthMiddleware, deleteCreatedProject);
+router.get("/fetchCreatedProjects", AuthMiddleware, fetchCreatedProjects);
+router.post("/studentprojects", AuthMiddleware, joinProjects);
+router.get("/fetchJoinedProjects", AuthMiddleware, fetchJoinedProjects);
 router.post("/assigntasks", AuthMiddleware, assigntasks);
 router.delete("/deletetask", deletetask);
 router.put("/edittask", AuthMiddleware, edittask);

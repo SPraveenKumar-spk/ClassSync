@@ -1,6 +1,6 @@
 const tasks = require("../models/tasks");
 const taskResponse = require("../models/TaskResponses");
-const Project = require("../models/projects");
+const createProject = require("../models/create");
 
 const assigntasks = async (req, res) => {
   try {
@@ -90,7 +90,7 @@ const taskSolutions = async (req, res) => {
   try {
     const { taskId, solution } = req.body;
     const projectCode = req.query.projectCode;
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await createProject.findOne({ projectCode });
     if (!validCode) {
       return res.status(404).json({ msg: "requested project is not found" });
     }

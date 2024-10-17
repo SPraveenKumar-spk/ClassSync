@@ -33,7 +33,7 @@ function AssignTask({ baseURL }) {
     try {
       const taskId = uuidv4();
       const updatedValues = { ...values, taskId, filename, fileOriginal };
-      console.log(updatedValues);
+
       const response = await fetch(
         `${baseURL}/api/auth/assigntasks?projectCode=${projectCode}`,
         {
@@ -103,7 +103,6 @@ function AssignTask({ baseURL }) {
         setFileUploaded(true);
       }
     } catch (error) {
-      console.error("File upload failed", error);
       toast.error("File upload failed");
     } finally {
       setFileLoading(false);

@@ -6,8 +6,10 @@ const TeamDetails = () => {
   const { baseURL } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
   const [sortCriteria, setSortCriteria] = useState("none");
+
+  const joinType = sessionStorage.getItem("joinType");
 
   const fetchTeamDetails = async () => {
     setLoading(true);
@@ -28,10 +30,9 @@ const TeamDetails = () => {
 
       if (response.ok) {
         const result = await response.json();
-
         setData(result);
-      } else if (response.status === 404) {
-        setError("Students not joined in the project");
+      } else {
+        setError(true);
       }
     } catch (err) {
       console.error(err);
@@ -89,15 +90,17 @@ const TeamDetails = () => {
         <div className="col-12">
           {loading ? (
             <Loader />
-          ) : error ? (
-            <div className="mx-auto w-50 mt-5">
-              <p className="alert alert-danger text-center">{error}</p>
-            </div>
           ) : data.length === 0 ? (
             <div className="mx-auto w-50 mt-5">
-              <p className="alert alert-danger text-center">
-                No student in your team.
-              </p>
+              {joinType === "Individual" ? (
+                <p className="alert alert-info text-center">
+                  You have joined as individual
+                </p>
+              ) : (
+                <p className="alert alert-danger text-center">
+                  No student in your team.
+                </p>
+              )}
             </div>
           ) : (
             <table className="table table-striped table-responsive custom-table">

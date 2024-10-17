@@ -1,4 +1,4 @@
-const Project = require("../models/projects");
+const createProject = require("../models/create");
 const diary = require("../models/diary");
 
 const diaryentry = async (req, res) => {
@@ -8,7 +8,7 @@ const diaryentry = async (req, res) => {
     const { projectCode } = req.query;
     const { data, date, time, dayOfWeek } = req.body;
 
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await createProject.findOne({ projectCode });
     if (!validCode) {
       return res.status(401).json({ msg: "Invalid Project Code" });
     }
@@ -32,7 +32,7 @@ const diaryrepo = async (req, res) => {
   try {
     const { projectCode } = req.query;
     const userId = req.user.userId;
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await createProject.findOne({ projectCode });
     if (!validCode) {
       return res.status(401).json({ msg: "Invalid Project Code" });
     }
@@ -51,7 +51,7 @@ const studentdiaryrepo = async (req, res) => {
   try {
     const { projectCode } = req.query;
 
-    const validCode = await Project.findOne({ projectCode });
+    const validCode = await createProject.findOne({ projectCode });
     if (!validCode) {
       return res.status(401).json({ msg: "Invalid Project Code" });
     }

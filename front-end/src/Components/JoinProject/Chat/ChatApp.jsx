@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Image from "../../../assets/user.png";
 import { useAuth } from "../../../store/auth";
 
-const socket = io("https://classsync-q2os.onrender.com");
+const socket = io("http://localhost:5000");
 
 function ChatApp() {
   const { userName } = useAuth();
@@ -117,9 +117,11 @@ function ChatApp() {
                             : ""
                         }`}
                       >
-                        {new Date(message.createdAt)
-                          .toLocaleTimeString()
-                          .slice(0, -3)}
+                        {new Date(message.createdAt).toLocaleDateString()}{" "}
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                     {message.sender === userName && (

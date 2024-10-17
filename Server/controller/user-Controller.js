@@ -14,13 +14,15 @@ const transporter = nodemailer.createTransport({
 
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
     const userExist = await user.findOne({ email });
     if (userExist) {
       return res.status(401).json({ msg: "Email already exists" });
     }
-    const userCreated = await user.create({ name, email, password, role });
+    console.log("userExist", userExist);
 
+    const userCreated = await user.create({ name, email, password });
+    console.log("userCreated", userCreated);
     let mailOptions = {
       from: process.env.user,
       to: email,
@@ -73,16 +75,12 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
     const userExisted = await user.findOne({ email });
     if (!userExisted) {
       return res.status(401).json({ message: "Invalid Credendials" });
     }
-
     const userName = userExisted.name;
-    if (role && userExisted.role !== role) {
-      return res.status(404).json({ message: "Invalid user" });
-    }
     const valid = await bcrypt.compare(password, userExisted.password);
     const token = await userExisted.generateToken();
     if (valid) {
@@ -168,7 +166,6 @@ const resetpassword = async (req, res) => {
     if (passwordResetToken.expiresAt < Date.now()) {
       return res.status(400).json({ message: "link has expired" });
     }
-
     const User = await user.findOne({ email: passwordResetToken.email });
     if (!User) {
       return res.status(404).json({ message: "user not found" });
