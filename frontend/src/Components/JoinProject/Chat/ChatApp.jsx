@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import { useAuth } from "../../../store/auth";
 import { FaUserCircle } from "react-icons/fa";
 
-const socket = io("https://classsync-q2os.onrender.com");
+const socket = io("https://classsync-fu0i.onrender.com");
 
 function ChatApp() {
   const { userName } = useAuth();

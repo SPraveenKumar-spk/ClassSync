@@ -3,7 +3,7 @@ import { ToastProvider } from "./ToastContext";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const baseURL = "http://localhost:5000";
+  const baseURL = "https://classync-server.vercel.app";
 
   const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [userName, setName] = useState(sessionStorage.getItem("name"));
